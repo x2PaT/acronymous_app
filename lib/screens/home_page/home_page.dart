@@ -1,3 +1,5 @@
+import 'package:acronymous_app/data/mocked_data/letters_mocked_data.dart';
+import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,7 +11,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Welcome in my app'),
+          title: const Text('Welcome to my app'),
         ),
         body: Column(
           children: [
@@ -26,8 +28,11 @@ class HomePage extends StatelessWidget {
                 ),
               ),
             ),
-            const HomePageItem(page: HomePage(), title: 'Quiz Page'),
-            const HomePageItem(page: HomePage(), title: 'Alphabet Page'),
+            const HomePageItem(
+                page: HomePage(), title: 'Quiz Page /in progress'),
+            HomePageItem(
+                page: AlphabetPage(lettersMockedData: LettersMockedData()),
+                title: 'Alphabet Page'),
           ],
         ));
   }
