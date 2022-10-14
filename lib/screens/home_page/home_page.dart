@@ -1,4 +1,4 @@
-import 'package:acronymous_app/data/mocked_data/letters_mocked_data.dart';
+import 'package:acronymous_app/data/mocked_data/alphabet_mocked_data.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:flutter/material.dart';
 
@@ -10,31 +10,31 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Welcome to my app'),
-        ),
-        body: Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.all(50),
-              width: 250,
-              child: const Text(
-                'App will help you to learn spelling of english alphabet by solving Quiz where you can hear well know acronyms. ',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                  fontSize: 18.0,
-                ),
+      appBar: AppBar(
+        title: const Text('Welcome to my app'),
+      ),
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.all(50),
+            width: 250,
+            child: const Text(
+              'App will help you to learn spelling of english alphabet by solving Quiz where you can hear well know acronyms.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+                fontSize: 18.0,
               ),
             ),
-            const HomePageItem(
-                page: HomePage(), title: 'Quiz Page /in progress'),
-            HomePageItem(
-                page: AlphabetPage(lettersMockedData: LettersMockedData()),
-                title: 'Alphabet Page'),
-          ],
-        ));
+          ),
+          const HomePageItem(page: HomePage(), title: 'Quiz Page /in progress'),
+          HomePageItem(
+              page: AlphabetPage(lettersMockedData: AlphabetMockedData()),
+              title: 'Alphabet Page'),
+        ],
+      ),
+    );
   }
 }
 

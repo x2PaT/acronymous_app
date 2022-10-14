@@ -1,8 +1,10 @@
-import 'package:acronymous_app/data/mocked_data/acronyms_mocked_data.dart';
-import 'package:acronymous_app/data/mocked_data/letters_mocked_data.dart';
+import 'package:acronymous_app/data/mocked_data/alphabet_mocked_data.dart';
 import 'package:acronymous_app/models/letter_model.dart';
+import 'package:acronymous_app/repository/alphabet_repository.dart';
+import 'package:acronymous_app/screens/alphabet_page/cubit/alphabet_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AlphabetPage extends StatelessWidget {
   const AlphabetPage({
@@ -10,40 +12,46 @@ class AlphabetPage extends StatelessWidget {
     required this.lettersMockedData,
   }) : super(key: key);
 
-  final LettersMockedData lettersMockedData;
+  final AlphabetMockedData lettersMockedData;
 
   @override
   Widget build(BuildContext context) {
-    final alphabetLetters = lettersMockedData.getLetters();
-    List<LetterModel> letterModels = [];
-    for (var element in alphabetLetters) {
-      letterModels.add(LetterModel.fromJson(element));
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Welcome to alphabet page'),
       ),
-      body: Container(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 100,
-                  childAspectRatio: 1 / 1,
-                  crossAxisSpacing: 15,
-                  mainAxisSpacing: 15,
-                ),
-                itemCount: alphabetLetters.length,
-                itemBuilder: (context, index) {
-                  final letterModel = letterModels[index];
-                  return GridElement(letterModel: letterModel);
-                },
+      body: BlocProvider(
+        create: (context) => AlphabetPageCubit(
+          alphabelRepository: AlphabetRepository(
+            alphabetMockedData: AlphabetMockedData(),
+          ),
+        )..start(),
+        child: BlocBuilder<AlphabetPageCubit, AlphabetPageState>(
+          builder: (context, state) {
+            return Container(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 100,
+                        childAspectRatio: 1 / 1,
+                        crossAxisSpacing: 15,
+                        mainAxisSpacing: 15,
+                      ),
+                      itemCount: state.results.length,
+                      itemBuilder: (context, index) {
+                        final letterModel = state.results[index];
+                        return GridElement(letterModel: letterModel);
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
@@ -51,7 +59,10 @@ class AlphabetPage extends StatelessWidget {
 }
 
 class GridElement extends StatelessWidget {
-  const GridElement({Key? key, required this.letterModel}) : super(key: key);
+  const GridElement({
+    Key? key,
+    required this.letterModel,
+  }) : super(key: key);
   final LetterModel letterModel;
   @override
   Widget build(BuildContext context) {
@@ -59,8 +70,7 @@ class GridElement extends StatelessWidget {
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => LetterPage(
-            letterModel: letterModel,
-            acronymsMockedData: AcronymsMockedData(),
+            letterID: letterModel.id,
           ),
         ));
       },

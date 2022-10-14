@@ -1,6 +1,6 @@
 class AcronymsMockedData {
-  List<Map<String, dynamic>> getAcronyms() {
-    return [
+  Future<List<Map<String, dynamic>>> getAcronyms() async {
+    return  [
       {
         'id': 1,
         'acronym': 'HBO',

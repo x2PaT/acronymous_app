@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class AncronymWebviewPage extends StatelessWidget {
-  const AncronymWebviewPage({Key? key, this.acronym}) : super(key: key);
+  const AncronymWebviewPage({Key? key, required this.acronym})
+      : super(key: key);
 
-  final acronym;
+  final String acronym;
 
   @override
   Widget build(BuildContext context) {
