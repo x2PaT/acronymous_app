@@ -1,4 +1,4 @@
-import 'package:acronymous_app/data/mocked_data/acronyms_mocked_data.dart';
+import 'package:acronymous_app/data/mocked_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/screens/acronyms_browser/cubit/acronyms_browser_cubit.dart';
@@ -16,17 +16,17 @@ class AcronymsBrowser extends StatelessWidget {
     return BlocProvider(
       create: (context) => AcronymsBrowserCubit(
         acronymsRepository: AcronymsRepository(
-          acronymsMockedData: AcronymsMockedData(),
+          acronymsRemoteDataSource: AcronymsRemoteDataSource(),
         ),
       )..start(),
       child: BlocBuilder<AcronymsBrowserCubit, AcronymsBrowserState>(
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('Acronyms Browser'),
+              title: const Text('Acronyms Browser'),
             ),
             body: Container(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
                   Expanded(
@@ -66,11 +66,11 @@ class AcronymCustomRow extends StatelessWidget {
                 acronym: acronymModel.acronym,
               ))),
       child: Card(
-        child: Container(
+        child: SizedBox(
           height: 55,
           child: Row(
             children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.75,
                 child: Column(
                   children: [

@@ -1,4 +1,4 @@
-import 'package:acronymous_app/data/mocked_data/alphabet_mocked_data.dart';
+import 'package:acronymous_app/data/mocked_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
 import 'package:acronymous_app/screens/alphabet_page/cubit/alphabet_page_cubit.dart';
@@ -18,7 +18,7 @@ class AlphabetPage extends StatelessWidget {
       body: BlocProvider(
         create: (context) => AlphabetPageCubit(
           alphabelRepository: AlphabetRepository(
-            alphabetMockedData: AlphabetMockedData(),
+            alphabetRemoterDataSource: AlphabetRemoterDataSource(),
           ),
         )..start(),
         child: BlocBuilder<AlphabetPageCubit, AlphabetPageState>(

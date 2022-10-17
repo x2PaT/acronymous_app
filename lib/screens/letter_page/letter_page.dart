@@ -1,5 +1,5 @@
-import 'package:acronymous_app/data/mocked_data/acronyms_mocked_data.dart';
-import 'package:acronymous_app/data/mocked_data/alphabet_mocked_data.dart';
+import 'package:acronymous_app/data/mocked_data/acronyms_data_source.dart';
+import 'package:acronymous_app/data/mocked_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
@@ -27,10 +27,10 @@ class LetterPage extends StatelessWidget {
       body: BlocProvider(
         create: (context) => LetterPageCubit(
           acronymsRepository: AcronymsRepository(
-            acronymsMockedData: AcronymsMockedData(),
+            acronymsRemoteDataSource: AcronymsRemoteDataSource(),
           ),
           alphabetRepository: AlphabetRepository(
-            alphabetMockedData: AlphabetMockedData(),
+            alphabetRemoterDataSource: AlphabetRemoterDataSource(),
           ),
         )..start(letterID: letterID),
         child: BlocBuilder<LetterPageCubit, LetterPageState>(
@@ -49,7 +49,7 @@ class LetterPage extends StatelessWidget {
                     children: [
                       Column(
                         children: [
-                          Container(
+                          SizedBox(
                             width: 60,
                             child: Center(
                               child: Text(
@@ -118,11 +118,11 @@ class AcronymCustomRow extends StatelessWidget {
                 acronym: acronymModel.acronym,
               ))),
       child: Card(
-        child: Container(
+        child: SizedBox(
           height: 55,
           child: Row(
             children: [
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width * 0.75,
                 child: Column(
                   children: [

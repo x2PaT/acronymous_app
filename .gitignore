@@ -46,3 +46,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 windows/flutter/generated_plugin_registrant.cc
+lib/app/drawer.dart
+lib/data/mocked_data/acronyms.json
+lib/data/mocked_data/alphabet.json

@@ -38,6 +38,8 @@ dependencies:
   flutter_tts: ^3.5.3
   flutter_webview_plugin: ^0.4.0
   flutter_bloc: ^8.1.1
+  dio: ^4.0.6
+  path: ^1.8.1
 
 dev_dependencies:
   flutter_test:
