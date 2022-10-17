@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:acronymous_app/data/mocked_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 
@@ -11,9 +13,29 @@ class AcronymsRepository {
       return [];
     }
 
-    final List jsonAcronyms = json['acronyms'];
+    final List acronymsJson = json['acronyms'];
 
-    return jsonAcronyms.map((item) => AcronymModel.fromJson(item)).toList();
+    return acronymsJson.map((item) => AcronymModel.fromJson(item)).toList();
+  }
+
+  getRandomAcronyms(int quantity) async {
+    final json = await acronymsRemoteDataSource.getAcronyms();
+    if (json == null) {
+      return [];
+    }
+    List<AcronymModel> randomAcronyms = [];
+    final List acronymsJson = json['acronyms'];
+
+    final acronymsModels =
+        acronymsJson.map((item) => AcronymModel.fromJson(item)).toList();
+
+    for (var i = 0; i < quantity; i++) {
+      int acronymRandomIndex = Random().nextInt(acronymsModels.length - 1);
+
+      randomAcronyms.add(acronymsModels[acronymRandomIndex]);
+      acronymsModels.removeAt(acronymRandomIndex);
+    }
+    return randomAcronyms;
   }
 
   Future<List<AcronymModel>> getAcronymsModelsWithLetter(
@@ -23,10 +45,10 @@ class AcronymsRepository {
       return [];
     }
 
-    final List jsonAcronyms = json['acronyms'];
+    final List acronymsJson = json['acronyms'];
 
     final allAcronyms =
-        jsonAcronyms.map((item) => AcronymModel.fromJson(item)).toList();
+        acronymsJson.map((item) => AcronymModel.fromJson(item)).toList();
 
     return allAcronyms
         .where((acronymModel) => acronymModel.acronym.contains(letter))
