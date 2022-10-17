@@ -1,5 +1,5 @@
-import 'package:acronymous_app/data/mocked_data/acronyms_data_source.dart';
-import 'package:acronymous_app/data/mocked_data/alphabet_data_source.dart';
+import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
+import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';

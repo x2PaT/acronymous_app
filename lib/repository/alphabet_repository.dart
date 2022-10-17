@@ -1,4 +1,4 @@
-import 'package:acronymous_app/data/mocked_data/alphabet_data_source.dart';
+import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 
 class AlphabetRepository {

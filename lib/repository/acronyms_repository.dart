@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:acronymous_app/data/mocked_data/acronyms_data_source.dart';
+import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 
 class AcronymsRepository {
