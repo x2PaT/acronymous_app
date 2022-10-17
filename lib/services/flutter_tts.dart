@@ -1,5 +1,7 @@
 import 'package:flutter_tts/flutter_tts.dart';
 
+final TTSService ttsService = TTSService();
+
 class TTSService {
   FlutterTts flutterTts = FlutterTts();
 

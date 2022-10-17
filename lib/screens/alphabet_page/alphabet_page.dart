@@ -7,18 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AlphabetPage extends StatelessWidget {
-  const AlphabetPage({
-    Key? key,
-    required this.lettersMockedData,
-  }) : super(key: key);
-
-  final AlphabetMockedData lettersMockedData;
+  const AlphabetPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to alphabet page'),
+        title: const Text('Alphabet page'),
       ),
       body: BlocProvider(
         create: (context) => AlphabetPageCubit(

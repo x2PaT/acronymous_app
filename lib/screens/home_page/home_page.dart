@@ -1,4 +1,5 @@
 import 'package:acronymous_app/data/mocked_data/alphabet_mocked_data.dart';
+import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:flutter/material.dart';
 
@@ -29,9 +30,8 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const HomePageItem(page: HomePage(), title: 'Quiz Page /in progress'),
-          HomePageItem(
-              page: AlphabetPage(lettersMockedData: AlphabetMockedData()),
-              title: 'Alphabet Page'),
+          const HomePageItem(page: AlphabetPage(), title: 'Alphabet Page'),
+          const HomePageItem(page: AcronymsBrowser(), title: 'Acronyms Browser')
         ],
       ),
     );
