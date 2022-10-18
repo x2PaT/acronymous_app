@@ -26,7 +26,9 @@ class _AcronymsPageState extends State<AcronymsPage> {
       appBar: AppBar(
         title: const Text('Acronyms Browser'),
       ),
-      drawer: const DrawerMaster(),
+      drawer: const DrawerMaster(
+        selectedElement: DrawerElements.acronyms,
+      ),
       body: BlocProvider(
         create: (context) => AcronymsBrowserCubit(
           acronymsRepository: AcronymsRepository(
@@ -79,9 +81,7 @@ class _AcronymsPageState extends State<AcronymsPage> {
                           itemBuilder: (context, index) {
                             AcronymModel acronymModel =
                                 state.searchResults[index];
-                            return AcronymCustomRow(
-                              acronymModel: acronymModel,
-                            );
+                            return acronymCustomRow(context, acronymModel);
                           },
                         ),
                       ),
@@ -96,48 +96,51 @@ class _AcronymsPageState extends State<AcronymsPage> {
   }
 }
 
-class AcronymCustomRow extends StatelessWidget {
-  const AcronymCustomRow({
-    Key? key,
-    required this.acronymModel,
-  }) : super(key: key);
-
-  final AcronymModel acronymModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => AncronymWebviewPage(
-                acronym: acronymModel.acronym,
-              ))),
-      child: Card(
-        child: SizedBox(
-          height: 55,
-          child: Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.75,
+acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
+  return InkWell(
+    onTap: () => Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AncronymWebviewPage(
+          acronym: acronymModel.acronym,
+        ),
+      ),
+    ),
+    child: Card(
+      child: SizedBox(
+        height: 55,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 12),
+                width: MediaQuery.of(context).size.width * 0.65,
                 child: Column(
                   children: [
-                    Text(acronymModel.acronym),
+                    Text(
+                      acronymModel.acronym,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     AutoSizeText(
                       acronymModel.meaning,
                       maxLines: 2,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  ttsService.speakTTS(acronymModel.acronymLetters);
-                },
-                icon: const Icon(Icons.play_circle),
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              onPressed: () {
+                ttsService.speakTTS(acronymModel.acronymLetters);
+              },
+              icon: const Icon(Icons.play_circle),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }

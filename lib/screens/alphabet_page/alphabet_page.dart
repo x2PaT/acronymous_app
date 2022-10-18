@@ -17,7 +17,9 @@ class AlphabetPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Alphabet page'),
       ),
-      drawer: const DrawerMaster(),
+      drawer: const DrawerMaster(
+        selectedElement: DrawerElements.alphabet,
+      ),
       body: BlocProvider(
         create: (context) => AlphabetPageCubit(
           alphabelRepository: AlphabetRepository(

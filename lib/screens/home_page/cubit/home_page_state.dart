@@ -8,12 +8,20 @@ class HomePageState {
     this.statusAcronymsList = Status.initial,
     this.errorMessage,
     this.errorMessageAcronymsList,
+    this.alphabet = const [],
+    this.errorMessageAlphabet,
+    this.statusAlphabet = Status.initial,
   });
 
   final int quizLenghtValue;
   final Status status;
-  final Status statusAcronymsList;
   final String? errorMessage;
+
+  final Status statusAcronymsList;
   final String? errorMessageAcronymsList;
   final List<AcronymModel> randomAcronyms;
+
+  final List<LetterModel> alphabet;
+  final String? errorMessageAlphabet;
+  final Status statusAlphabet;
 }

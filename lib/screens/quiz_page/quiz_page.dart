@@ -35,7 +35,9 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
         elevation: 0,
         title: const Text('Acronymous Quiz'),
       ),
-      drawer: const DrawerMaster(),
+      drawer: const DrawerMaster(
+        selectedElement: DrawerElements.home,
+      ),
       body: BlocProvider(
         create: (context) {
           return QuizPageCubit(
@@ -67,78 +69,77 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
                   ),
                 );
               case Status.success:
-                return Column(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.all(8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'Question ${currentQuestion + 1}/${state.quizLenght}',
-                            style: const TextStyle(fontSize: 25),
-                          ),
-                        ],
+                return Container(
+                  margin: const EdgeInsets.all(24),
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.all(8),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Question ${currentQuestion + 1}/${state.quizLenght}',
+                              style: const TextStyle(fontSize: 25),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Divider(
-                      endIndent: 15,
-                      thickness: 2,
-                      color: Colors.grey,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        showQuestion
-                            ? Text(
-                                state.questions[currentQuestion].questionText,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                ),
-                              )
-                            : const SizedBox(),
-                        const SizedBox(width: 25),
-                        InkWell(
-                          onTap: () {
+                      const Divider(
+                        endIndent: 15,
+                        thickness: 2,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.7,
+                        height: 45,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              primary: isAnswerSelected
+                                  ? Colors.grey.shade500
+                                  : Colors.orangeAccent),
+                          onPressed: () {
                             ttsService.speakTTS(state
                                 .questions[currentQuestion].questionLetters);
                           },
-                          child: Container(
-                            width: 36,
-                            height: 36,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(18),
-                              color: Colors.grey.withOpacity(0.3),
-                            ),
-                            child: const Icon(Icons.play_circle_outline),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: const [
+                              Text(
+                                'PLAY',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              Icon(Icons.play_circle_outline),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 25),
-                    Column(
-                      children: state.questions[currentQuestion].answersList
-                          .map((answer) => answerButton(context, answer))
-                          .toList(),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(
-                              () {
-                                showQuestion = !showQuestion;
-                              },
-                            );
-                          },
-                          child: const Text('Show question'),
-                        ),
-                        const SizedBox(width: 15),
-                        nextButton(context, state, selectedAnswer),
-                      ],
-                    ),
-                  ],
+                      ),
+                      const SizedBox(height: 25),
+                      Column(
+                        children: state.questions[currentQuestion].answersList
+                            .map((answer) => answerButton(context, answer))
+                            .toList(),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(
+                                () {
+                                  showQuestion = !showQuestion;
+                                },
+                              );
+                            },
+                            child: const Text('Show question'),
+                          ),
+                          const SizedBox(width: 15),
+                          nextButton(context, state, selectedAnswer),
+                        ],
+                      ),
+                    ],
+                  ),
                 );
             }
           },
@@ -154,13 +155,14 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 50,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-      ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),
-          primary: isSelected ? Colors.orangeAccent : Colors.white,
+          primary: isSelected
+              ? Colors.orangeAccent
+              : isAnswerSelected
+                  ? Colors.grey.shade200
+                  : Colors.white,
           onPrimary: isSelected ? Colors.white : Colors.black,
         ),
         onPressed: () {

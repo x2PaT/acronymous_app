@@ -1,12 +1,15 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
 import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
+import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
+import 'package:acronymous_app/repository/alphabet_repository.dart';
 import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
+import 'package:acronymous_app/screens/letter_page/letter_page.dart';
 import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -21,16 +24,21 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const DrawerMaster(),
+      drawer: const DrawerMaster(
+        selectedElement: DrawerElements.home,
+      ),
       appBar: AppBar(
         title: const Text('Welcome to my app'),
       ),
       body: BlocProvider(
         create: (context) => HomePageCubit(
-          acronymsRepository: AcronymsRepository(
-            acronymsRemoteDataSource: AcronymsRemoteDataSource(),
-          ),
-        )..start(),
+            acronymsRepository: AcronymsRepository(
+              acronymsRemoteDataSource: AcronymsRemoteDataSource(),
+            ),
+            alphabetRepository: AlphabetRepository(
+              alphabetRemoterDataSource: AlphabetRemoterDataSource(),
+            ))
+          ..start(),
         child: BlocBuilder<HomePageCubit, HomePageState>(
           builder: (context, state) {
             switch (state.status) {
@@ -54,61 +62,18 @@ class HomePage extends StatelessWidget {
                 );
               case Status.success:
                 return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      quizContainer(context, state),
-                      SizedBox(
-                        height: 100,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: 15,
-                          itemBuilder: (BuildContext context, int index) =>
-                              const Card(
-                            child: Center(child: Text('Dummy Card Text')),
-                          ),
-                        ),
-                      ),
-                      const HomePageItem(
-                        page: AlphabetPage(),
-                        title: 'Alphabet Page',
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(12),
-                        margin: const EdgeInsets.all(12),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder: (_) =>
-                                                const AcronymsPage()));
-                                  },
-                                  child: const Text(
-                                    'Acronyms List',
-                                    style: TextStyle(
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                IconButton(
-                                    onPressed: () {
-                                      BlocProvider.of<HomePageCubit>(context)
-                                          .refreshRandomAcronymsList();
-                                    },
-                                    icon: const Icon(Icons.refresh))
-                              ],
-                            ),
-                            acronymsList(context, state),
-                          ],
-                        ),
-                      ),
-                    ],
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        quizContainer(context, state),
+                        const SizedBox(height: 15),
+                        alphabetContainer(context, state),
+                        const SizedBox(height: 15),
+                        acronymsContainer(context, state),
+                      ],
+                    ),
                   ),
                 );
             }
@@ -117,6 +82,101 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+
+  Column alphabetContainer(BuildContext context, HomePageState state) {
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AlphabetPage()));
+              },
+              child: const Text(
+                'Alphabet',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 75,
+          child: ListView.builder(
+            shrinkWrap: true,
+            scrollDirection: Axis.horizontal,
+            itemCount: state.alphabet.length,
+            itemBuilder: (BuildContext context, int index) => SizedBox(
+              width: 100,
+              child: InkWell(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          LetterPage(letterID: state.alphabet[index].id),
+                    ),
+                  );
+                },
+                child: Card(
+                  child: Center(
+                    child: Text(
+                      state.alphabet[index].letter,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+Column acronymsContainer(BuildContext context, HomePageState state) {
+  return Column(
+    children: [
+      Stack(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: TextButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const AcronymsPage()));
+              },
+              child: const Text(
+                'Acronyms List',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            child: IconButton(
+              onPressed: () {
+                BlocProvider.of<HomePageCubit>(context)
+                    .refreshRandomAcronymsList();
+              },
+              icon: const Icon(Icons.refresh),
+            ),
+          ),
+        ],
+      ),
+      acronymsList(context, state),
+    ],
+  );
 }
 
 Widget acronymsList(BuildContext context, HomePageState state) {
@@ -136,18 +196,9 @@ Widget acronymsList(BuildContext context, HomePageState state) {
       return Column(
         children: [
           for (var acronym in state.randomAcronyms) ...[
-            AcronymCustomRow(acronymModel: acronym)
+            acronymCustomRow(context, acronym)
           ],
         ],
-        // child: ListView.builder(
-        //   itemCount: state.randomAcronyms.length,
-        //   itemBuilder: (context, index) {
-        //     AcronymModel acronymModel = state.randomAcronyms[index];
-        //     return AcronymCustomRow(
-        //       acronymModel: acronymModel,
-        //     );
-        //   },
-        // ),
       );
     case Status.error:
       return Center(
@@ -164,8 +215,7 @@ Widget acronymsList(BuildContext context, HomePageState state) {
 
 Container quizContainer(BuildContext context, HomePageState state) {
   return Container(
-    padding: const EdgeInsets.all(16),
-    margin: const EdgeInsets.all(16),
+    padding: const EdgeInsets.all(12),
     decoration: const BoxDecoration(
       color: Colors.black12,
       borderRadius: BorderRadius.all(
@@ -195,7 +245,7 @@ Container quizContainer(BuildContext context, HomePageState state) {
             Container(
               width: 40,
               alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 20),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
               padding: const EdgeInsets.all(5),
               decoration: const BoxDecoration(
                 color: Colors.white,
@@ -245,94 +295,51 @@ Container quizContainer(BuildContext context, HomePageState state) {
   );
 }
 
-class HomePageItem extends StatelessWidget {
-  const HomePageItem({
-    Key? key,
-    required this.page,
-    required this.title,
-  }) : super(key: key);
-  final Widget page;
-  final String title;
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => page,
-            ),
-          ),
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 45),
-            height: 80,
-            decoration: BoxDecoration(
-              color: Colors.brown.shade200,
-              borderRadius: const BorderRadius.all(Radius.circular(32)),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                    fontSize: 18.0,
-                  ),
-                ),
-              ],
-            ),
-          ),
+acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
+  return InkWell(
+    onTap: () => Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => AncronymWebviewPage(
+          acronym: acronymModel.acronym,
         ),
-        const SizedBox(height: 45),
-      ],
-    );
-  }
-}
-
-class AcronymCustomRow extends StatelessWidget {
-  const AcronymCustomRow({
-    Key? key,
-    required this.acronymModel,
-  }) : super(key: key);
-
-  final AcronymModel acronymModel;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => AncronymWebviewPage(
-                acronym: acronymModel.acronym,
-              ))),
-      child: Card(
-        child: SizedBox(
-          height: 55,
-          child: Row(
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.70,
+      ),
+    ),
+    child: Card(
+      child: SizedBox(
+        height: 55,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(left: 12),
+                width: MediaQuery.of(context).size.width * 0.65,
                 child: Column(
                   children: [
-                    Text(acronymModel.acronym),
+                    Text(
+                      acronymModel.acronym,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     AutoSizeText(
                       acronymModel.meaning,
                       maxLines: 2,
+                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-              IconButton(
-                onPressed: () {
-                  ttsService.speakTTS(acronymModel.acronymLetters);
-                },
-                icon: const Icon(Icons.play_circle),
-              ),
-            ],
-          ),
+            ),
+            IconButton(
+              onPressed: () {
+                ttsService.speakTTS(acronymModel.acronymLetters);
+              },
+              icon: const Icon(Icons.play_circle),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
 }
