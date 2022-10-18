@@ -21,7 +21,7 @@ class AlphabetRepository {
 
     final jsonAlphabet = json!['alphabet'];
 
-    final allLettersModels =
+    final List<LetterModel> allLettersModels =
         jsonAlphabet.map((item) => LetterModel.fromJson(item)).toList();
 
     return allLettersModels.where((element) => element.id == letterID).first;

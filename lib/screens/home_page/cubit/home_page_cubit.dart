@@ -11,8 +11,9 @@ class HomePageCubit extends Cubit<HomePageState> {
   }) : super(HomePageState());
 
   final AcronymsRepository acronymsRepository;
+  final startQuizLen = 4;
 
-  final minQuizLen = 4;
+  final minQuizLen = 1;
   final maxQuizLen = 18;
   final randomAcronymsListLen = 10;
 
@@ -23,7 +24,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     emit(
       HomePageState(
         randomAcronyms: randomAcronyms,
-        quizLenghtValue: minQuizLen,
+        quizLenghtValue: startQuizLen,
         status: Status.success,
       ),
     );

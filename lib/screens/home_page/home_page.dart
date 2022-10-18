@@ -5,6 +5,7 @@ import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
+import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +34,8 @@ class HomePage extends StatelessWidget {
               children: [
                 quizContainer(context, state),
                 Container(
-                  padding: EdgeInsets.all(12),
-                  margin: EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(12),
+                  margin: const EdgeInsets.all(12),
                   child: Column(
                     children: [
                       Row(
@@ -52,10 +53,10 @@ class HomePage extends StatelessWidget {
                                 BlocProvider.of<HomePageCubit>(context)
                                     .refreshRandomAcronymsList();
                               },
-                              icon: Icon(Icons.refresh))
+                              icon: const Icon(Icons.refresh))
                         ],
                       ),
-                      Container(
+                      SizedBox(
                         height: 200,
                         child: ListView.builder(
                           itemCount: state.randomAcronyms.length,
@@ -136,7 +137,15 @@ class HomePage extends StatelessWidget {
                   icon: const Icon(Icons.add)),
               const SizedBox(width: 15),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => AcronymsQuizPage(
+                        quizLenght: state.quizLenghtValue,
+                      ),
+                    ),
+                  );
+                },
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: const BoxDecoration(
