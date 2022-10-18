@@ -224,6 +224,33 @@
             "id": 45,
             "acronym": "PM",
             "meaning": "Post Meridiem (after noon)"
+        },
+        {
+            "id": 46,
+            "acronym": "FPV",
+            "meaning": "First Person View"
+        },
+        {
+            "id": 45,
+            "acronym": "PPV",
+            "meaning": "Pay Per View"
+        },
+        {
+            "id": 46,
+            "acronym": "MMO",
+            "meaning": "Massively Multiplayer Online"
+        },
+        {
+            "id": 45,
+            "acronym": "RPG",
+            "meaning": "Role Pplaying Game"
+        },
+        {
+            "id": 46,
+            "acronym": "MMA",
+            "meaning": "Mixed Martial Arts"
         }
     ]
 }
+
+

@@ -1,3 +1,5 @@
+import 'package:acronymous_app/app/core/enums.dart';
+import 'package:acronymous_app/app/drawer.dart';
 import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
@@ -15,6 +17,7 @@ class AlphabetPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Alphabet page'),
       ),
+      drawer: const DrawerMaster(),
       body: BlocProvider(
         create: (context) => AlphabetPageCubit(
           alphabelRepository: AlphabetRepository(
@@ -23,29 +26,50 @@ class AlphabetPage extends StatelessWidget {
         )..start(),
         child: BlocBuilder<AlphabetPageCubit, AlphabetPageState>(
           builder: (context, state) {
-            return Container(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  Expanded(
-                    child: GridView.builder(
-                      gridDelegate:
-                          const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 100,
-                        childAspectRatio: 1 / 1,
-                        crossAxisSpacing: 15,
-                        mainAxisSpacing: 15,
-                      ),
-                      itemCount: state.results.length,
-                      itemBuilder: (context, index) {
-                        final letterModel = state.results[index];
-                        return GridElement(letterModel: letterModel);
-                      },
+            switch (state.status) {
+              case Status.initial:
+                return const Center(
+                  child: Text('Initial State'),
+                );
+              case Status.loading:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case Status.error:
+                return Center(
+                  child: Text(
+                    state.errorMessage ?? 'Unkown error',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).errorColor,
                     ),
                   ),
-                ],
-              ),
-            );
+                );
+              case Status.success:
+                return Container(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: GridView.builder(
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 100,
+                            childAspectRatio: 1 / 1,
+                            crossAxisSpacing: 15,
+                            mainAxisSpacing: 15,
+                          ),
+                          itemCount: state.results.length,
+                          itemBuilder: (context, index) {
+                            final letterModel = state.results[index];
+                            return GridElement(letterModel: letterModel);
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+            }
           },
         ),
       ),

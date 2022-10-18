@@ -1,3 +1,4 @@
+import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
 import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
@@ -35,66 +36,83 @@ class LetterPage extends StatelessWidget {
         )..start(letterID: letterID),
         child: BlocBuilder<LetterPageCubit, LetterPageState>(
           builder: (context, state) {
-            final letterModel = state.letterModel;
-            if (letterModel == null) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            }
-            return Container(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Row(
+            switch (state.status) {
+              case Status.initial:
+                return const Center(
+                  child: Text('Initial State'),
+                );
+              case Status.loading:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case Status.error:
+                return Center(
+                  child: Text(
+                    state.errorMessage ?? 'Unkown error',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Theme.of(context).errorColor,
+                    ),
+                  ),
+                );
+              case Status.success:
+                final letterModel = state.letterModel!;
+
+                return Container(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
                     children: [
-                      Column(
-                        children: [
-                          SizedBox(
-                            width: 60,
-                            child: Center(
-                              child: Text(
-                                letterModel.letter,
-                                style: const TextStyle(fontSize: 32),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        children: [
-                          Text(letterModel.pronunciation),
-                          Text(letterModel.name),
-                          Text(letterModel.useFrequency),
-                        ],
-                      ),
                       Row(
                         children: [
-                          const Text('PLAY'),
-                          IconButton(
-                            onPressed: () {
-                              ttsService.speakTTS(letterModel.letter);
-                            },
-                            icon: const Icon(Icons.play_circle),
+                          Column(
+                            children: [
+                              SizedBox(
+                                width: 60,
+                                child: Center(
+                                  child: Text(
+                                    letterModel.letter,
+                                    style: const TextStyle(fontSize: 32),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Text(letterModel.pronunciation),
+                              Text(letterModel.name),
+                              Text(letterModel.useFrequency),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              const Text('PLAY'),
+                              IconButton(
+                                onPressed: () {
+                                  ttsService.speakTTS(letterModel.letter);
+                                },
+                                icon: const Icon(Icons.play_circle),
+                              ),
+                            ],
                           ),
                         ],
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: state.acronymsWithLetter.length,
+                          itemBuilder: (context, index) {
+                            AcronymModel acronymModel =
+                                state.acronymsWithLetter[index];
+                            return AcronymCustomRow(
+                              acronymModel: acronymModel,
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: state.acronymsWithLetter.length,
-                      itemBuilder: (context, index) {
-                        AcronymModel acronymModel =
-                            state.acronymsWithLetter[index];
-                        return AcronymCustomRow(
-                          acronymModel: acronymModel,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            );
+                );
+            }
           },
         ),
       ),

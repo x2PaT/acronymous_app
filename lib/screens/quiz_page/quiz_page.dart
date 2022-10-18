@@ -1,4 +1,5 @@
 import 'package:acronymous_app/app/core/enums.dart';
+import 'package:acronymous_app/app/drawer.dart';
 import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/question_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
@@ -29,43 +30,44 @@ class AcronymsQuizPage extends StatefulWidget {
 class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        return QuizPageCubit(
-          questionsRepository: QuestionsRepository(
-            acronymsRepository: AcronymsRepository(
-              acronymsRemoteDataSource: AcronymsRemoteDataSource(),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: const Text('Acronymous Quiz'),
+      ),
+      drawer: const DrawerMaster(),
+      body: BlocProvider(
+        create: (context) {
+          return QuizPageCubit(
+            questionsRepository: QuestionsRepository(
+              acronymsRepository: AcronymsRepository(
+                acronymsRemoteDataSource: AcronymsRemoteDataSource(),
+              ),
             ),
-          ),
-        )..createQuiz(widget.quizLenght);
-      },
-      child: BlocBuilder<QuizPageCubit, QuizPageState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case Status.initial:
-              return const Center(
-                child: Text('Initial State'),
-              );
-            case Status.loading:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            case Status.error:
-              return Center(
-                child: Text(
-                  state.errorMessage ?? 'Unkown error',
-                  style: TextStyle(
-                    color: Theme.of(context).errorColor,
+          )..createQuiz(widget.quizLenght);
+        },
+        child: BlocBuilder<QuizPageCubit, QuizPageState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case Status.initial:
+                return const Center(
+                  child: Text('Initial State'),
+                );
+              case Status.loading:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case Status.error:
+                return Center(
+                  child: Text(
+                    state.errorMessage ?? 'Unkown error',
+                    style: TextStyle(
+                      color: Theme.of(context).errorColor,
+                    ),
                   ),
-                ),
-              );
-            case Status.success:
-              return Scaffold(
-                appBar: AppBar(
-                  elevation: 0,
-                  title: const Text('Acronymous Quiz'),
-                ),
-                body: Column(
+                );
+              case Status.success:
+                return Column(
                   children: [
                     Container(
                       margin: const EdgeInsets.all(8),
@@ -137,10 +139,10 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
                       ],
                     ),
                   ],
-                ),
-              );
-          }
-        },
+                );
+            }
+          },
+        ),
       ),
     );
   }

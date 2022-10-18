@@ -14,7 +14,7 @@ class AlphabetPageCubit extends Cubit<AlphabetPageState> {
   Future<void> start() async {
     emit(
       AlphabetPageState(
-        status: Status.initial,
+        status: Status.loading,
       ),
     );
     try {

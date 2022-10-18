@@ -18,7 +18,7 @@ class LetterPageCubit extends Cubit<LetterPageState> {
   Future<void> start({required int letterID}) async {
     emit(
       LetterPageState(
-        status: Status.initial,
+        status: Status.loading,
         letterModel: null,
       ),
     );
@@ -28,23 +28,26 @@ class LetterPageCubit extends Cubit<LetterPageState> {
         letterID: letterID,
       );
 
-
       final acronymsModelsWithLetter =
           await acronymsRepository.getAcronymsModelsWithLetter(
         letter: letterModel.letter,
       );
 
-      emit(LetterPageState(
-        status: Status.success,
-        letterModel: letterModel,
-        acronymsWithLetter: acronymsModelsWithLetter,
-      ));
+      emit(
+        LetterPageState(
+          status: Status.success,
+          letterModel: letterModel,
+          acronymsWithLetter: acronymsModelsWithLetter,
+        ),
+      );
     } catch (error) {
-      emit(LetterPageState(
-        letterModel: null,
-        status: Status.error,
-        errorMessage: error.toString(),
-      ));
+      emit(
+        LetterPageState(
+          letterModel: null,
+          status: Status.error,
+          errorMessage: 'Cubit error ${error.toString()}',
+        ),
+      );
     }
   }
 }

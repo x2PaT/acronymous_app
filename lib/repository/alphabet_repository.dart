@@ -19,9 +19,9 @@ class AlphabetRepository {
   Future<LetterModel> getLetterModelWithID({required int letterID}) async {
     final json = await alphabetRemoterDataSource.getAlphabet();
 
-    final jsonAlphabet = json!['alphabet'];
+    final List<dynamic> jsonAlphabet = json!['alphabet'];
 
-    final List<LetterModel> allLettersModels =
+    final List<dynamic> allLettersModels =
         jsonAlphabet.map((item) => LetterModel.fromJson(item)).toList();
 
     return allLettersModels.where((element) => element.id == letterID).first;

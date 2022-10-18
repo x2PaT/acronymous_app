@@ -18,6 +18,13 @@ class HomePageCubit extends Cubit<HomePageState> {
   final randomAcronymsListLen = 10;
 
   start() async {
+    emit(
+      HomePageState(
+        status: Status.loading,
+        statusAcronymsList: Status.loading,
+      ),
+    );
+
     final randomAcronyms =
         await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
 
@@ -26,11 +33,20 @@ class HomePageCubit extends Cubit<HomePageState> {
         randomAcronyms: randomAcronyms,
         quizLenghtValue: startQuizLen,
         status: Status.success,
+        statusAcronymsList: Status.success,
       ),
     );
   }
 
   refreshRandomAcronymsList() async {
+    emit(
+      HomePageState(
+        status: Status.success,
+        statusAcronymsList: Status.loading,
+        quizLenghtValue: state.quizLenghtValue,
+      ),
+    );
+
     final randomAcronyms =
         await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
 
@@ -39,6 +55,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         randomAcronyms: randomAcronyms,
         quizLenghtValue: state.quizLenghtValue,
         status: Status.success,
+        statusAcronymsList: Status.success,
       ),
     );
   }
@@ -53,6 +70,8 @@ class HomePageCubit extends Cubit<HomePageState> {
         HomePageState(
           quizLenghtValue: newValue,
           randomAcronyms: state.randomAcronyms,
+          status: Status.success,
+          statusAcronymsList: Status.success,
         ),
       );
     }
@@ -68,6 +87,8 @@ class HomePageCubit extends Cubit<HomePageState> {
         HomePageState(
           randomAcronyms: state.randomAcronyms,
           quizLenghtValue: newValue,
+          status: Status.success,
+          statusAcronymsList: Status.success,
         ),
       );
     }

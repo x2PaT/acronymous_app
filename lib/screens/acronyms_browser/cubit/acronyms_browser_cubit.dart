@@ -15,7 +15,7 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
   Future<void> start() async {
     emit(
       AcronymsBrowserState(
-        status: Status.initial,
+        status: Status.loading,
       ),
     );
     try {
@@ -25,6 +25,7 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
         AcronymsBrowserState(
           status: Status.success,
           results: result,
+          searchResults: result,
         ),
       );
     } catch (error) {
@@ -36,4 +37,42 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
       );
     }
   }
+
+  filterAcronyms(String input) {
+    emit(
+      AcronymsBrowserState(
+        status: Status.loading,
+        results: state.results,
+        searchResults: state.searchResults,
+      ),
+    );
+    final searchResults = state.results.where((acronym) {
+      final acronymText = acronym.acronym.toLowerCase();
+      final acronymMeaning = acronym.meaning.toLowerCase();
+
+      return acronymText.contains(input.toLowerCase()) ||
+          acronymMeaning.contains(input.toLowerCase());
+    }).toList();
+
+    emit(AcronymsBrowserState(
+      results: state.results,
+      searchResults: searchResults,
+      status: Status.success,
+    ));
+  }
 }
+
+
+
+
+    //  final searchResults = state.results.where(
+    //                     (acronym) {
+    //                       final acronymText = acronym.acronym.toLowerCase();
+    //                       final acronymMeaning = acronym.meaning.toLowerCase();
+    //                       final input = value.toLowerCase();
+
+    //                       return acronymText.contains(input) ||
+    //                           acronymMeaning.contains(input);
+    //                     },
+    //                   ).toList();
+    //                   setState(() => acronyms = searchResults);
