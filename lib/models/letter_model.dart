@@ -19,4 +19,14 @@ class LetterModel {
         name = json['name'],
         pronunciation = json['pronunciation'],
         useFrequency = json['useFrequency'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'letter': letter,
+      'name': name,
+      'pronunciation': pronunciation,
+      'useFrequency': useFrequency,
+    };
+  }
 }

@@ -11,8 +11,8 @@ class AcronymsRemoteDataSource {
     try {
       final response = await Dio().get<Map<String, dynamic>>(jsonUrl);
       return response.data;
-    } on DioError {
-      throw Exception('Dio error');
+    } on DioError catch (error) {
+      throw Exception('Acronyms serwer error ${error.error}');
     }
   }
 }

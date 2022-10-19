@@ -20,4 +20,12 @@ class AcronymModel {
   )   : id = json['id'],
         acronym = json['acronym'],
         meaning = json['meaning'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'acronym': acronym,
+      'meaning': meaning,
+    };
+  }
 }

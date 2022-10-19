@@ -19,7 +19,7 @@ class HomePageCubit extends Cubit<HomePageState> {
 
   final minQuizLen = 1;
   final maxQuizLen = 18;
-  final randomAcronymsListLen = 10;
+  final randomAcronymsListLen = 12;
 
   start() async {
     emit(
@@ -30,19 +30,33 @@ class HomePageCubit extends Cubit<HomePageState> {
       ),
     );
 
-    final randomAcronyms =
-        await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
-    final alphabet = await alphabetRepository.getAlphabetModels();
-    emit(
-      HomePageState(
-        randomAcronyms: randomAcronyms,
-        quizLenghtValue: startQuizLen,
-        alphabet: alphabet,
-        status: Status.success,
-        statusAcronymsList: Status.success,
-        statusAlphabet: Status.success,
-      ),
-    );
+    try {
+      final randomAcronyms =
+          await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
+      final alphabet = await alphabetRepository.getAlphabetModels();
+
+      emit(
+        HomePageState(
+          randomAcronyms: randomAcronyms,
+          quizLenghtValue: startQuizLen,
+          alphabet: alphabet,
+          status: Status.success,
+          statusAcronymsList: Status.success,
+          statusAlphabet: Status.success,
+        ),
+      );
+    } catch (error) {
+      emit(
+        HomePageState(
+          status: Status.error,
+          statusAcronymsList: Status.error,
+          statusAlphabet: Status.error,
+          errorMessage: error.toString(),
+          errorMessageAcronymsList: error.toString(),
+          errorMessageAlphabet: error.toString(),
+        ),
+      );
+    }
   }
 
   refreshRandomAcronymsList() async {
