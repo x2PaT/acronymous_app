@@ -44,7 +44,7 @@ class QuizPageCubit extends Cubit<QuizPageState> {
       emit(
         QuizPageState(
           status: Status.error,
-          errorMessage: error.toString(),
+          errorMessage: 'QuizPageState ${error.toString()}',
         ),
       );
     }

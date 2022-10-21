@@ -45,7 +45,7 @@ class LetterPageCubit extends Cubit<LetterPageState> {
         LetterPageState(
           letterModel: null,
           status: Status.error,
-          errorMessage: 'Cubit error ${error.toString()}',
+          errorMessage: 'LetterPageState ${error.toString()}',
         ),
       );
     }

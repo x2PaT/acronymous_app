@@ -32,7 +32,7 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
       emit(
         AcronymsBrowserState(
           status: Status.error,
-          errorMessage: error.toString(),
+          errorMessage: ('AcronymsBrowserState ${error.toString()}'),
         ),
       );
     }

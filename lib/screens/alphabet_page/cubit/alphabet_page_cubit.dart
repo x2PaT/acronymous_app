@@ -30,7 +30,7 @@ class AlphabetPageCubit extends Cubit<AlphabetPageState> {
       emit(
         AlphabetPageState(
           status: Status.error,
-          errorMessage: error.toString(),
+          errorMessage: ('AlphabetPageState ${error.toString()}'),
         ),
       );
     }
