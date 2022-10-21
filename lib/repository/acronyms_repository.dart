@@ -1,33 +1,34 @@
 import 'dart:math';
 
-import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
+import 'package:acronymous_app/services/database_helper.dart';
 
 class AcronymsRepository {
-  AcronymsRepository({required this.acronymsRemoteDataSource});
-  final AcronymsRemoteDataSource acronymsRemoteDataSource;
+  AcronymsRepository({
+    required this.databaseHelper,
+  });
+  final DatabaseHelper databaseHelper;
 
   Future<List<AcronymModel>> getAcronymsModels() async {
-    final json = await acronymsRemoteDataSource.getAcronyms();
-    if (json == null) {
-      return [];
-    }
+    final json = await databaseHelper.getTableFromDatabase(
+      DatabaseHelper.acronymsTableName,
+    );
 
-    final List acronymsJson = json['acronyms'];
-
-    return acronymsJson.map((item) => AcronymModel.fromJson(item)).toList();
+    return json.map((item) => AcronymModel.fromJson(item)).toList();
   }
 
-  getRandomAcronyms(int quantity) async {
-    final json = await acronymsRemoteDataSource.getAcronyms();
-    if (json == null) {
+  Future<List<AcronymModel>> getRandomAcronyms(int quantity) async {
+    final json = await databaseHelper.getTableFromDatabase(
+      DatabaseHelper.acronymsTableName,
+    );
+
+    if (json.isEmpty) {
       return [];
     }
     List<AcronymModel> randomAcronyms = [];
-    final List acronymsJson = json['acronyms'];
 
     final acronymsModels =
-        acronymsJson.map((item) => AcronymModel.fromJson(item)).toList();
+        json.map((item) => AcronymModel.fromJson(item)).toList();
 
     for (var i = 0; i < quantity; i++) {
       int acronymRandomIndex = Random().nextInt(acronymsModels.length - 1);
@@ -40,15 +41,12 @@ class AcronymsRepository {
 
   Future<List<AcronymModel>> getAcronymsModelsWithLetter(
       {required String letter}) async {
-    final json = await acronymsRemoteDataSource.getAcronyms();
-    if (json == null) {
-      return [];
-    }
-
-    final List acronymsJson = json['acronyms'];
+    final json = await databaseHelper.getTableFromDatabase(
+      DatabaseHelper.acronymsTableName,
+    );
 
     final allAcronyms =
-        acronymsJson.map((item) => AcronymModel.fromJson(item)).toList();
+        json.map((item) => AcronymModel.fromJson(item)).toList();
 
     return allAcronyms
         .where((acronymModel) => acronymModel.acronym.contains(letter))

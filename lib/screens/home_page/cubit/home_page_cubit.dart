@@ -3,6 +3,7 @@ import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
+import 'package:acronymous_app/repository/database_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_page_state.dart';
@@ -11,10 +12,12 @@ class HomePageCubit extends Cubit<HomePageState> {
   HomePageCubit({
     required this.alphabetRepository,
     required this.acronymsRepository,
+    required this.databaseRepository,
   }) : super(HomePageState());
 
   final AcronymsRepository acronymsRepository;
   final AlphabetRepository alphabetRepository;
+  final DatabaseRepository databaseRepository;
   final startQuizLen = 4;
 
   final minQuizLen = 1;
@@ -31,13 +34,16 @@ class HomePageCubit extends Cubit<HomePageState> {
     );
 
     try {
+      final internetConnection = await databaseRepository.readDataToDatabase();
+
       final randomAcronyms =
           await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
       final alphabet = await alphabetRepository.getAlphabetModels();
 
       emit(
         HomePageState(
-          randomAcronyms: randomAcronyms,
+          internetConnectionStatus: internetConnection,
+          randomAcronymsList: randomAcronyms,
           quizLenghtValue: startQuizLen,
           alphabet: alphabet,
           status: Status.success,
@@ -48,12 +54,14 @@ class HomePageCubit extends Cubit<HomePageState> {
     } catch (error) {
       emit(
         HomePageState(
+          internetConnectionStatus: false,
           status: Status.error,
           statusAcronymsList: Status.error,
           statusAlphabet: Status.error,
-          errorMessage: error.toString(),
-          errorMessageAcronymsList: error.toString(),
-          errorMessageAlphabet: error.toString(),
+          errorMessage: ('HomePageState ${error.toString()}'),
+          errorMessageAcronymsList:
+              ('HomePageStateAcronymsList ${error.toString()}'),
+          errorMessageAlphabet: ('HomePageStateAlphabet ${error.toString()}'),
         ),
       );
     }
@@ -75,7 +83,7 @@ class HomePageCubit extends Cubit<HomePageState> {
 
     emit(
       HomePageState(
-        randomAcronyms: randomAcronyms,
+        randomAcronymsList: randomAcronyms,
         quizLenghtValue: state.quizLenghtValue,
         alphabet: state.alphabet,
         status: Status.success,
@@ -94,7 +102,7 @@ class HomePageCubit extends Cubit<HomePageState> {
       emit(
         HomePageState(
           quizLenghtValue: newValue,
-          randomAcronyms: state.randomAcronyms,
+          randomAcronymsList: state.randomAcronymsList,
           alphabet: state.alphabet,
           status: Status.success,
           statusAcronymsList: Status.success,
@@ -112,7 +120,7 @@ class HomePageCubit extends Cubit<HomePageState> {
 
       emit(
         HomePageState(
-          randomAcronyms: state.randomAcronyms,
+          randomAcronymsList: state.randomAcronymsList,
           quizLenghtValue: newValue,
           alphabet: state.alphabet,
           status: Status.success,

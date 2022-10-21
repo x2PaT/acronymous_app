@@ -1,28 +1,28 @@
-import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/letter_model.dart';
+import 'package:acronymous_app/services/database_helper.dart';
 
 class AlphabetRepository {
-  AlphabetRepository({required this.alphabetRemoterDataSource});
-  final AlphabetRemoterDataSource alphabetRemoterDataSource;
+  AlphabetRepository({
+    required this.databaseHelper,
+  });
+
+  final DatabaseHelper databaseHelper;
 
   Future<List<LetterModel>> getAlphabetModels() async {
-    final json = await alphabetRemoterDataSource.getAlphabet();
+    final json = await databaseHelper.getTableFromDatabase(
+      DatabaseHelper.alphabetTableName,
+    );
 
-    if (json == null) {
-      return [];
-    }
-    final List jsonAlphabet = json['alphabet'];
-
-    return jsonAlphabet.map((item) => LetterModel.fromJson(item)).toList();
+    return json.map((item) => LetterModel.fromJson(item)).toList();
   }
 
   Future<LetterModel> getLetterModelWithID({required int letterID}) async {
-    final json = await alphabetRemoterDataSource.getAlphabet();
-
-    final List<dynamic> jsonAlphabet = json!['alphabet'];
+    final json = await databaseHelper.getTableFromDatabase(
+      DatabaseHelper.alphabetTableName,
+    );
 
     final List<dynamic> allLettersModels =
-        jsonAlphabet.map((item) => LetterModel.fromJson(item)).toList();
+        json.map((item) => LetterModel.fromJson(item)).toList();
 
     return allLettersModels.where((element) => element.id == letterID).first;
   }

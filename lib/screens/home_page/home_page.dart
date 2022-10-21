@@ -5,12 +5,14 @@ import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
+import 'package:acronymous_app/repository/database_repository.dart';
 import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
 import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
+import 'package:acronymous_app/services/database_helper.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -32,52 +34,68 @@ class HomePage extends StatelessWidget {
       ),
       body: BlocProvider(
         create: (context) => HomePageCubit(
-            acronymsRepository: AcronymsRepository(
-              acronymsRemoteDataSource: AcronymsRemoteDataSource(),
-            ),
-            alphabetRepository: AlphabetRepository(
-              alphabetRemoterDataSource: AlphabetRemoterDataSource(),
-            ))
-          ..start(),
-        child: BlocBuilder<HomePageCubit, HomePageState>(
-          builder: (context, state) {
-            switch (state.status) {
-              case Status.initial:
-                return const Center(
-                  child: Text('Initial State'),
-                );
-              case Status.loading:
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              case Status.error:
-                return Center(
-                  child: Text(
-                    state.errorMessage ?? 'Unkown error',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: Theme.of(context).errorColor,
+          acronymsRepository: AcronymsRepository(
+            databaseHelper: DatabaseHelper(),
+          ),
+          alphabetRepository: AlphabetRepository(
+            databaseHelper: DatabaseHelper(),
+          ),
+          databaseRepository: DatabaseRepository(
+            acronymsRemoteDataSource: AcronymsRemoteDataSource(),
+            alphabetRemoterDataSource: AlphabetRemoterDataSource(),
+            databaseHelper: DatabaseHelper(),
+          ),
+        )..start(),
+        child: BlocListener<HomePageCubit, HomePageState>(
+          listener: (context, state) {
+            if (!state.internetConnectionStatus &&
+                (state.randomAcronymsList.isEmpty || state.alphabet.isEmpty)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: SizedBox(
+                    height: 40,
+                    child: Text(
+                      'Check your internet connection!',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.red, fontSize: 22),
                     ),
                   ),
-                );
-              case Status.success:
-                return SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        quizContainer(context, state),
-                        const SizedBox(height: 15),
-                        alphabetContainer(context, state),
-                        const SizedBox(height: 15),
-                        acronymsContainer(context, state),
-                      ],
-                    ),
-                  ),
-                );
+                ),
+              );
             }
           },
+          child: BlocBuilder<HomePageCubit, HomePageState>(
+            builder: (context, state) {
+              switch (state.status) {
+                case Status.initial:
+                  return const Center(
+                    child: Text('Initial State'),
+                  );
+                case Status.loading:
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                case Status.error:
+
+                case Status.success:
+                  return SingleChildScrollView(
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.all(8),
+                      child: Column(
+                        children: [
+                          quizContainer(context, state),
+                          const SizedBox(height: 15),
+                          alphabetContainer(context, state),
+                          const SizedBox(height: 15),
+                          acronymsContainer(context, state),
+                        ],
+                      ),
+                    ),
+                  );
+              }
+            },
+          ),
         ),
       ),
     );
@@ -195,7 +213,7 @@ Widget acronymsList(BuildContext context, HomePageState state) {
     case Status.success:
       return Column(
         children: [
-          for (var acronym in state.randomAcronyms) ...[
+          for (var acronym in state.randomAcronymsList) ...[
             acronymCustomRow(context, acronym)
           ],
         ],

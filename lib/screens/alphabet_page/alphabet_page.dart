@@ -1,10 +1,10 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
 import 'package:acronymous_app/screens/alphabet_page/cubit/alphabet_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
+import 'package:acronymous_app/services/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,7 +23,7 @@ class AlphabetPage extends StatelessWidget {
       body: BlocProvider(
         create: (context) => AlphabetPageCubit(
           alphabelRepository: AlphabetRepository(
-            alphabetRemoterDataSource: AlphabetRemoterDataSource(),
+            databaseHelper: DatabaseHelper(),
           ),
         )..start(),
         child: BlocBuilder<AlphabetPageCubit, AlphabetPageState>(

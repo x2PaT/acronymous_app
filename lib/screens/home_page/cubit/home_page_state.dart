@@ -3,7 +3,7 @@ part of 'home_page_cubit.dart';
 class HomePageState {
   HomePageState({
     this.quizLenghtValue = 0,
-    this.randomAcronyms = const [],
+    this.randomAcronymsList = const [],
     this.status = Status.initial,
     this.statusAcronymsList = Status.initial,
     this.errorMessage,
@@ -11,7 +11,9 @@ class HomePageState {
     this.alphabet = const [],
     this.errorMessageAlphabet,
     this.statusAlphabet = Status.initial,
+    this.internetConnectionStatus = false,
   });
+  final bool internetConnectionStatus;
 
   final int quizLenghtValue;
   final Status status;
@@ -19,7 +21,7 @@ class HomePageState {
 
   final Status statusAcronymsList;
   final String? errorMessageAcronymsList;
-  final List<AcronymModel> randomAcronyms;
+  final List<AcronymModel> randomAcronymsList;
 
   final List<LetterModel> alphabet;
   final String? errorMessageAlphabet;

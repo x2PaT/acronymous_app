@@ -1,10 +1,10 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/question_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/questions_repository.dart';
 import 'package:acronymous_app/screens/quiz_page/cubit/quiz_page_cubit.dart';
+import 'package:acronymous_app/services/database_helper.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,7 +43,7 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
           return QuizPageCubit(
             questionsRepository: QuestionsRepository(
               acronymsRepository: AcronymsRepository(
-                acronymsRemoteDataSource: AcronymsRemoteDataSource(),
+                databaseHelper: DatabaseHelper(),
               ),
             ),
           )..createQuiz(widget.quizLenght);
@@ -124,17 +124,6 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(
-                                () {
-                                  showQuestion = !showQuestion;
-                                },
-                              );
-                            },
-                            child: const Text('Show question'),
-                          ),
-                          const SizedBox(width: 15),
                           nextButton(context, state, selectedAnswer),
                         ],
                       ),

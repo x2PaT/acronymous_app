@@ -4,7 +4,7 @@ import 'package:path/path.dart' as p;
 class AlphabetRemoterDataSource {
   Future<Map<String, dynamic>?> getAlphabet() async {
     const binID = '634d3c5b65b57a31e6995131';
-    const parameters = 'meta=false';
+    const parameters = '';
 
     final jsonUrl =
         p.join('https://api.jsonbin.io/v3/b/', binID, 'latest?$parameters');

@@ -1,10 +1,10 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/screens/acronyms_browser/cubit/acronyms_browser_cubit.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
+import 'package:acronymous_app/services/database_helper.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,7 @@ class _AcronymsPageState extends State<AcronymsPage> {
       body: BlocProvider(
         create: (context) => AcronymsBrowserCubit(
           acronymsRepository: AcronymsRepository(
-            acronymsRemoteDataSource: AcronymsRemoteDataSource(),
+            databaseHelper: DatabaseHelper(),
           ),
         )..start(),
         child: BlocBuilder<AcronymsBrowserCubit, AcronymsBrowserState>(
