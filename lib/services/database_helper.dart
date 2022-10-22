@@ -50,6 +50,16 @@ class DatabaseHelper {
         )''');
   }
 
+  formatMetadata(metadata) {
+    final result = {
+      'id': metadata['id'],
+      'private': metadata['private'] ? 1 : 0,
+      'createdAt': metadata['createdAt'],
+      'name': metadata['name'],
+    };
+    return result;
+  }
+
   wipeTableInDatabase(String tableName) async {
     Database db = await DatabaseHelper._initDatabase();
     await db.rawDelete('DELETE FROM $tableName');
