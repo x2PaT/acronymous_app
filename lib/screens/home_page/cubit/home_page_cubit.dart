@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/letter_model.dart';
@@ -24,7 +26,7 @@ class HomePageCubit extends Cubit<HomePageState> {
   final maxQuizLen = 18;
   final randomAcronymsListLen = 12;
 
-  start() async {
+  Future<void> start() async {
     emit(
       HomePageState(
         status: Status.loading,
@@ -67,7 +69,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     }
   }
 
-  refreshRandomAcronymsList() async {
+  Future<void> refreshRandomAcronymsList() async {
     emit(
       HomePageState(
         statusAlphabet: Status.success,
@@ -75,6 +77,7 @@ class HomePageCubit extends Cubit<HomePageState> {
         statusAcronymsList: Status.loading,
         quizLenghtValue: state.quizLenghtValue,
         alphabet: state.alphabet,
+        internetConnectionStatus: state.internetConnectionStatus,
       ),
     );
 
@@ -89,11 +92,12 @@ class HomePageCubit extends Cubit<HomePageState> {
         status: Status.success,
         statusAcronymsList: Status.success,
         statusAlphabet: Status.success,
+        internetConnectionStatus: state.internetConnectionStatus,
       ),
     );
   }
 
-  quizLenghtSubt() {
+  void quizLenghtSubt() {
     if (state.quizLenghtValue <= minQuizLen) {
       return;
     } else {
@@ -112,7 +116,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     }
   }
 
-  quizLenghtIncr() {
+  void quizLenghtIncr() {
     if (state.quizLenghtValue >= maxQuizLen) {
       return;
     } else {

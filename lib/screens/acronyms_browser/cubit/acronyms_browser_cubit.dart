@@ -38,7 +38,7 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
     }
   }
 
-  filterAcronyms(String input) {
+  void filterAcronyms(String input) {
     emit(
       AcronymsBrowserState(
         status: Status.loading,
@@ -61,18 +61,3 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
     ));
   }
 }
-
-
-
-
-    //  final searchResults = state.results.where(
-    //                     (acronym) {
-    //                       final acronymText = acronym.acronym.toLowerCase();
-    //                       final acronymMeaning = acronym.meaning.toLowerCase();
-    //                       final input = value.toLowerCase();
-
-    //                       return acronymText.contains(input) ||
-    //                           acronymMeaning.contains(input);
-    //                     },
-    //                   ).toList();
-    //                   setState(() => acronyms = searchResults);
