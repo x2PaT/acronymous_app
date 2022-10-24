@@ -6,9 +6,7 @@ class QuestionModel {
 
   String get questionLetters {
     // ABC >>> A, B, C
-    final String splitToLetters = '${questionText.split('').map((e) => e)}';
-
-    return splitToLetters;
+    return questionText.split('').join(', ');
   }
 }
 

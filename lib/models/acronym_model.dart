@@ -10,9 +10,7 @@ class AcronymModel {
 
   String get acronymLetters {
     // ABC >>> A, B, C
-    final String splitToLetters = '${acronym.split('').map((e) => e)}';
-
-    return splitToLetters;
+    return acronym.split('').join(', ');
   }
 
   AcronymModel.fromJson(
