@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:acronymous_app/data/remote_data/fetch_api_data.dart';
+import 'package:acronymous_app/models/metadata_model.dart';
 import 'package:acronymous_app/services/database_helper.dart';
 
 class DatabaseRepository {
@@ -15,9 +16,15 @@ class DatabaseRepository {
   final DatabaseHelper databaseHelper;
 
   Future<bool> readDataToDatabase() async {
-    // await databaseHelper.reInitMetadataTableInDatabase();
-    // await databaseHelper.reInitAcronymsTableInDatabase();
-    // await databaseHelper.reInitAlphabetTableInDatabase();
+    // const reinit = false;
+    // if (reinit) {
+    //   await databaseHelper.reInitTableInDatabase(
+    //       DatabaseHelper.acronymsTableName, DatabaseHelper.acronymsTable);
+    //   await databaseHelper.reInitTableInDatabase(
+    //       DatabaseHelper.alphabetTableName, DatabaseHelper.alphabetTable);
+    //   await databaseHelper.reInitTableInDatabase(
+    //       DatabaseHelper.metadataTableName, DatabaseHelper.metadataTable);
+    // }
 
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -43,6 +50,7 @@ class DatabaseRepository {
     required String binID,
   }) async {
     bool updateDatabase = false;
+    MetadataModel dbMetadataModel = MetadataModel();
 
     final json = await fetchApiData.getApiData(binID);
     if (json == null) {
@@ -50,11 +58,17 @@ class DatabaseRepository {
     }
 
     final List jsonData = json['record'][binName];
-    final jsonMetadata =
-        databaseHelper.formatMetadata(json['record']['metadata']);
+    final jsonMetadata = databaseHelper.formatMetadata(
+      json['record']['metadata'],
+    );
 
-    List dbMetadata = await databaseHelper.getOneRecordFromDatabase(
+    final dbMetadata = await databaseHelper.getOneRecordFromDatabase(
         DatabaseHelper.metadataTableName, binName);
+
+    final jsonMetadataModel = MetadataModel.fromJson(jsonMetadata);
+    if (dbMetadata.isNotEmpty) {
+      dbMetadataModel = MetadataModel.fromJson(dbMetadata[0]);
+    }
 
     print('Checking database $binName');
     if (dbMetadata.isEmpty) {
@@ -63,7 +77,7 @@ class DatabaseRepository {
       await databaseHelper.createRecordInDatabase(
           DatabaseHelper.metadataTableName, jsonMetadata);
     } else {
-      if (jsonMetadata['createdAt'] != dbMetadata.first['createdAt']) {
+      if (jsonMetadataModel.createdAt != dbMetadataModel.createdAt) {
         updateDatabase = true;
       }
     }
@@ -71,10 +85,11 @@ class DatabaseRepository {
     if (updateDatabase) {
       print('Updating database $binName');
 
-      if (dbMetadata.isNotEmpty &&
-          jsonMetadata['createdAt'] != dbMetadata.first['createdAt']) {
-        await databaseHelper.updateMetadataInDatabase(
-            DatabaseHelper.metadataTableName, jsonMetadata);
+      if (dbMetadata.isNotEmpty) {
+        if (jsonMetadataModel.createdAt != dbMetadataModel.createdAt) {
+          await databaseHelper.updateMetadataInDatabase(
+              DatabaseHelper.metadataTableName, jsonMetadata);
+        }
       }
 
       await databaseHelper.wipeTableInDatabase(

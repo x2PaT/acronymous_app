@@ -16,6 +16,13 @@ class DatabaseHelper {
   static const stringType = 'TEXT';
   static const boolType = 'BOOLEAN NOT NULL';
 
+  static const acronymsTable =
+      ('CREATE TABLE $acronymsTableName (id $primaryKeyType, acronym $stringType, meaning $stringType)');
+  static const alphabetTable =
+      ('CREATE TABLE $alphabetTableName (id $primaryKeyType, letter $stringType, name $stringType,pronunciation $stringType,useFrequency $stringType)');
+  static const metadataTable =
+      ('CREATE TABLE $metadataTableName (id $stringType,private $boolType,createdAt $stringType,name $stringType)');
+
   static Future<Database> _initDatabase() async {
     Directory docDirectory = await getApplicationDocumentsDirectory();
     String path = join(docDirectory.path, databaseName);
@@ -27,30 +34,12 @@ class DatabaseHelper {
   }
 
   static Future _onCreate(Database db, int version) async {
-    await db.execute('''
-        CREATE TABLE $acronymsTableName(
-          id $primaryKeyType,
-          acronym $stringType,
-          meaning $stringType
-        )''');
-    db.execute('''
-        CREATE TABLE $alphabetTableName(
-          id $primaryKeyType,
-          letter $stringType,
-          name $stringType,
-          pronunciation $stringType,
-          useFrequency $stringType
-        )''');
-    db.execute('''
-        CREATE TABLE $metadataTableName(
-          id $stringType,
-          private $boolType,
-          createdAt $stringType,
-          name $stringType
-        )''');
+    await db.execute(acronymsTable);
+    db.execute(alphabetTable);
+    db.execute(metadataTable);
   }
 
-  formatMetadata(metadata) {
+  Map<String, dynamic> formatMetadata(metadata) {
     final result = {
       'id': metadata['id'],
       'private': metadata['private'] ? 1 : 0,
@@ -60,77 +49,51 @@ class DatabaseHelper {
     return result;
   }
 
-  wipeTableInDatabase(String tableName) async {
+  Future<int> wipeTableInDatabase(String tableName) async {
     Database db = await DatabaseHelper._initDatabase();
-    await db.rawDelete('DELETE FROM $tableName');
+    return db.rawDelete('DELETE FROM $tableName');
   }
 
-  reInitAcronymsTableInDatabase() async {
+  Future<void> reInitTableInDatabase(
+    String TableName,
+    String tableSQL,
+  ) async {
     Database db = await DatabaseHelper._initDatabase();
-    await db.rawDelete('DROP TABLE $acronymsTableName');
-    await db.execute('''
-        CREATE TABLE $acronymsTableName(
-          id $primaryKeyType,
-          acronym $stringType,
-          meaning $stringType
-        )''');
-  }
-
-  reInitAlphabetTableInDatabase() async {
-    Database db = await DatabaseHelper._initDatabase();
-    await db.rawDelete('DROP TABLE $alphabetTableName');
-    await db.execute('''
-        CREATE TABLE $alphabetTableName(
-          id $primaryKeyType,
-          letter $stringType,
-          name $stringType,
-          pronunciation $stringType,
-          useFrequency $stringType
-        )''');
-  }
-
-  reInitMetadataTableInDatabase() async {
-    Database db = await DatabaseHelper._initDatabase();
-    await db.rawDelete('DROP TABLE $metadataTableName');
-    await db.execute('''
-        CREATE TABLE $metadataTableName(
-          id $stringType,
-          private $boolType,
-          createdAt $stringType,
-          name $stringType
-        )''');
+    await db.rawDelete('DROP TABLE $TableName');
+    await db.execute(tableSQL);
   }
 
   Future<List<Map<String, dynamic>>> getTableFromDatabase(
       String tableName) async {
     Database db = await DatabaseHelper._initDatabase();
-    await Future.delayed(const Duration(milliseconds: 250));
-    return await db.rawQuery('SELECT * FROM $tableName').onError((e, s) => []);
+    return db.rawQuery('SELECT * FROM $tableName');
   }
 
   Future<List<Map<String, dynamic>>> getOneRecordFromDatabase(
       String tableName, String metadataName) async {
     Database db = await DatabaseHelper._initDatabase();
-    final result =
-        await db.query(tableName, where: 'name = ?', whereArgs: [metadataName]);
-    return result;
+    return db.query(tableName, where: 'name = ?', whereArgs: [metadataName]);
   }
 
   Future<int> createRecordInDatabase(
       String tableName, Map<String, Object?> record) async {
     Database db = await DatabaseHelper._initDatabase();
-    return await db.insert(tableName, record);
+    return db.insert(tableName, record);
   }
 
-  updateMetadataInDatabase(String tableName, record) async {
+  Future<int> updateMetadataInDatabase(String tableName, record) async {
     Database db = await DatabaseHelper._initDatabase();
-    return await db
-        .update(tableName, record, where: 'id = ?', whereArgs: [record['id']]);
+    return db.update(
+      tableName,
+      record,
+      where: 'id = ?',
+      whereArgs: [record['id']],
+    );
   }
 
-  deleteRecordFromDatabase(String tableName, int recordID) async {
+  Future<int> deleteRecordFromDatabase(String tableName, int recordID) async {
     Database db = await DatabaseHelper._initDatabase();
-    return await db.delete(tableName, where: 'id = ?', whereArgs: [recordID]);
+    return db.delete(tableName, where: 'id = ?', whereArgs: [recordID]);
   }
 }
 

@@ -1,14 +1,14 @@
 class MetadataModel {
   MetadataModel({
-    required this.id,
-    required this.private,
-    required this.createdAt,
-    required this.name,
+    this.id,
+    this.private,
+    this.createdAt,
+    this.name,
   });
-  final int id;
-  final bool private;
-  final String createdAt;
-  final String name;
+  final String? id;
+  final bool? private;
+  final String? createdAt;
+  final String? name;
 
   MetadataModel.fromJson(
     Map<String, dynamic> json,
@@ -20,7 +20,7 @@ class MetadataModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'private': private ? 1 : 0,
+      'private': private! ? 1 : 0,
       'createdAt': createdAt,
       'name': name,
     };
