@@ -1,7 +1,6 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/data/remote_data/acronyms_data_source.dart';
-import 'package:acronymous_app/data/remote_data/alphabet_data_source.dart';
+import 'package:acronymous_app/data/remote_data/fetch_api_data.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
@@ -41,9 +40,8 @@ class HomePage extends StatelessWidget {
             databaseHelper: DatabaseHelper(),
           ),
           databaseRepository: DatabaseRepository(
-            acronymsRemoteDataSource: AcronymsRemoteDataSource(),
-            alphabetRemoterDataSource: AlphabetRemoterDataSource(),
             databaseHelper: DatabaseHelper(),
+            fetchApiData: FetchApiData(),
           ),
         )..start(),
         child: BlocListener<HomePageCubit, HomePageState>(
