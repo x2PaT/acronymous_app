@@ -16,15 +16,15 @@ class DatabaseRepository {
   final DatabaseHelper databaseHelper;
 
   Future<bool> readDataToDatabase() async {
-    final reinit = false;
-    if (reinit) {
-      await databaseHelper.reInitTableInDatabase(
-          DatabaseHelper.acronymsTableName, DatabaseHelper.acronymsTable);
-      await databaseHelper.reInitTableInDatabase(
-          DatabaseHelper.alphabetTableName, DatabaseHelper.alphabetTable);
-      await databaseHelper.reInitTableInDatabase(
-          DatabaseHelper.metadataTableName, DatabaseHelper.metadataTable);
-    }
+    // const reinit = false;
+    // if (reinit) {
+    //   await databaseHelper.reInitTableInDatabase(
+    //       DatabaseHelper.acronymsTableName, DatabaseHelper.acronymsTable);
+    //   await databaseHelper.reInitTableInDatabase(
+    //       DatabaseHelper.alphabetTableName, DatabaseHelper.alphabetTable);
+    //   await databaseHelper.reInitTableInDatabase(
+    //       DatabaseHelper.metadataTableName, DatabaseHelper.metadataTable);
+    // }
 
     try {
       final result = await InternetAddress.lookup('google.com');
