@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/letter_model.dart';
@@ -36,10 +34,11 @@ class HomePageCubit extends Cubit<HomePageState> {
     );
 
     try {
-      final internetConnection = await databaseRepository.readDataToDatabase();
+      final internetConnection = await databaseRepository.getDataToDatabase();
 
       final randomAcronyms =
           await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
+
       final alphabet = await alphabetRepository.getAlphabetModels();
 
       emit(

@@ -15,7 +15,7 @@ class DatabaseRepository {
 
   final DatabaseHelper databaseHelper;
 
-  Future<bool> readDataToDatabase() async {
+  Future<bool> getDataToDatabase() async {
     // const reinit = false;
     // if (reinit) {
     //   await databaseHelper.reInitTableInDatabase(
