@@ -49,7 +49,7 @@ class _AcronymsPageState extends State<AcronymsPage> {
               case Status.error:
                 return Center(
                   child: Text(
-                    state.errorMessage ?? 'Unkown error',
+                    state.errorMessage ?? 'AcronymsBrowserCubit Unkown error',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).errorColor,

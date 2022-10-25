@@ -49,7 +49,7 @@ class AcronymsQuizPage extends StatelessWidget {
               case Status.error:
                 return Center(
                   child: Text(
-                    state.errorMessage ?? 'Unkown error',
+                    state.errorMessage ?? 'QuizPageCubit Unkown error',
                     style: TextStyle(
                       color: Theme.of(context).errorColor,
                     ),
@@ -109,11 +109,13 @@ class AcronymsQuizPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 25),
                       Column(
-                        children: state
-                            .questions[state.currentQuestion].answersList
-                            .map((answer) =>
-                                AnswerButton(answer: answer, state: state))
-                            .toList(),
+                        children:
+                            state.questions[state.currentQuestion].answersList
+                                .map((answer) => AnswerButton(
+                                      answer: answer,
+                                      state: state,
+                                    ))
+                                .toList(),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -13,57 +13,28 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   final QuestionsRepository questionsRepository;
 
   Future<void> createQuiz(int quizLenght) async {
-    emit(
-      QuizPageState(
-        status: Status.loading,
-        //
-        currentQuestion: 0,
-        score: 0,
-        isAnswerSelected: false,
-        isLastQuestion: false,
-        selectedAnswer: null,
-        answersCounter: 0,
-      ),
-    );
+    emit(QuizPageState());
+
     try {
       final result = await questionsRepository.getQuizQuestions(quizLenght);
 
-      emit(
-        QuizPageState(
-          quizLenght: quizLenght,
-          questions: result,
-          status: Status.success,
-          //
-          currentQuestion: state.currentQuestion,
-          score: state.score,
-          isAnswerSelected: state.isAnswerSelected,
-          isLastQuestion: state.isLastQuestion,
-          selectedAnswer: state.selectedAnswer,
-          answersCounter: state.answersCounter,
-        ),
-      );
+      emit(state.copyWith(
+        quizLenght: quizLenght,
+        questions: result,
+        status: Status.success,
+      ));
     } catch (error) {
-      emit(
-        QuizPageState(
-          status: Status.error,
-          errorMessage: 'QuizPageState ${error.toString()}',
-        ),
-      );
+      emit(state.copyWith(
+        status: Status.error,
+        errorMessage: 'QuizPageState ${error.toString()}',
+      ));
     }
   }
 
   void selectAnswer(AnswerModel answer) {
-    emit(QuizPageState(
-      quizLenght: state.quizLenght,
-      questions: state.questions,
-      status: Status.success,
-      //
-      currentQuestion: state.currentQuestion,
-      score: state.score,
+    emit(state.copyWith(
       isAnswerSelected: true,
-      isLastQuestion: state.isLastQuestion,
       selectedAnswer: answer,
-      answersCounter: state.answersCounter,
     ));
   }
 
@@ -79,40 +50,21 @@ class QuizPageCubit extends Cubit<QuizPageState> {
       }
     }
 
-    emit(
-      QuizPageState(
-        quizLenght: state.quizLenght,
-        questions: state.questions,
-        status: Status.success,
-        //
-        currentQuestion: state.currentQuestion,
-        score: state.score,
-        isAnswerSelected: false,
-        isLastQuestion: state.isLastQuestion,
-        selectedAnswer: null,
-        answersCounter: state.answersCounter,
-      ),
-    );
+    emit(state.copyWith(
+      isAnswerSelected: false,
+      selectedAnswer: null,
+      score: state.score,
+      currentQuestion: state.currentQuestion,
+      answersCounter: state.answersCounter,
+    ));
   }
 
   void isLastQuestionChecker() {
     if (state.currentQuestion == state.quizLenght - 1) {
       state.isLastQuestion = true;
     }
-
-    emit(
-      QuizPageState(
-        quizLenght: state.quizLenght,
-        questions: state.questions,
-        status: Status.success,
-        //
-        currentQuestion: state.currentQuestion,
-        score: state.score,
-        isAnswerSelected: state.isAnswerSelected,
-        isLastQuestion: state.isLastQuestion,
-        selectedAnswer: state.selectedAnswer,
-        answersCounter: state.answersCounter,
-      ),
-    );
+    emit(state.copyWith(
+      isLastQuestion: state.isLastQuestion,
+    ));
   }
 }

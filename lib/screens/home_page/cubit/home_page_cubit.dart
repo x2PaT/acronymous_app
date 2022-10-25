@@ -25,75 +25,55 @@ class HomePageCubit extends Cubit<HomePageState> {
   final randomAcronymsListLen = 12;
 
   Future<void> start() async {
-    emit(
-      HomePageState(
-        status: Status.loading,
-        statusAcronymsList: Status.loading,
-        statusAlphabet: Status.loading,
-      ),
-    );
+    emit(state.copyWith(
+      status: Status.loading,
+      statusAcronymsList: Status.loading,
+      statusAlphabet: Status.loading,
+    ));
 
     try {
       final internetConnection = await databaseRepository.getDataToDatabase();
 
-      final randomAcronyms =
-          await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
+      final randomAcronyms = await acronymsRepository.getRandomAcronyms(
+        randomAcronymsListLen,
+      );
 
       final alphabet = await alphabetRepository.getAlphabetModels();
 
-      emit(
-        HomePageState(
-          internetConnectionStatus: internetConnection,
-          randomAcronymsList: randomAcronyms,
-          quizLenghtValue: startQuizLen,
-          alphabet: alphabet,
-          status: Status.success,
-          statusAcronymsList: Status.success,
-          statusAlphabet: Status.success,
-        ),
-      );
+      emit(state.copyWith(
+        internetStatus: internetConnection,
+        randomAcronymsList: randomAcronyms,
+        quizLenghtValue: startQuizLen,
+        alphabet: alphabet,
+        status: Status.success,
+        statusAcronymsList: Status.success,
+        statusAlphabet: Status.success,
+      ));
     } catch (error) {
-      emit(
-        HomePageState(
-          internetConnectionStatus: false,
-          status: Status.error,
-          statusAcronymsList: Status.error,
-          statusAlphabet: Status.error,
-          errorMessage: ('HomePageState ${error.toString()}'),
-          errorMessageAcronymsList:
-              ('HomePageStateAcronymsList ${error.toString()}'),
-          errorMessageAlphabet: ('HomePageStateAlphabet ${error.toString()}'),
-        ),
-      );
+      emit(state.copyWith(
+        internetStatus: false,
+        status: Status.error,
+        statusAcronymsList: Status.error,
+        statusAlphabet: Status.error,
+        errorMessage: ('HomePageState ${error.toString()}'),
+        errorMessageAcronymsList:
+            ('HomePageStateAcronymsList ${error.toString()}'),
+        errorMessageAlphabet: ('HomePageStateAlphabet ${error.toString()}'),
+      ));
     }
   }
 
   Future<void> refreshRandomAcronymsList() async {
-    emit(
-      HomePageState(
-        statusAlphabet: Status.success,
-        status: Status.success,
-        statusAcronymsList: Status.loading,
-        quizLenghtValue: state.quizLenghtValue,
-        alphabet: state.alphabet,
-        internetConnectionStatus: state.internetConnectionStatus,
-      ),
+    emit(state.copyWith(statusAcronymsList: Status.loading));
+
+    final randomAcronyms = await acronymsRepository.getRandomAcronyms(
+      randomAcronymsListLen,
     );
 
-    final randomAcronyms =
-        await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
-
-    emit(
-      HomePageState(
-        randomAcronymsList: randomAcronyms,
-        quizLenghtValue: state.quizLenghtValue,
-        alphabet: state.alphabet,
-        status: Status.success,
-        statusAcronymsList: Status.success,
-        statusAlphabet: Status.success,
-        internetConnectionStatus: state.internetConnectionStatus,
-      ),
-    );
+    emit(state.copyWith(
+      randomAcronymsList: randomAcronyms,
+      statusAcronymsList: Status.success,
+    ));
   }
 
   void quizLenghtSubt() {
@@ -102,16 +82,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     } else {
       final int newValue = state.quizLenghtValue - 1;
 
-      emit(
-        HomePageState(
-          quizLenghtValue: newValue,
-          randomAcronymsList: state.randomAcronymsList,
-          alphabet: state.alphabet,
-          status: Status.success,
-          statusAcronymsList: Status.success,
-          statusAlphabet: Status.success,
-        ),
-      );
+      emit(state.copyWith(quizLenghtValue: newValue));
     }
   }
 
@@ -121,16 +92,7 @@ class HomePageCubit extends Cubit<HomePageState> {
     } else {
       final int newValue = state.quizLenghtValue + 1;
 
-      emit(
-        HomePageState(
-          randomAcronymsList: state.randomAcronymsList,
-          quizLenghtValue: newValue,
-          alphabet: state.alphabet,
-          status: Status.success,
-          statusAcronymsList: Status.success,
-          statusAlphabet: Status.success,
-        ),
-      );
+      emit(state.copyWith(quizLenghtValue: newValue));
     }
   }
 }

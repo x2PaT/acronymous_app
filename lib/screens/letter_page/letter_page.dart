@@ -47,7 +47,7 @@ class LetterPage extends StatelessWidget {
               case Status.error:
                 return Center(
                   child: Text(
-                    state.errorMessage ?? 'Unkown error',
+                    state.errorMessage ?? 'LetterPageCubit Unkown error',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).errorColor,

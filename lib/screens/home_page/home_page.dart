@@ -46,7 +46,7 @@ class HomePage extends StatelessWidget {
         )..start(),
         child: BlocListener<HomePageCubit, HomePageState>(
           listener: (context, state) {
-            if (!state.internetConnectionStatus &&
+            if (!state.internetStatus &&
                 (state.randomAcronymsList.isEmpty || state.alphabet.isEmpty)) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -219,7 +219,7 @@ Widget acronymsList(BuildContext context, HomePageState state) {
     case Status.error:
       return Center(
         child: Text(
-          state.errorMessage ?? 'Unkown error',
+          state.errorMessage ?? 'AcronymsList Unkown error',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Theme.of(context).errorColor,

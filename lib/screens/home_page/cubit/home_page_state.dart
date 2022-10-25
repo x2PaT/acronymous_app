@@ -11,9 +11,9 @@ class HomePageState {
     this.alphabet = const [],
     this.statusAlphabet = Status.initial,
     this.errorMessageAlphabet,
-    this.internetConnectionStatus = false,
+    this.internetStatus = false,
   });
-  final bool internetConnectionStatus;
+  final bool internetStatus;
 
   final int quizLenghtValue;
   final Status status;
@@ -26,4 +26,27 @@ class HomePageState {
   final List<LetterModel> alphabet;
   final String? errorMessageAlphabet;
   final Status statusAlphabet;
+
+  HomePageState copyWith({
+    bool? internetStatus,
+    int? quizLenghtValue,
+    Status? status,
+    String? errorMessage,
+    Status? statusAcronymsList,
+    String? errorMessageAcronymsList,
+    List<AcronymModel>? randomAcronymsList,
+    List<LetterModel>? alphabet,
+    String? errorMessageAlphabet,
+    Status? statusAlphabet,
+  }) {
+    return HomePageState(
+      internetStatus: internetStatus ?? this.internetStatus,
+      randomAcronymsList: randomAcronymsList ?? this.randomAcronymsList,
+      quizLenghtValue: quizLenghtValue ?? this.quizLenghtValue,
+      alphabet: alphabet ?? this.alphabet,
+      status: status ?? this.status,
+      statusAcronymsList: statusAcronymsList ?? this.statusAcronymsList,
+      statusAlphabet: statusAlphabet ?? this.statusAlphabet,
+    );
+  }
 }

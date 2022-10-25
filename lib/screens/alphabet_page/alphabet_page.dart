@@ -40,7 +40,7 @@ class AlphabetPage extends StatelessWidget {
               case Status.error:
                 return Center(
                   child: Text(
-                    state.errorMessage ?? 'Unkown error',
+                    state.errorMessage ?? 'AlphabetPageCubit Unkown error',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).errorColor,
