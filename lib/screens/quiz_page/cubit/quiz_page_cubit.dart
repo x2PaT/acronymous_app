@@ -8,13 +8,13 @@ part 'quiz_page_state.dart';
 class QuizPageCubit extends Cubit<QuizPageState> {
   QuizPageCubit({
     required this.questionsRepository,
-  }) : super(const QuizPageState());
+  }) : super(QuizPageState());
 
   final QuestionsRepository questionsRepository;
 
   Future<void> createQuiz(int quizLenght) async {
     emit(
-      const QuizPageState(
+      QuizPageState(
         status: Status.loading,
         //
         currentQuestion: 0,
@@ -22,6 +22,7 @@ class QuizPageCubit extends Cubit<QuizPageState> {
         isAnswerSelected: false,
         isLastQuestion: false,
         selectedAnswer: null,
+        answersCounter: 0,
       ),
     );
     try {
@@ -38,6 +39,7 @@ class QuizPageCubit extends Cubit<QuizPageState> {
           isAnswerSelected: state.isAnswerSelected,
           isLastQuestion: state.isLastQuestion,
           selectedAnswer: state.selectedAnswer,
+          answersCounter: state.answersCounter,
         ),
       );
     } catch (error) {
@@ -50,36 +52,67 @@ class QuizPageCubit extends Cubit<QuizPageState> {
     }
   }
 
-  // pressNextButton() {
-  //   if (!state.isAnswerSelected) {
-  //   } else {
-  //     if (state.currentQuestion == state.quizLenght - 1) {
-  //       // do things for last question
-  //       var isCorrect = state.selectedAnswer!.isCorrect;
+  void selectAnswer(AnswerModel answer) {
+    emit(QuizPageState(
+      quizLenght: state.quizLenght,
+      questions: state.questions,
+      status: Status.success,
+      //
+      currentQuestion: state.currentQuestion,
+      score: state.score,
+      isAnswerSelected: true,
+      isLastQuestion: state.isLastQuestion,
+      selectedAnswer: answer,
+      answersCounter: state.answersCounter,
+    ));
+  }
 
-  //       emit(
-  //         QuizPageState(
-  //           score: isCorrect ? state.score + 1 : state.score,
-  //           currentQuestion: state.currentQuestion + 1,
-  //           isAnswerSelected: false,
-  //           isLastQuestion: true,
-  //           selectedAnswer: null,
-  //         ),
-  //       );
-  //     } else {
-  //       // do things for not last question
-  //       var isCorrect = state.selectedAnswer!.isCorrect;
+  void checkAnswer({required AnswerModel? selectedAnswer}) {
+    if (state.isAnswerSelected && state.answersCounter < state.quizLenght) {
+      state.answersCounter = state.answersCounter + 1;
 
-  //       emit(
-  //         QuizPageState(
-  //           score: isCorrect ? state.score + 1 : state.score,
-  //           currentQuestion: state.currentQuestion + 1,
-  //           isAnswerSelected: false,
-  //           isLastQuestion: false,
-  //           selectedAnswer: null,
-  //         ),
-  //       );
-  //     }
-  //   }
-  // }
+      if (!state.isLastQuestion) {
+        state.currentQuestion = state.currentQuestion + 1;
+      }
+      if (selectedAnswer!.isCorrect) {
+        state.score = state.score + 1;
+      }
+    }
+
+    emit(
+      QuizPageState(
+        quizLenght: state.quizLenght,
+        questions: state.questions,
+        status: Status.success,
+        //
+        currentQuestion: state.currentQuestion,
+        score: state.score,
+        isAnswerSelected: false,
+        isLastQuestion: state.isLastQuestion,
+        selectedAnswer: null,
+        answersCounter: state.answersCounter,
+      ),
+    );
+  }
+
+  void isLastQuestionChecker() {
+    if (state.currentQuestion == state.quizLenght - 1) {
+      state.isLastQuestion = true;
+    }
+
+    emit(
+      QuizPageState(
+        quizLenght: state.quizLenght,
+        questions: state.questions,
+        status: Status.success,
+        //
+        currentQuestion: state.currentQuestion,
+        score: state.score,
+        isAnswerSelected: state.isAnswerSelected,
+        isLastQuestion: state.isLastQuestion,
+        selectedAnswer: state.selectedAnswer,
+        answersCounter: state.answersCounter,
+      ),
+    );
+  }
 }

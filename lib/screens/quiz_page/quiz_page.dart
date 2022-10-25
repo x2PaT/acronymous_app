@@ -9,25 +9,12 @@ import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-AnswerModel? selectedAnswer;
-int currentQuestion = 0;
-int score = 0;
-bool isLastQuestion = false;
-bool isAnswerSelected = false;
-
-bool showQuestion = false;
-
 @override
-class AcronymsQuizPage extends StatefulWidget {
+class AcronymsQuizPage extends StatelessWidget {
   const AcronymsQuizPage({Key? key, required this.quizLenght})
       : super(key: key);
 
   final int quizLenght;
-  @override
-  State<AcronymsQuizPage> createState() => _AcronymsQuizPageState();
-}
-
-class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +33,7 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
                 databaseHelper: DatabaseHelper(),
               ),
             ),
-          )..createQuiz(widget.quizLenght);
+          )..createQuiz(quizLenght);
         },
         child: BlocBuilder<QuizPageCubit, QuizPageState>(
           builder: (context, state) {
@@ -79,9 +66,10 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             Text(
-                              'Question ${currentQuestion + 1}/${state.quizLenght}',
+                              'Question ${state.currentQuestion + 1}/${state.quizLenght}',
                               style: const TextStyle(fontSize: 25),
                             ),
+                            Text(state.score.toString()),
                           ],
                         ),
                       ),
@@ -96,35 +84,55 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               shape: const StadiumBorder(),
-                              primary: isAnswerSelected
+                              primary: state.isAnswerSelected
                                   ? Colors.grey.shade500
                                   : Colors.orangeAccent),
                           onPressed: () {
                             ttsService.speakTTS(state
-                                .questions[currentQuestion].questionLetters);
+                                .questions[state.currentQuestion]
+                                .questionLetters);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: const [
-                              Text(
+                            children: [
+                              Text(state.questions[state.currentQuestion]
+                                  .questionLetters
+                                  .toString()),
+                              const Text(
                                 'PLAY',
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                              Icon(Icons.play_circle_outline),
+                              const Icon(Icons.play_circle_outline),
                             ],
                           ),
                         ),
                       ),
                       const SizedBox(height: 25),
                       Column(
-                        children: state.questions[currentQuestion].answersList
-                            .map((answer) => answerButton(context, answer))
+                        children: state
+                            .questions[state.currentQuestion].answersList
+                            .map((answer) =>
+                                AnswerButton(answer: answer, state: state))
                             .toList(),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          nextButton(context, state, selectedAnswer),
+                          ElevatedButton(
+                            onPressed: () {
+                              BlocProvider.of<QuizPageCubit>(context)
+                                  .checkAnswer(
+                                      selectedAnswer: state.selectedAnswer);
+
+                              if (state.isLastQuestion) {
+                                showResultsDialog(context, state);
+                              }
+                              BlocProvider.of<QuizPageCubit>(context)
+                                  .isLastQuestionChecker();
+                            },
+                            child: Text(
+                                state.isLastQuestion ? 'Show Results' : 'Next'),
+                          ),
                         ],
                       ),
                     ],
@@ -137,64 +145,8 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
     );
   }
 
-  Container answerButton(BuildContext context, AnswerModel answer) {
-    bool isSelected = answer == selectedAnswer;
-
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(vertical: 8),
-      height: 50,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape: const StadiumBorder(),
-          primary: isSelected
-              ? Colors.orangeAccent
-              : isAnswerSelected
-                  ? Colors.grey.shade200
-                  : Colors.white,
-          onPrimary: isSelected ? Colors.white : Colors.black,
-        ),
-        onPressed: () {
-          setState(() {
-            isAnswerSelected = true;
-            selectedAnswer = answer;
-          });
-        },
-        child: Text(answer.answerText),
-      ),
-    );
-  }
-
-  ElevatedButton nextButton(BuildContext context, state, selectedAnswer) {
-    if (currentQuestion == state.quizLenght - 1) {
-      isLastQuestion = true;
-    }
-    return ElevatedButton(
-      child: Text(!isLastQuestion ? 'Next' : 'Show Results'),
-      onPressed: () {
-        if (!isAnswerSelected) {
-        } else {
-          if (selectedAnswer.isCorrect) {
-            score++;
-          }
-
-          if (isLastQuestion) {
-            setState(() {
-              showResultsDialog(context, state);
-            });
-          } else {
-            setState(() {
-              isAnswerSelected = false;
-              currentQuestion++;
-            });
-          }
-        }
-      },
-    );
-  }
-
-  showResultsDialog(BuildContext context, QuizPageState state) {
-    final mark = score / state.quizLenght;
+  Future<void> showResultsDialog(BuildContext context, QuizPageState state) {
+    final mark = state.score / state.quizLenght;
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -203,7 +155,7 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
           child: Column(
             children: [
               Text(
-                'You answered correctly on $score from ${state.quizLenght} questions',
+                'You answered correctly on ${state.score} from ${state.quizLenght} questions',
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 22),
               ),
@@ -215,18 +167,44 @@ class _AcronymsQuizPageState extends State<AcronymsQuizPage> {
         actions: [
           TextButton(
             onPressed: () {
-              currentQuestion = 0;
-              isLastQuestion = false;
-              score = 0;
-              isAnswerSelected = false;
-
-              BlocProvider.of<QuizPageCubit>(context)
-                  .createQuiz(widget.quizLenght);
+              BlocProvider.of<QuizPageCubit>(context).createQuiz(quizLenght);
               Navigator.of(context).pop();
             },
             child: const Text('Play again!'),
           )
         ],
+      ),
+    );
+  }
+}
+
+class AnswerButton extends StatelessWidget {
+  const AnswerButton({Key? key, required this.answer, required this.state})
+      : super(key: key);
+  final QuizPageState state;
+  final AnswerModel answer;
+
+  @override
+  Widget build(BuildContext context) {
+    bool isSelected = answer == state.selectedAnswer;
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      height: 50,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: const StadiumBorder(),
+          primary: isSelected
+              ? Colors.orangeAccent
+              : state.isAnswerSelected
+                  ? Colors.grey.shade200
+                  : Colors.white,
+          onPrimary: isSelected ? Colors.white : Colors.black,
+        ),
+        onPressed: () {
+          BlocProvider.of<QuizPageCubit>(context).selectAnswer(answer);
+        },
+        child: Text(answer.answerText),
       ),
     );
   }

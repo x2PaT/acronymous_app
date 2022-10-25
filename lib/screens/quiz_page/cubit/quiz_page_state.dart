@@ -1,7 +1,7 @@
 part of 'quiz_page_cubit.dart';
 
 class QuizPageState {
-  const QuizPageState({
+  QuizPageState({
     this.questions = const [],
     this.quizLenght = 8,
     //
@@ -10,6 +10,7 @@ class QuizPageState {
     this.score = 0,
     this.isLastQuestion = false,
     this.isAnswerSelected = false,
+    this.answersCounter = 0,
     //
     this.status = Status.initial,
     this.errorMessage,
@@ -18,11 +19,12 @@ class QuizPageState {
   final List<QuestionModel> questions;
   final int quizLenght;
 
-  final AnswerModel? selectedAnswer;
-  final int currentQuestion;
-  final int score;
-  final bool isLastQuestion;
-  final bool isAnswerSelected;
+  AnswerModel? selectedAnswer;
+  int currentQuestion;
+  int score;
+  bool isLastQuestion;
+  bool isAnswerSelected;
+  int answersCounter;
 
   final Status status;
   final String? errorMessage;
