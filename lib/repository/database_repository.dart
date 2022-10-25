@@ -16,15 +16,12 @@ class DatabaseRepository {
   final DatabaseHelper databaseHelper;
 
   Future<bool> getDataToDatabase() async {
-    // const reinit = false;
-    // if (reinit) {
-    //   await databaseHelper.reInitTableInDatabase(
+    //   await databaseHelper.reInitTable(
     //       DatabaseHelper.acronymsTableName, DatabaseHelper.acronymsTable);
-    //   await databaseHelper.reInitTableInDatabase(
+    //   await databaseHelper.reInitTable(
     //       DatabaseHelper.alphabetTableName, DatabaseHelper.alphabetTable);
-    //   await databaseHelper.reInitTableInDatabase(
+    //   await databaseHelper.reInitTable(
     //       DatabaseHelper.metadataTableName, DatabaseHelper.metadataTable);
-    // }
 
     try {
       final result = await InternetAddress.lookup('google.com');
@@ -62,7 +59,7 @@ class DatabaseRepository {
       json['record']['metadata'],
     );
 
-    final dbMetadata = await databaseHelper.getOneRecordFromDatabase(
+    final dbMetadata = await databaseHelper.getOneRecord(
         DatabaseHelper.metadataTableName, binName);
 
     final jsonMetadataModel = MetadataModel.fromJson(jsonMetadata);
@@ -74,7 +71,7 @@ class DatabaseRepository {
     if (dbMetadata.isEmpty) {
       updateDatabase = true;
 
-      await databaseHelper.createRecordInDatabase(
+      await databaseHelper.createRecord(
           DatabaseHelper.metadataTableName, jsonMetadata);
     } else {
       if (jsonMetadataModel.createdAt != dbMetadataModel.createdAt) {
@@ -87,18 +84,19 @@ class DatabaseRepository {
 
       if (dbMetadata.isNotEmpty) {
         if (jsonMetadataModel.createdAt != dbMetadataModel.createdAt) {
-          await databaseHelper.updateMetadataInDatabase(
+          await databaseHelper.updateRecordByID(
               DatabaseHelper.metadataTableName, jsonMetadata);
         }
       }
 
-      await databaseHelper.wipeTableInDatabase(
+      await databaseHelper.wipeTable(
         binName,
       );
 
       for (var item in jsonData) {
-        await databaseHelper.createRecordInDatabase(binName, item);
+        await databaseHelper.createRecord(binName, item);
       }
     }
+    print('finish $binName');
   }
 }

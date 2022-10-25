@@ -9,7 +9,7 @@ class AlphabetRepository {
   final DatabaseHelper databaseHelper;
 
   Future<List<LetterModel>> getAlphabetModels() async {
-    final json = await databaseHelper.getTableFromDatabase(
+    final json = await databaseHelper.getTable(
       DatabaseHelper.alphabetTableName,
     );
 
@@ -17,7 +17,7 @@ class AlphabetRepository {
   }
 
   Future<LetterModel> getLetterModelWithID({required int letterID}) async {
-    final json = await databaseHelper.getTableFromDatabase(
+    final json = await databaseHelper.getTable(
       DatabaseHelper.alphabetTableName,
     );
 

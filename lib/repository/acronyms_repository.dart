@@ -10,7 +10,7 @@ class AcronymsRepository {
   final DatabaseHelper databaseHelper;
 
   Future<List<AcronymModel>> getAcronymsModels() async {
-    final json = await databaseHelper.getTableFromDatabase(
+    final json = await databaseHelper.getTable(
       DatabaseHelper.acronymsTableName,
     );
 
@@ -18,7 +18,7 @@ class AcronymsRepository {
   }
 
   Future<List<AcronymModel>> getRandomAcronyms(int quantity) async {
-    final json = await databaseHelper.getTableFromDatabase(
+    final json = await databaseHelper.getTable(
       DatabaseHelper.acronymsTableName,
     );
 
@@ -41,7 +41,7 @@ class AcronymsRepository {
 
   Future<List<AcronymModel>> getAcronymsModelsWithLetter(
       {required String letter}) async {
-    final json = await databaseHelper.getTableFromDatabase(
+    final json = await databaseHelper.getTable(
       DatabaseHelper.acronymsTableName,
     );
 
