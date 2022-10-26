@@ -3,7 +3,6 @@ import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
-import 'package:acronymous_app/repository/database_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_page_state.dart';
@@ -12,13 +11,11 @@ class HomePageCubit extends Cubit<HomePageState> {
   HomePageCubit({
     required this.alphabetRepository,
     required this.acronymsRepository,
-    required this.databaseRepository,
   }) : super(HomePageState());
 
   final AcronymsRepository acronymsRepository;
   final AlphabetRepository alphabetRepository;
-  final DatabaseRepository databaseRepository;
-  final startQuizLen = 4;
+  final startQuizLenght = 4;
 
   final minQuizLen = 1;
   final maxQuizLen = 18;
@@ -32,8 +29,6 @@ class HomePageCubit extends Cubit<HomePageState> {
     ));
 
     try {
-      final internetConnection = await databaseRepository.getDataToDatabase();
-
       final randomAcronyms = await acronymsRepository.getRandomAcronyms(
         randomAcronymsListLen,
       );
@@ -41,9 +36,8 @@ class HomePageCubit extends Cubit<HomePageState> {
       final alphabet = await alphabetRepository.getAlphabetModels();
 
       emit(state.copyWith(
-        internetStatus: internetConnection,
         randomAcronymsList: randomAcronyms,
-        quizLenghtValue: startQuizLen,
+        quizLenghtValue: startQuizLenght,
         alphabet: alphabet,
         status: Status.success,
         statusAcronymsList: Status.success,
@@ -51,7 +45,6 @@ class HomePageCubit extends Cubit<HomePageState> {
       ));
     } catch (error) {
       emit(state.copyWith(
-        internetStatus: false,
         status: Status.error,
         statusAcronymsList: Status.error,
         statusAlphabet: Status.error,

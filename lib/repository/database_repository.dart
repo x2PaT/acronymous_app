@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:io';
-
 import 'package:acronymous_app/data/remote_data/fetch_api_data.dart';
 import 'package:acronymous_app/models/metadata_model.dart';
 import 'package:acronymous_app/services/database_helper.dart';
@@ -15,88 +13,103 @@ class DatabaseRepository {
 
   final DatabaseHelper databaseHelper;
 
-  Future<bool> getDataToDatabase() async {
-    //   await databaseHelper.reInitTable(
-    //       DatabaseHelper.acronymsTableName, DatabaseHelper.acronymsTable);
-    //   await databaseHelper.reInitTable(
-    //       DatabaseHelper.alphabetTableName, DatabaseHelper.alphabetTable);
-    //   await databaseHelper.reInitTable(
-    //       DatabaseHelper.metadataTableName, DatabaseHelper.metadataTable);
+  static const acronymsBinName = DatabaseHelper.acronymsTableName;
+  static const acronymsBinID = '634d3c0e65b57a31e69950f6';
 
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        await writeApiDataToDatabase(
-          binName: 'acronyms',
-          binID: '634d3c0e65b57a31e69950f6',
-        );
-        await writeApiDataToDatabase(
-          binName: 'alphabet',
-          binID: '634d3c5b65b57a31e6995131',
-        );
-        return true;
-      }
-    } on SocketException catch (_) {
+  static const metadataBinName = DatabaseHelper.metadataTableName;
+  static const metadataBinID = '635936aa65b57a31e6a314b1';
+
+  static const alphabetBinName = DatabaseHelper.alphabetTableName;
+  static const alphabetBinID = '634d3c5b65b57a31e6995131';
+
+  Future<bool> isTableEmpty(String tableName) async {
+    final result = await databaseHelper.getTable(tableName);
+
+    if (result.isEmpty) {
+      return true;
+    } else {
       return false;
     }
-    return false;
+  }
+
+  Future<void> writeDataToDatabase() async {
+    await writeApiDataToDatabase(
+      binName: acronymsBinName,
+      binID: acronymsBinID,
+    );
+    await writeApiDataToDatabase(
+      binName: alphabetBinName,
+      binID: alphabetBinID,
+    );
+    await writeApiDataToDatabase(
+      binName: metadataBinName,
+      binID: metadataBinID,
+    );
+  }
+
+  Future<void> checkDatabaseIntegrity() async {
+    final metadataTable = await databaseHelper.getTable(
+      DatabaseHelper.metadataTableName,
+    );
+    final metadataApi = await fetchApiData.getApiDataList(
+        metadataBinID, DatabaseHelper.metadataTableName);
+
+    for (int i = 0; i < metadataTable.length; i++) {
+      final metadataTableModel = MetadataModel.fromJson(metadataTable[i]);
+
+      final metadataJsonModel =
+          MetadataModel.fromJson(databaseHelper.formatMetadata(metadataApi[i]));
+
+      final tableName = metadataTableModel.name!;
+      final binID = metadataTableModel.id!;
+
+      print('Checking $tableName');
+
+      if (metadataTableModel.createdAt == metadataJsonModel.createdAt) {
+      } else {
+        await databaseHelper.updateRecordByID(
+          DatabaseHelper.metadataTableName,
+          databaseHelper.formatMetadata(metadataApi[i]),
+        );
+
+        final jsonData = await fetchApiData.getApiDataList(binID, tableName);
+
+        print('Wiping $tableName');
+
+        await databaseHelper.wipeTable(tableName);
+
+        for (var item in jsonData) {
+          await databaseHelper.createRecord(tableName, item);
+        }
+      }
+    }
   }
 
   Future<void> writeApiDataToDatabase({
     required String binName,
     required String binID,
   }) async {
-    bool updateDatabase = false;
-    MetadataModel dbMetadataModel = MetadataModel();
-
+    print('reading $binName');
     final json = await fetchApiData.getApiData(binID);
     if (json == null) {
       throw Exception('Error. Json is null');
     }
 
     final List jsonData = json['record'][binName];
-    final jsonMetadata = databaseHelper.formatMetadata(
-      json['record']['metadata'],
-    );
 
-    final dbMetadata = await databaseHelper.getOneRecord(
-        DatabaseHelper.metadataTableName, binName);
-
-    final jsonMetadataModel = MetadataModel.fromJson(jsonMetadata);
-    if (dbMetadata.isNotEmpty) {
-      dbMetadataModel = MetadataModel.fromJson(dbMetadata[0]);
-    }
-
-    print('Checking database $binName');
-    if (dbMetadata.isEmpty) {
-      updateDatabase = true;
-
-      await databaseHelper.createRecord(
-          DatabaseHelper.metadataTableName, jsonMetadata);
-    } else {
-      if (jsonMetadataModel.createdAt != dbMetadataModel.createdAt) {
-        updateDatabase = true;
-      }
-    }
-
-    if (updateDatabase) {
-      print('Updating database $binName');
-
-      if (dbMetadata.isNotEmpty) {
-        if (jsonMetadataModel.createdAt != dbMetadataModel.createdAt) {
-          await databaseHelper.updateRecordByID(
-              DatabaseHelper.metadataTableName, jsonMetadata);
-        }
-      }
-
-      await databaseHelper.wipeTable(
-        binName,
-      );
+    if (binName != metadataBinName) {
+      await databaseHelper.wipeTable(binName);
 
       for (var item in jsonData) {
         await databaseHelper.createRecord(binName, item);
       }
+    } else {
+      final jsonDataModified =
+          jsonData.map((e) => databaseHelper.formatMetadata(e)).toList();
+
+      for (var item in jsonDataModified) {
+        await databaseHelper.createRecord(binName, item);
+      }
     }
-    print('finish $binName');
   }
 }

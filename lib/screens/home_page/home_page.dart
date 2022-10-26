@@ -1,10 +1,8 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/data/remote_data/fetch_api_data.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
-import 'package:acronymous_app/repository/database_repository.dart';
 import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
@@ -39,61 +37,38 @@ class HomePage extends StatelessWidget {
           alphabetRepository: AlphabetRepository(
             databaseHelper: DatabaseHelper(),
           ),
-          databaseRepository: DatabaseRepository(
-            databaseHelper: DatabaseHelper(),
-            fetchApiData: FetchApiData(),
-          ),
         )..start(),
-        child: BlocListener<HomePageCubit, HomePageState>(
-          listener: (context, state) {
-            if (!state.internetStatus &&
-                (state.randomAcronymsList.isEmpty || state.alphabet.isEmpty)) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: SizedBox(
-                    height: 40,
-                    child: Text(
-                      'Check your internet connection!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red, fontSize: 22),
+        child: BlocBuilder<HomePageCubit, HomePageState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case Status.initial:
+                return const Center(
+                  child: Text('Initial State'),
+                );
+              case Status.loading:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case Status.error:
+
+              case Status.success:
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        quizContainer(context, state),
+                        const SizedBox(height: 15),
+                        alphabetContainer(context, state),
+                        const SizedBox(height: 15),
+                        acronymsContainer(context, state),
+                      ],
                     ),
                   ),
-                ),
-              );
+                );
             }
           },
-          child: BlocBuilder<HomePageCubit, HomePageState>(
-            builder: (context, state) {
-              switch (state.status) {
-                case Status.initial:
-                  return const Center(
-                    child: Text('Initial State'),
-                  );
-                case Status.loading:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                case Status.error:
-
-                case Status.success:
-                  return SingleChildScrollView(
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          quizContainer(context, state),
-                          const SizedBox(height: 15),
-                          alphabetContainer(context, state),
-                          const SizedBox(height: 15),
-                          acronymsContainer(context, state),
-                        ],
-                      ),
-                    ),
-                  );
-              }
-            },
-          ),
         ),
       ),
     );

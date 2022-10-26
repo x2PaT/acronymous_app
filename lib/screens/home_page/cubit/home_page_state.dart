@@ -3,50 +3,50 @@ part of 'home_page_cubit.dart';
 class HomePageState {
   HomePageState({
     this.quizLenghtValue = 0,
-    this.status = Status.initial,
-    this.errorMessage,
-    this.randomAcronymsList = const [],
-    this.statusAcronymsList = Status.initial,
-    this.errorMessageAcronymsList,
     this.alphabet = const [],
-    this.statusAlphabet = Status.initial,
+    this.randomAcronymsList = const [],
+    this.errorMessage,
     this.errorMessageAlphabet,
-    this.internetStatus = false,
+    this.errorMessageAcronymsList,
+    this.status = Status.initial,
+    this.statusAlphabet = Status.initial,
+    this.statusAcronymsList = Status.initial,
   });
-  final bool internetStatus;
 
   final int quizLenghtValue;
-  final Status status;
-  final String? errorMessage;
-
-  final Status statusAcronymsList;
-  final String? errorMessageAcronymsList;
+  final List<LetterModel> alphabet;
   final List<AcronymModel> randomAcronymsList;
 
-  final List<LetterModel> alphabet;
+  final String? errorMessage;
   final String? errorMessageAlphabet;
+  final String? errorMessageAcronymsList;
+
+  final Status status;
   final Status statusAlphabet;
+  final Status statusAcronymsList;
 
   HomePageState copyWith({
-    bool? internetStatus,
     int? quizLenghtValue,
-    Status? status,
-    String? errorMessage,
-    Status? statusAcronymsList,
-    String? errorMessageAcronymsList,
-    List<AcronymModel>? randomAcronymsList,
     List<LetterModel>? alphabet,
+    List<AcronymModel>? randomAcronymsList,
+    String? errorMessage,
     String? errorMessageAlphabet,
+    String? errorMessageAcronymsList,
+    Status? status,
     Status? statusAlphabet,
+    Status? statusAcronymsList,
   }) {
     return HomePageState(
-      internetStatus: internetStatus ?? this.internetStatus,
-      randomAcronymsList: randomAcronymsList ?? this.randomAcronymsList,
       quizLenghtValue: quizLenghtValue ?? this.quizLenghtValue,
       alphabet: alphabet ?? this.alphabet,
+      randomAcronymsList: randomAcronymsList ?? this.randomAcronymsList,
+      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessageAlphabet: errorMessageAlphabet ?? this.errorMessageAlphabet,
+      errorMessageAcronymsList:
+          errorMessageAcronymsList ?? this.errorMessageAcronymsList,
       status: status ?? this.status,
-      statusAcronymsList: statusAcronymsList ?? this.statusAcronymsList,
       statusAlphabet: statusAlphabet ?? this.statusAlphabet,
+      statusAcronymsList: statusAcronymsList ?? this.statusAcronymsList,
     );
   }
 }
