@@ -1,3 +1,4 @@
+import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/cubit/ancronym_webview_page_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,8 +16,8 @@ class AncronymWebviewPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Information about $acronym'),
       ),
-      body: BlocProvider(
-        create: (context) => AncronymWebviewPageCubit()..start(),
+      body: BlocProvider<AncronymWebviewPageCubit>(
+        create: (context) => getIt<AncronymWebviewPageCubit>()..start(),
         child: BlocBuilder<AncronymWebviewPageCubit, AncronymWebviewPageState>(
           builder: (context, state) {
             if (state.internetStatus) {

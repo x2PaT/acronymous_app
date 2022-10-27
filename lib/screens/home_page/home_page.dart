@@ -1,15 +1,13 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
+import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
-import 'package:acronymous_app/repository/acronyms_repository.dart';
-import 'package:acronymous_app/repository/alphabet_repository.dart';
-import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
+import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
 import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
-import 'package:acronymous_app/services/database_helper.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -29,15 +27,8 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Welcome to my app'),
       ),
-      body: BlocProvider(
-        create: (context) => HomePageCubit(
-          acronymsRepository: AcronymsRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-          alphabetRepository: AlphabetRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-        )..start(),
+      body: BlocProvider<HomePageCubit>(
+        create: (context) => getIt<HomePageCubit>()..start(),
         child: BlocBuilder<HomePageCubit, HomePageState>(
           builder: (context, state) {
             switch (state.status) {
@@ -141,8 +132,8 @@ Column acronymsContainer(BuildContext context, HomePageState state) {
             width: MediaQuery.of(context).size.width,
             child: TextButton(
               onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AcronymsPage()));
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => AcronymsPage()));
               },
               child: const Text(
                 'Acronyms List',

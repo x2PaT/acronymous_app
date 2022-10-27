@@ -17,13 +17,10 @@ class AlphabetRepository {
   }
 
   Future<LetterModel> getLetterModelWithID({required int letterID}) async {
-    final json = await databaseHelper.getTable(
+    final result = await databaseHelper.getOneRecordByID(
       DatabaseHelper.alphabetTableName,
+      letterID,
     );
-
-    final List<dynamic> allLettersModels =
-        json.map((item) => LetterModel.fromJson(item)).toList();
-
-    return allLettersModels.where((element) => element.id == letterID).first;
+    return LetterModel.fromJson(result.first);
   }
 }

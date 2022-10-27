@@ -21,6 +21,8 @@ class DatabaseRepository {
 
   static const alphabetBinName = DatabaseHelper.alphabetTableName;
   static const alphabetBinID = '634d3c5b65b57a31e6995131';
+  static const namesBinName = DatabaseHelper.namesTableName;
+  static const namesBinID = '63597cf82b3499323beb8de2';
 
   Future<bool> isTableEmpty(String tableName) async {
     final result = await databaseHelper.getTable(tableName);
@@ -45,26 +47,28 @@ class DatabaseRepository {
       binName: metadataBinName,
       binID: metadataBinID,
     );
+    await writeApiDataToDatabase(
+      binName: namesBinName,
+      binID: namesBinID,
+    );
   }
 
   Future<void> checkDatabaseIntegrity() async {
-    final metadataTable = await databaseHelper.getTable(
+    final metadataDatabase = await databaseHelper.getTable(
       DatabaseHelper.metadataTableName,
     );
     final metadataApi = await fetchApiData.getApiDataList(
         metadataBinID, DatabaseHelper.metadataTableName);
 
-    for (int i = 0; i < metadataTable.length; i++) {
-      final metadataTableModel = MetadataModel.fromJson(metadataTable[i]);
-
-      final metadataJsonModel =
-          MetadataModel.fromJson(databaseHelper.formatMetadata(metadataApi[i]));
-
+    for (int i = 0; i < metadataApi.length; i++) {
+      final metadataTableModel = MetadataModel.fromJson(metadataDatabase[i]);
+      final metadataJsonModel = MetadataModel.fromJson(
+        databaseHelper.formatMetadata(metadataApi[i]),
+      );
       final tableName = metadataTableModel.name!;
       final binID = metadataTableModel.id!;
 
       print('Checking $tableName');
-
       if (metadataTableModel.createdAt == metadataJsonModel.createdAt) {
       } else {
         await databaseHelper.updateRecordByID(
@@ -80,6 +84,30 @@ class DatabaseRepository {
 
         for (var item in jsonData) {
           await databaseHelper.createRecord(tableName, item);
+        }
+      }
+    }
+  }
+
+  // checkIftableExistInDB  -- not tested yet ;)
+  Future<void> checkIftableExistInDB(
+    List<dynamic> metadataApi,
+    List<Map<String, dynamic>> metadataDatabase,
+    List<dynamic> tableBinsNames,
+  ) async {
+    final List tableBinsNames = metadataDatabase.map((e) => e['name']).toList();
+
+    if (metadataApi.length != metadataDatabase.length) {
+      for (int i = 0; i < metadataApi.length; i++) {
+        if (tableBinsNames.contains(metadataApi[i]['name'])) {
+        } else {
+          print(databaseHelper.formatMetadata(metadataApi[i]));
+
+          await databaseHelper.createRecord(
+            DatabaseHelper.metadataTableName,
+            databaseHelper.formatMetadata(metadataApi[i]),
+          );
+          await databaseHelper.createTable(metadataApi[i]['sqlquery']);
         }
       }
     }

@@ -1,10 +1,8 @@
 import 'package:acronymous_app/app/core/enums.dart';
+import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
-import 'package:acronymous_app/repository/acronyms_repository.dart';
-import 'package:acronymous_app/repository/alphabet_repository.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/letter_page/cubit/letter_page_cubit.dart';
-import 'package:acronymous_app/services/database_helper.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -24,15 +22,8 @@ class LetterPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Letter page'),
       ),
-      body: BlocProvider(
-        create: (context) => LetterPageCubit(
-          acronymsRepository: AcronymsRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-          alphabetRepository: AlphabetRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-        )..start(letterID: letterID),
+      body: BlocProvider<LetterPageCubit>(
+        create: (context) => getIt<LetterPageCubit>()..start(letterID: letterID),
         child: BlocBuilder<LetterPageCubit, LetterPageState>(
           builder: (context, state) {
             switch (state.status) {

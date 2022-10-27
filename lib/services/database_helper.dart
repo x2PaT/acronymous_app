@@ -10,6 +10,7 @@ class DatabaseHelper {
   static const acronymsTableName = 'acronyms';
   static const alphabetTableName = 'alphabet';
   static const metadataTableName = 'metadata';
+  static const namesTableName = 'names';
 
   static const primaryKeyType = 'INTEGER PRIMARY KEY';
   static const intType = 'INTEGER';
@@ -35,6 +36,12 @@ CREATE TABLE if not exists $metadataTableName
       (id $stringType, 
       private $boolType, 
       createdAt $stringType,
+      name $stringType,
+      sqlquery $stringType)''');
+
+  static const namesTable = ('''
+CREATE TABLE if not exists $namesTableName 
+      (id $primaryKeyType, 
       name $stringType)''');
 
   static Future<Database> _initDatabase() async {
@@ -51,6 +58,7 @@ CREATE TABLE if not exists $metadataTableName
     await db.execute(acronymsTable);
     await db.execute(alphabetTable);
     await db.execute(metadataTable);
+    await db.execute(namesTable);
   }
 
   Future<void> createTable(String table) async {
@@ -87,10 +95,15 @@ CREATE TABLE if not exists $metadataTableName
     return db.rawQuery('SELECT * FROM $tableName');
   }
 
-  Future<List<Map<String, dynamic>>> getOneRecord(
+  Future<List<Map<String, dynamic>>> getOneMetedataRecord(
       String tableName, String metadataName) async {
     Database db = await DatabaseHelper._initDatabase();
     return db.query(tableName, where: 'name = ?', whereArgs: [metadataName]);
+  }
+  Future<List<Map<String, dynamic>>> getOneRecordByID(
+      String tableName, int id) async {
+    Database db = await DatabaseHelper._initDatabase();
+    return db.query(tableName, where: 'id = ?', whereArgs: [id]);
   }
 
   Future<int> createRecord(

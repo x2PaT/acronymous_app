@@ -10,7 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'loading_page_state.dart';
 
 class LoadingPageCubit extends Cubit<LoadingPageState> {
-  LoadingPageCubit(this.databaseRepository) : super(LoadingPageState());
+  LoadingPageCubit({
+    required this.databaseRepository,
+  }) : super(LoadingPageState());
   final DatabaseRepository databaseRepository;
 
   Future<void> start() async {

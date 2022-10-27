@@ -1,13 +1,15 @@
 import 'package:acronymous_app/screens/about_page/about_page.dart';
-import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
+import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
+import 'package:acronymous_app/screens/names_page/names_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerElements {
   static const home = 0;
   static const alphabet = 1;
   static const acronyms = 2;
+  static const names = 3;
 }
 
 class DrawerMaster extends StatelessWidget {
@@ -77,12 +79,25 @@ class DrawerMaster extends StatelessWidget {
             ),
             ListTile(
               onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const AcronymsPage(),
+                builder: (_) => AcronymsPage(),
               )),
               title: Text(
                 'ACRONYMS',
                 style: TextStyle(
                   fontWeight: selectedElement == DrawerElements.acronyms
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+            ListTile(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => NamesPage(),
+              )),
+              title: Text(
+                'NAMES',
+                style: TextStyle(
+                  fontWeight: selectedElement == DrawerElements.names
                       ? FontWeight.bold
                       : FontWeight.normal,
                 ),
