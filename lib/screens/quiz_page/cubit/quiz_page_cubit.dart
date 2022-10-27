@@ -1,5 +1,8 @@
 import 'package:acronymous_app/app/core/enums.dart';
+import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/question_model.dart';
+import 'package:acronymous_app/repository/acronyms_repository.dart';
+import 'package:acronymous_app/repository/names_repository.dart';
 import 'package:acronymous_app/repository/questions_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,16 +10,29 @@ part 'quiz_page_state.dart';
 
 class QuizPageCubit extends Cubit<QuizPageState> {
   QuizPageCubit({
+    required this.namesRepository,
+    required this.acronymsRepository,
     required this.questionsRepository,
   }) : super(QuizPageState());
 
+  final AcronymsRepository acronymsRepository;
   final QuestionsRepository questionsRepository;
+  final NamesRepository namesRepository;
 
-  Future<void> createQuiz(int quizLenght) async {
+  Future<void> createQuiz(int quizLenght, String quizType) async {
     emit(QuizPageState());
 
     try {
-      final result = await questionsRepository.getQuizQuestions(quizLenght);
+      List elementsList = [];
+      quizType == 'acronyms'
+          ? {elementsList = await acronymsRepository.getAcronymsModels()}
+          : {elementsList = await namesRepository.getNamesModels()};
+
+      final result = await questionsRepository.getQuizQuestions(
+        quizLenght,
+        elementsList,
+        quizType,
+      );
 
       emit(state.copyWith(
         quizLenght: quizLenght,

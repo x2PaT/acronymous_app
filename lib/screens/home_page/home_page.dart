@@ -49,7 +49,10 @@ class HomePage extends StatelessWidget {
                     margin: const EdgeInsets.all(8),
                     child: Column(
                       children: [
-                        quizContainer(context, state),
+                        quizContainer(
+                            context, state, 'Acronymous Quiz', 'acronyms'),
+                        const SizedBox(height: 15),
+                        quizContainer(context, state, 'Names Quiz', 'names'),
                         const SizedBox(height: 15),
                         alphabetContainer(context, state),
                         const SizedBox(height: 15),
@@ -195,7 +198,8 @@ Widget acronymsList(BuildContext context, HomePageState state) {
   }
 }
 
-Container quizContainer(BuildContext context, HomePageState state) {
+Container quizContainer(
+    BuildContext context, HomePageState state, String title, String quizType) {
   return Container(
     padding: const EdgeInsets.all(12),
     decoration: const BoxDecoration(
@@ -208,10 +212,10 @@ Container quizContainer(BuildContext context, HomePageState state) {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text(
-              'Acronymous Quiz',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+              title,
+              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -252,6 +256,7 @@ Container quizContainer(BuildContext context, HomePageState state) {
                   MaterialPageRoute(
                     builder: (context) => AcronymsQuizPage(
                       quizLenght: state.quizLenghtValue,
+                      quizType: quizType,
                     ),
                   ),
                 );

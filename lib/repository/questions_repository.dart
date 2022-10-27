@@ -1,55 +1,56 @@
 import 'dart:math';
-import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/question_model.dart';
-import 'package:acronymous_app/repository/acronyms_repository.dart';
 
 class QuestionsRepository {
-  QuestionsRepository({
-    required this.acronymsRepository,
-  });
+  QuestionsRepository();
 
-  final AcronymsRepository acronymsRepository;
-
-  Future<List<QuestionModel>> getQuizQuestions(int quizLenght) async {
-    List<AcronymModel> acronymsList =
-        await acronymsRepository.getAcronymsModels();
+  Future<List<QuestionModel>> getQuizQuestions(
+    int quizLenght,
+    List modelsList,
+    String modelName,
+  ) async {
+    // List<AcronymModel> acronymsList =
+    //     await acronymsRepository.getAcronymsModels();
 
     List<QuestionModel> questionList = [];
-    //
+
     for (var i = 0; i < quizLenght; i++) {
-      List<AcronymModel> subAcronymsList = List.from(acronymsList);
+      List subModelsList = List.from(modelsList);
 
       List<AnswerModel> answersList = [];
 
-      int qIndex = getRandomIndex(acronymsList.length);
+      int qIndex = getRandomIndex(modelsList.length);
 
-      answersList.add(AnswerModel(acronymsList[qIndex].meaning, true));
-      subAcronymsList.removeAt(qIndex);
+      answersList.add(modelName == 'acronyms'
+          ? AnswerModel(modelsList[qIndex].meaning, true)
+          : AnswerModel(modelsList[qIndex].name, true));
+      subModelsList.removeAt(qIndex);
 
       for (var i = 0; i < 3; i++) {
-        int aIndex = getRandomIndex(subAcronymsList.length);
-        answersList.add(AnswerModel(subAcronymsList[aIndex].meaning, false));
-        subAcronymsList.removeAt(aIndex);
+        int aIndex = getRandomIndex(subModelsList.length);
+        answersList.add(modelName == 'acronyms'
+            ? AnswerModel(subModelsList[aIndex].meaning, false)
+            : AnswerModel(subModelsList[aIndex].name, false));
+        subModelsList.removeAt(aIndex);
       }
 
       answersList.shuffle();
 
       questionList.add(
-        QuestionModel(
-          acronymsList[qIndex].acronym,
-          answersList,
-        ),
+        modelName == 'acronyms'
+            ? QuestionModel(modelsList[qIndex].acronym, answersList)
+            : QuestionModel(modelsList[qIndex].name, answersList),
       );
 
-      acronymsList.removeAt(qIndex);
+      modelsList.removeAt(qIndex);
     }
     questionList.shuffle();
 
     return questionList;
   }
 
-  int getRandomIndex(int acronymsModelListLenght) {
-    int acronymRandomIndex = Random().nextInt(acronymsModelListLenght - 1);
-    return acronymRandomIndex;
+  int getRandomIndex(int modelsListLenght) {
+    int modelRandomIndex = Random().nextInt(modelsListLenght - 1);
+    return modelRandomIndex;
   }
 }

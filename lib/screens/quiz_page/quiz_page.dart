@@ -1,20 +1,23 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
+import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/models/question_model.dart';
-import 'package:acronymous_app/repository/acronyms_repository.dart';
-import 'package:acronymous_app/repository/questions_repository.dart';
 import 'package:acronymous_app/screens/quiz_page/cubit/quiz_page_cubit.dart';
-import 'package:acronymous_app/services/database_helper.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @override
 class AcronymsQuizPage extends StatelessWidget {
-  const AcronymsQuizPage({Key? key, required this.quizLenght})
-      : super(key: key);
+  const AcronymsQuizPage({
+    Key? key,
+    required this.quizLenght,
+    required this.quizType,
+  }) : super(key: key);
 
   final int quizLenght;
+  final String quizType;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,15 +28,9 @@ class AcronymsQuizPage extends StatelessWidget {
       drawer: const DrawerMaster(
         selectedElement: DrawerElements.home,
       ),
-      body: BlocProvider(
+      body: BlocProvider<QuizPageCubit>(
         create: (context) {
-          return QuizPageCubit(
-            questionsRepository: QuestionsRepository(
-              acronymsRepository: AcronymsRepository(
-                databaseHelper: DatabaseHelper(),
-              ),
-            ),
-          )..createQuiz(quizLenght);
+          return getIt<QuizPageCubit>()..createQuiz(quizLenght, quizType);
         },
         child: BlocBuilder<QuizPageCubit, QuizPageState>(
           builder: (context, state) {
@@ -152,24 +149,34 @@ class AcronymsQuizPage extends StatelessWidget {
     return showDialog(
       context: context,
       builder: (_) => AlertDialog(
+        title: const Center(child: Text('Quiz Result')),
+        backgroundColor: Colors.grey.shade300,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20.0))),
         content: SizedBox(
-          height: 200,
+          height: 150,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'You answered correctly on ${state.score} from ${state.quizLenght} questions',
+                'Answered correctly on ${state.score} from ${state.quizLenght} questions.',
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 22),
+                style: const TextStyle(fontSize: 18),
               ),
-              Text(mark > 0.6 ? 'Great result' : 'You could do better'),
+              const SizedBox(height: 25),
+              Text(mark > 0.6
+                  ? 'Great result. You are the best!!'
+                  : 'You could do better... try again :) '),
             ],
           ),
         ),
-        title: const Text('Quiz Result'),
         actions: [
           TextButton(
             onPressed: () {
-              BlocProvider.of<QuizPageCubit>(context).createQuiz(quizLenght);
+              BlocProvider.of<QuizPageCubit>(context).createQuiz(
+                quizLenght,
+                quizType,
+              );
               Navigator.of(context).pop();
             },
             child: const Text('Play again!'),
