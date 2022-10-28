@@ -15,10 +15,8 @@ class DatabaseRepository {
 
   static const acronymsBinName = DatabaseHelper.acronymsTableName;
   static const acronymsBinID = '634d3c0e65b57a31e69950f6';
-
   static const metadataBinName = DatabaseHelper.metadataTableName;
   static const metadataBinID = '635936aa65b57a31e6a314b1';
-
   static const alphabetBinName = DatabaseHelper.alphabetTableName;
   static const alphabetBinID = '634d3c5b65b57a31e6995131';
   static const namesBinName = DatabaseHelper.namesTableName;
