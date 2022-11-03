@@ -7,7 +7,8 @@ import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
-import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
+import 'package:acronymous_app/screens/boarding_page/boarding_page.dart';
+import 'package:acronymous_app/screens/quiz_board_page/quiz_board_page.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,15 @@ class HomePage extends StatelessWidget {
       ),
       appBar: AppBar(
         title: const Text('Welcome to my app'),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => const BoardingPage(),
+                ));
+              },
+              icon: const Icon(Icons.info_outline)),
+        ],
       ),
       body: BlocProvider<HomePageCubit>(
         create: (context) => getIt<HomePageCubit>()..start(),
@@ -49,11 +59,14 @@ class HomePage extends StatelessWidget {
                     margin: const EdgeInsets.all(8),
                     child: Column(
                       children: [
-                        quizContainer(
-                            context, state, 'Acronymous Quiz', 'acronyms'),
-                        const SizedBox(height: 15),
-                        quizContainer(context, state, 'Names Quiz', 'names'),
-                        const SizedBox(height: 15),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => const QuizBoardPage(),
+                            ));
+                          },
+                          child: const Text('Quiz Page'),
+                        ),
                         alphabetContainer(context, state),
                         const SizedBox(height: 15),
                         acronymsContainer(context, state),
@@ -196,90 +209,6 @@ Widget acronymsList(BuildContext context, HomePageState state) {
         ),
       );
   }
-}
-
-Container quizContainer(
-    BuildContext context, HomePageState state, String title, String quizType) {
-  return Container(
-    padding: const EdgeInsets.all(12),
-    decoration: const BoxDecoration(
-      color: Colors.black12,
-      borderRadius: BorderRadius.all(
-        Radius.circular(16),
-      ),
-    ),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-                onPressed: () {
-                  BlocProvider.of<HomePageCubit>(context).quizLenghtSubt();
-                },
-                icon: const Icon(Icons.remove)),
-            Container(
-              width: 40,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(4),
-                ),
-              ),
-              child: Text(
-                state.quizLenghtValue.toString(),
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            IconButton(
-                onPressed: () {
-                  BlocProvider.of<HomePageCubit>(context).quizLenghtIncr();
-                },
-                icon: const Icon(Icons.add)),
-            const SizedBox(width: 15),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AcronymsQuizPage(
-                      quizLenght: state.quizLenghtValue,
-                      quizType: quizType,
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                ),
-                child: const Text(
-                  'Start Quiz',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
 }
 
 acronymCustomRow(BuildContext context, AcronymModel acronymModel) {

@@ -2,7 +2,6 @@ part of 'home_page_cubit.dart';
 
 class HomePageState {
   HomePageState({
-    this.quizLenghtValue = 0,
     this.alphabet = const [],
     this.randomAcronymsList = const [],
     this.errorMessage,
@@ -13,7 +12,6 @@ class HomePageState {
     this.statusAcronymsList = Status.initial,
   });
 
-  final int quizLenghtValue;
   final List<LetterModel> alphabet;
   final List<AcronymModel> randomAcronymsList;
 
@@ -26,7 +24,6 @@ class HomePageState {
   final Status statusAcronymsList;
 
   HomePageState copyWith({
-    int? quizLenghtValue,
     List<LetterModel>? alphabet,
     List<AcronymModel>? randomAcronymsList,
     String? errorMessage,
@@ -37,7 +34,6 @@ class HomePageState {
     Status? statusAcronymsList,
   }) {
     return HomePageState(
-      quizLenghtValue: quizLenghtValue ?? this.quizLenghtValue,
       alphabet: alphabet ?? this.alphabet,
       randomAcronymsList: randomAcronymsList ?? this.randomAcronymsList,
       errorMessage: errorMessage ?? this.errorMessage,

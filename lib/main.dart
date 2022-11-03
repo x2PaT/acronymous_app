@@ -4,8 +4,6 @@ import 'package:acronymous_app/screens/loading_page/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'screens/home_page/home_page.dart';
-
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
         create: (context) => getIt<LoadingPageCubit>()..start(),
         child: BlocBuilder<LoadingPageCubit, LoadingPageState>(
           builder: (context, state) {
-            return state.doneLoading ? const HomePage() : const LoadingPage();
+            return const LoadingPage();
           },
         ),
       ),

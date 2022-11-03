@@ -1,5 +1,4 @@
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/question_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/names_repository.dart';

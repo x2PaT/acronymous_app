@@ -3,6 +3,7 @@ import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
 import 'package:acronymous_app/screens/names_page/names_page.dart';
+import 'package:acronymous_app/screens/quiz_board_page/quiz_board_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerElements {
@@ -10,6 +11,7 @@ class DrawerElements {
   static const alphabet = 1;
   static const acronyms = 2;
   static const names = 3;
+  static const quizBoard = 4;
 }
 
 class DrawerMaster extends StatelessWidget {
@@ -59,6 +61,19 @@ class DrawerMaster extends StatelessWidget {
                 'HOME',
                 style: TextStyle(
                   fontWeight: selectedElement == DrawerElements.home
+                      ? FontWeight.bold
+                      : FontWeight.normal,
+                ),
+              ),
+            ),
+            ListTile(
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => const QuizBoardPage(),
+              )),
+              title: Text(
+                'QUIZ',
+                style: TextStyle(
+                  fontWeight: selectedElement == DrawerElements.quizBoard
                       ? FontWeight.bold
                       : FontWeight.normal,
                 ),

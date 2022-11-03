@@ -15,10 +15,7 @@ class HomePageCubit extends Cubit<HomePageState> {
 
   final AcronymsRepository acronymsRepository;
   final AlphabetRepository alphabetRepository;
-  final startQuizLenght = 4;
 
-  final minQuizLen = 1;
-  final maxQuizLen = 18;
   final randomAcronymsListLen = 12;
 
   Future<void> start() async {
@@ -37,7 +34,6 @@ class HomePageCubit extends Cubit<HomePageState> {
 
       emit(state.copyWith(
         randomAcronymsList: randomAcronyms,
-        quizLenghtValue: startQuizLenght,
         alphabet: alphabet,
         status: Status.success,
         statusAcronymsList: Status.success,
@@ -67,25 +63,5 @@ class HomePageCubit extends Cubit<HomePageState> {
       randomAcronymsList: randomAcronyms,
       statusAcronymsList: Status.success,
     ));
-  }
-
-  void quizLenghtSubt() {
-    if (state.quizLenghtValue <= minQuizLen) {
-      return;
-    } else {
-      final int newValue = state.quizLenghtValue - 1;
-
-      emit(state.copyWith(quizLenghtValue: newValue));
-    }
-  }
-
-  void quizLenghtIncr() {
-    if (state.quizLenghtValue >= maxQuizLen) {
-      return;
-    } else {
-      final int newValue = state.quizLenghtValue + 1;
-
-      emit(state.copyWith(quizLenghtValue: newValue));
-    }
   }
 }
