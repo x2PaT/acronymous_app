@@ -65,14 +65,36 @@ class AcronymsQuizPage extends StatelessWidget {
                       children: [
                         Container(
                           margin: const EdgeInsets.all(8),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                          child: Column(
                             children: [
-                              Text(
-                                'Question ${state.currentQuestion + 1}/${state.quizLenght}',
-                                style: const TextStyle(fontSize: 25),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Question ${state.currentQuestion + 1}/${state.quizLenght}',
+                                    style: const TextStyle(fontSize: 25),
+                                  ),
+                                ],
                               ),
-                              Text(state.score.toString()),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  for (var answer in state.answers) ...[
+                                    answerSelector(answer)
+                                  ],
+                                  for (var i = 0;
+                                      i <
+                                          (state.quizLenght -
+                                              state.answers.length);
+                                      i++) ...[
+                                    const Icon(
+                                      Icons.check_box,
+                                      color: Colors.grey,
+                                    )
+                                  ]
+                                ],
+                              ),
                             ],
                           ),
                         ),
@@ -87,7 +109,7 @@ class AcronymsQuizPage extends StatelessWidget {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: const StadiumBorder(),
-                                backgroundColor: state.isAnswerSelected
+                                primary: state.isAnswerSelected
                                     ? Colors.grey.shade500
                                     : Colors.orangeAccent),
                             onPressed: () {
@@ -159,12 +181,20 @@ class AcronymsQuizPage extends StatelessWidget {
     );
   }
 
+  Icon answerSelector(bool answer) {
+    if (answer) {
+      return const Icon(Icons.check_box, color: Colors.green);
+    } else {
+      return const Icon(Icons.check_box, color: Colors.red);
+    }
+  }
+
   Future<bool?> showPopDialog(BuildContext contextPass) async {
     return showDialog<bool>(
       context: contextPass,
       builder: (context) => AlertDialog(
         title: const Text('Are you sure?'),
-        content: const Text('You will lost quiz progress'),
+        content: const Text('You will lost quiz progress.'),
         actions: [
           ElevatedButton(
             onPressed: () {
@@ -246,12 +276,12 @@ class AnswerButton extends StatelessWidget {
       height: 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          foregroundColor: isSelected ? Colors.white : Colors.black,
-          backgroundColor: isSelected
+          primary: isSelected
               ? Colors.orangeAccent
               : state.isAnswerSelected
                   ? Colors.grey.shade200
                   : Colors.white,
+          onPrimary: isSelected ? Colors.white : Colors.black,
           shape: const StadiumBorder(),
         ),
         onPressed: () {

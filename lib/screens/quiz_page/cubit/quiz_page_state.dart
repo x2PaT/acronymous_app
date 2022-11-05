@@ -3,6 +3,7 @@ part of 'quiz_page_cubit.dart';
 class QuizPageState {
   QuizPageState({
     this.questions = const [],
+    this.answers = const [],
     this.quizLenght = 8,
     //
     this.selectedAnswer,
@@ -17,6 +18,7 @@ class QuizPageState {
   });
 
   final List<QuestionModel> questions;
+  final List<bool> answers;
   final int quizLenght;
 
   AnswerModel? selectedAnswer;
@@ -31,6 +33,7 @@ class QuizPageState {
 
   QuizPageState copyWith({
     List<QuestionModel>? questions,
+    List<bool>? answers,
     int? quizLenght,
     AnswerModel? selectedAnswer,
     int? currentQuestion,
@@ -43,6 +46,7 @@ class QuizPageState {
   }) {
     return QuizPageState(
       questions: questions ?? this.questions,
+      answers: answers ?? this.answers,
       quizLenght: quizLenght ?? this.quizLenght,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
       currentQuestion: currentQuestion ?? this.currentQuestion,

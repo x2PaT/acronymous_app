@@ -1,3 +1,4 @@
+import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
 import 'package:acronymous_app/app/injection_container.dart';
@@ -59,14 +60,35 @@ class HomePage extends StatelessWidget {
                     margin: const EdgeInsets.all(8),
                     child: Column(
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => const QuizBoardPage(),
-                            ));
-                          },
-                          child: const Text('Quiz Page'),
-                        ),
+                        InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => const QuizBoardPage()));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(22),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black54,
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                              height: 70,
+                              width: MediaQuery.of(context).size.width * 0.75,
+                              child: Center(
+                                child: Text(
+                                  'Start Quizing',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.mainAppColor),
+                                ),
+                              ),
+                            )),
+                        const SizedBox(height: 25),
                         alphabetContainer(context, state),
                         const SizedBox(height: 15),
                         acronymsContainer(context, state),
@@ -87,21 +109,38 @@ class HomePage extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const AlphabetPage()));
               },
-              child: const Text(
-                'Alphabet',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                height: 45,
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: Center(
+                  child: Text(
+                    'Alphabet',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.mainAppColor),
+                  ),
                 ),
               ),
             ),
           ],
         ),
+        const SizedBox(height: 10),
         SizedBox(
           height: 75,
           child: ListView.builder(
@@ -144,24 +183,42 @@ Column acronymsContainer(BuildContext context, HomePageState state) {
     children: [
       Stack(
         children: [
-          SizedBox(
+          Container(
+            padding: const EdgeInsets.all(15),
             width: MediaQuery.of(context).size.width,
-            child: TextButton(
-              onPressed: () {
+            child: InkWell(
+              onTap: () {
                 Navigator.of(context)
                     .push(MaterialPageRoute(builder: (_) => AcronymsPage()));
               },
-              child: const Text(
-                'Acronyms List',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                height: 45,
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: Center(
+                  child: Text(
+                    'Acronyms',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.mainAppColor),
+                  ),
                 ),
               ),
             ),
           ),
           Positioned(
-            right: 0,
+            top: 15,
+            right: 15,
             child: IconButton(
               onPressed: () {
                 BlocProvider.of<HomePageCubit>(context)

@@ -22,15 +22,21 @@ class LoadingPage extends StatelessWidget {
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 25),
-                    Text(
+                  children: [
+                    Image(
+                      image: const AssetImage('assets/acronymous-name.png'),
+                      color: const Color(0xFF77B277),
+                      width: MediaQuery.of(context).size.width * 0.75,
+                    ),
+                    const SizedBox(height: 25),
+                    const Text(
                       'Getting the app ready... please wait...',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    const SizedBox(height: 25),
+                    const CircularProgressIndicator(),
                   ],
                 ),
               ),

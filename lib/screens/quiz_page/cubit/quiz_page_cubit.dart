@@ -22,22 +22,33 @@ class QuizPageCubit extends Cubit<QuizPageState> {
     emit(QuizPageState());
 
     try {
-      List elementsList = [];
-      quizType == 'acronyms'
-          ? {elementsList = await acronymsRepository.getAcronymsModels()}
-          : {elementsList = await namesRepository.getNamesModels()};
-
-      final result = await questionsRepository.getQuizQuestions(
-        quizLenght,
-        elementsList,
-        quizType,
-      );
-
-      emit(state.copyWith(
-        quizLenght: quizLenght,
-        questions: result,
-        status: Status.success,
-      ));
+      switch (quizType) {
+        case 'acronyms':
+          final elementsList = await acronymsRepository.getAcronymsModels();
+          final result = await questionsRepository.getQuizQuestions(
+            quizLenght,
+            elementsList,
+            quizType,
+          );
+          emit(state.copyWith(
+            quizLenght: quizLenght,
+            questions: result,
+            status: Status.success,
+          ));
+          break;
+        case 'names':
+          final elementsList = await namesRepository.getNamesModels();
+          final result = await questionsRepository.getQuizQuestions(
+            quizLenght,
+            elementsList,
+            quizType,
+          );
+          emit(state.copyWith(
+            quizLenght: quizLenght,
+            questions: result,
+            status: Status.success,
+          ));
+      }
     } catch (error) {
       emit(state.copyWith(
         status: Status.error,
@@ -54,6 +65,7 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   }
 
   void checkAnswer({required AnswerModel? selectedAnswer}) {
+    List<bool> newAnswers = List.from(state.answers);
     if (state.isAnswerSelected && state.answersCounter < state.quizLenght) {
       state.answersCounter = state.answersCounter + 1;
 
@@ -62,6 +74,10 @@ class QuizPageCubit extends Cubit<QuizPageState> {
       }
       if (selectedAnswer!.isCorrect) {
         state.score = state.score + 1;
+
+        newAnswers.add(true);
+      } else {
+        newAnswers.add(false);
       }
     }
 
@@ -71,6 +87,7 @@ class QuizPageCubit extends Cubit<QuizPageState> {
       score: state.score,
       currentQuestion: state.currentQuestion,
       answersCounter: state.answersCounter,
+      answers: newAnswers,
     ));
   }
 

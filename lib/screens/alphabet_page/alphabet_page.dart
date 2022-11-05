@@ -1,3 +1,4 @@
+import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
 import 'package:acronymous_app/app/injection_container.dart';
@@ -91,9 +92,9 @@ class GridElement extends StatelessWidget {
         ));
       },
       child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.all(
+        decoration: BoxDecoration(
+          color: AppColors.mainAppColor,
+          borderRadius: const BorderRadius.all(
             Radius.circular(12),
           ),
         ),

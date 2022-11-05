@@ -44,6 +44,7 @@ dependencies:
   path_provider: ^2.0.11
   get_it: ^7.2.0
   json_annotation: ^4.7.0
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,9 @@ flutter:
     - assets/logo.png
     - assets/flutter_logo.png
     - assets/dart_logo.png
+    - assets/logo-a.png
+    - assets/acronymous-name.png
+    - assets/background-letters.png
     
   #   - images/a_dot_ham.jpeg
 

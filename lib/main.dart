@@ -1,3 +1,4 @@
+import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/screens/loading_page/cubit/loading_page_cubit.dart';
 import 'package:acronymous_app/screens/loading_page/loading_page.dart';
@@ -19,7 +20,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSwatch().copyWith(
+          // or from RGB
+
+          primary: AppColors.mainAppColor,
+        ),
       ),
       home: BlocProvider<LoadingPageCubit>(
         create: (context) => getIt<LoadingPageCubit>()..start(),

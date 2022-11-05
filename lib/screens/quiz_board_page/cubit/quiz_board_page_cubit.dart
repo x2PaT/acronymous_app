@@ -9,7 +9,7 @@ class QuizBoardPageCubit extends Cubit<QuizBoardPageState> {
   final startQuizLenght = 8;
 
   final minQuizLen = 2;
-  final maxQuizLen = 18;
+  final maxQuizLen = 12;
 
   void start() {
     emit(QuizBoardPageState(

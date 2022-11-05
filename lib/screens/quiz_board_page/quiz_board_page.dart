@@ -1,11 +1,21 @@
+import 'package:acronymous_app/app/core/colors.dart';
+import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
 import 'package:acronymous_app/screens/quiz_board_page/cubit/quiz_board_page_cubit.dart';
 import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class QuizBoardPage extends StatelessWidget {
+// ignore: must_be_immutable
+class QuizBoardPage extends StatefulWidget {
   const QuizBoardPage({super.key});
+
+  @override
+  State<QuizBoardPage> createState() => _QuizBoardPageState();
+}
+
+class _QuizBoardPageState extends State<QuizBoardPage> {
+  String? _quizTypesEnum;
 
   @override
   Widget build(BuildContext context) {
@@ -22,18 +32,134 @@ class QuizBoardPage extends StatelessWidget {
           builder: (context, state) {
             return Column(
               children: [
-                QuizContainer(
-                    context: context,
-                    state: state,
-                    title: 'Acronymous Quiz',
-                    quizType: 'acronyms'),
+                Column(
+                  children: [
+                    const Text('Select Type of quiz'),
+                    RadioListTile<String>(
+                      title: const Text('Acronyms'),
+                      value: QuizTypesEnum.acronyms.name,
+                      groupValue: _quizTypesEnum,
+                      onChanged: (value) {
+                        setState(() {
+                          _quizTypesEnum = value;
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('Names'),
+                      value: QuizTypesEnum.names.name,
+                      groupValue: _quizTypesEnum,
+                      onChanged: (value) {
+                        setState(() {
+                          _quizTypesEnum = value;
+                        });
+                      },
+                    ),
+                    Stack(
+                      children: [
+                        Positioned(
+                          top: 10,
+                          left: 150,
+                          child: RotationTransition(
+                            turns: const AlwaysStoppedAnimation(12 / 360),
+                            child: Text('In progress',
+                                style: TextStyle(
+                                    color: AppColors.mainAppColor,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                        RadioListTile<String>(
+                          title: const Text('Random Letters'),
+                          value: QuizTypesEnum.random.name,
+                          groupValue: _quizTypesEnum,
+                          onChanged: (value) {
+                            setState(() {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                          Text('In development, stay tuned')));
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 15),
-                QuizContainer(
-                    context: context,
-                    state: state,
-                    title: 'Names Quiz',
-                    quizType: 'names'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          BlocProvider.of<QuizBoardPageCubit>(context)
+                              .quizLenghtSubt();
+                        },
+                        icon: const Icon(Icons.remove)),
+                    Container(
+                      width: 40,
+                      alignment: Alignment.center,
+                      margin: const EdgeInsets.symmetric(horizontal: 10),
+                      padding: const EdgeInsets.all(5),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(4),
+                        ),
+                      ),
+                      child: Text(
+                        state.quizLenghtValue.toString(),
+                        style: const TextStyle(fontSize: 18),
+                      ),
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          BlocProvider.of<QuizBoardPageCubit>(context)
+                              .quizLenghtIncr();
+                        },
+                        icon: const Icon(Icons.add)),
+                    const SizedBox(width: 15),
+                  ],
+                ),
                 const SizedBox(height: 15),
+                InkWell(
+                    onTap: () {
+                      if (_quizTypesEnum != null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => AcronymsQuizPage(
+                              quizLenght: state.quizLenghtValue,
+                              quizType: _quizTypesEnum.toString(),
+                            ),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Choose quiz type')));
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(22),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black54,
+                            blurRadius: 10,
+                          ),
+                        ],
+                      ),
+                      height: 45,
+                      width: MediaQuery.of(context).size.width * 0.75,
+                      child: Center(
+                        child: Text(
+                          'Start Quiz',
+                          style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.mainAppColor),
+                        ),
+                      ),
+                    )),
               ],
             );
           },
