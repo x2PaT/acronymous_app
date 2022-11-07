@@ -80,7 +80,7 @@ class LetterPage extends StatelessWidget {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                             SizedBox(
                               width: 100,
                               child: Column(
@@ -118,7 +118,7 @@ class LetterPage extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            SizedBox(width: 20),
+                            const SizedBox(width: 20),
                           ],
                         ),
                       ),

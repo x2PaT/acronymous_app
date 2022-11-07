@@ -3,7 +3,6 @@ import 'package:acronymous_app/screens/home_page/home_page.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:acronymous_app/models/acronym_model.dart';
 
 class BoardPageWelcome extends StatelessWidget {
   const BoardPageWelcome({
@@ -42,7 +41,7 @@ class BoardPageWelcome extends StatelessWidget {
           const Placeholder(
             fallbackHeight: 200,
           ),
-          SizedBox(height: 30),
+          const SizedBox(height: 30),
           const Text(
             'Acronymous will help you to learn spelling of english alphabet.',
             textAlign: TextAlign.center,
@@ -89,13 +88,13 @@ class BoardPageTTS extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           const Text(
             'In app you can play many well know words that will help you to get familiar with english alphabet.',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 22),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           const Text(
             'Check it now!',
             textAlign: TextAlign.center,
