@@ -15,7 +15,7 @@ class AboutPage extends StatelessWidget {
         child: Column(
           children: [
             const Image(
-              image: AssetImage('assets/logo.png'),
+              image: AssetImage('assets/logo-a.png'),
               width: 150,
             ),
             const Text(

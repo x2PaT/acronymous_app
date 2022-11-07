@@ -18,7 +18,7 @@ class NamesPage extends StatelessWidget {
         title: const Text('Acronyms Page'),
       ),
       drawer: const DrawerMaster(
-        selectedElement: DrawerElements.acronyms,
+        selectedElement: DrawerElements.names,
       ),
       body: BlocProvider<NamesPageCubit>(
         create: (context) => getIt<NamesPageCubit>()..start(),
