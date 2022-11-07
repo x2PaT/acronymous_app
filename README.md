@@ -1,7 +1,7 @@
 
 # Acronymous
 
-An app will help you to learn the spelling of the English alphabet by solving quizzes where you can hear well-known words. 
+An app will help you to learn the pronunciation of the English alphabet by solving quizzes where you can hear well-known words. 
 
 Like common acronyms e.g. HBO, NBA, LG or English names letter by letter.
 
