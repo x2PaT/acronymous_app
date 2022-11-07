@@ -3,7 +3,6 @@ import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
-import 'package:acronymous_app/repository/database_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'home_page_state.dart';
@@ -12,122 +11,57 @@ class HomePageCubit extends Cubit<HomePageState> {
   HomePageCubit({
     required this.alphabetRepository,
     required this.acronymsRepository,
-    required this.databaseRepository,
   }) : super(HomePageState());
 
   final AcronymsRepository acronymsRepository;
   final AlphabetRepository alphabetRepository;
-  final DatabaseRepository databaseRepository;
-  final startQuizLen = 4;
 
-  final minQuizLen = 1;
-  final maxQuizLen = 18;
   final randomAcronymsListLen = 12;
 
-  start() async {
-    emit(
-      HomePageState(
-        status: Status.loading,
-        statusAcronymsList: Status.loading,
-        statusAlphabet: Status.loading,
-      ),
-    );
+  Future<void> start() async {
+    emit(state.copyWith(
+      status: Status.loading,
+      statusAcronymsList: Status.loading,
+      statusAlphabet: Status.loading,
+    ));
 
     try {
-      final internetConnection = await databaseRepository.readDataToDatabase();
+      final randomAcronyms = await acronymsRepository.getRandomAcronyms(
+        randomAcronymsListLen,
+      );
 
-      final randomAcronyms =
-          await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
       final alphabet = await alphabetRepository.getAlphabetModels();
 
-      emit(
-        HomePageState(
-          internetConnectionStatus: internetConnection,
-          randomAcronymsList: randomAcronyms,
-          quizLenghtValue: startQuizLen,
-          alphabet: alphabet,
-          status: Status.success,
-          statusAcronymsList: Status.success,
-          statusAlphabet: Status.success,
-        ),
-      );
-    } catch (error) {
-      emit(
-        HomePageState(
-          internetConnectionStatus: false,
-          status: Status.error,
-          statusAcronymsList: Status.error,
-          statusAlphabet: Status.error,
-          errorMessage: ('HomePageState ${error.toString()}'),
-          errorMessageAcronymsList:
-              ('HomePageStateAcronymsList ${error.toString()}'),
-          errorMessageAlphabet: ('HomePageStateAlphabet ${error.toString()}'),
-        ),
-      );
-    }
-  }
-
-  refreshRandomAcronymsList() async {
-    emit(
-      HomePageState(
-        statusAlphabet: Status.success,
-        status: Status.success,
-        statusAcronymsList: Status.loading,
-        quizLenghtValue: state.quizLenghtValue,
-        alphabet: state.alphabet,
-      ),
-    );
-
-    final randomAcronyms =
-        await acronymsRepository.getRandomAcronyms(randomAcronymsListLen);
-
-    emit(
-      HomePageState(
+      emit(state.copyWith(
         randomAcronymsList: randomAcronyms,
-        quizLenghtValue: state.quizLenghtValue,
-        alphabet: state.alphabet,
+        alphabet: alphabet,
         status: Status.success,
         statusAcronymsList: Status.success,
         statusAlphabet: Status.success,
-      ),
+      ));
+    } catch (error) {
+      emit(state.copyWith(
+        status: Status.error,
+        statusAcronymsList: Status.error,
+        statusAlphabet: Status.error,
+        errorMessage: ('HomePageState ${error.toString()}'),
+        errorMessageAcronymsList:
+            ('HomePageStateAcronymsList ${error.toString()}'),
+        errorMessageAlphabet: ('HomePageStateAlphabet ${error.toString()}'),
+      ));
+    }
+  }
+
+  Future<void> refreshRandomAcronymsList() async {
+    emit(state.copyWith(statusAcronymsList: Status.loading));
+
+    final randomAcronyms = await acronymsRepository.getRandomAcronyms(
+      randomAcronymsListLen,
     );
-  }
 
-  quizLenghtSubt() {
-    if (state.quizLenghtValue <= minQuizLen) {
-      return;
-    } else {
-      final int newValue = state.quizLenghtValue - 1;
-
-      emit(
-        HomePageState(
-          quizLenghtValue: newValue,
-          randomAcronymsList: state.randomAcronymsList,
-          alphabet: state.alphabet,
-          status: Status.success,
-          statusAcronymsList: Status.success,
-          statusAlphabet: Status.success,
-        ),
-      );
-    }
-  }
-
-  quizLenghtIncr() {
-    if (state.quizLenghtValue >= maxQuizLen) {
-      return;
-    } else {
-      final int newValue = state.quizLenghtValue + 1;
-
-      emit(
-        HomePageState(
-          randomAcronymsList: state.randomAcronymsList,
-          quizLenghtValue: newValue,
-          alphabet: state.alphabet,
-          status: Status.success,
-          statusAcronymsList: Status.success,
-          statusAlphabet: Status.success,
-        ),
-      );
-    }
+    emit(state.copyWith(
+      randomAcronymsList: randomAcronyms,
+      statusAcronymsList: Status.success,
+    ));
   }
 }

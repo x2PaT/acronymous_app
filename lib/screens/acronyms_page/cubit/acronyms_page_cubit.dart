@@ -3,18 +3,18 @@ import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'acronyms_browser_state.dart';
+part 'acronyms_page_state.dart';
 
-class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
-  AcronymsBrowserCubit({
+class AcronymsPageCubit extends Cubit<AcronymsPageState> {
+  AcronymsPageCubit({
     required this.acronymsRepository,
-  }) : super(AcronymsBrowserState());
+  }) : super(AcronymsPageState());
 
   final AcronymsRepository acronymsRepository;
 
   Future<void> start() async {
     emit(
-      AcronymsBrowserState(
+      AcronymsPageState(
         status: Status.loading,
       ),
     );
@@ -22,7 +22,7 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
       final result = await acronymsRepository.getAcronymsModels();
 
       emit(
-        AcronymsBrowserState(
+        AcronymsPageState(
           status: Status.success,
           results: result,
           searchResults: result,
@@ -30,17 +30,17 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
       );
     } catch (error) {
       emit(
-        AcronymsBrowserState(
+        AcronymsPageState(
           status: Status.error,
-          errorMessage: ('AcronymsBrowserState ${error.toString()}'),
+          errorMessage: ('AcronymsPageState ${error.toString()}'),
         ),
       );
     }
   }
 
-  filterAcronyms(String input) {
+  void filterAcronyms(String input) {
     emit(
-      AcronymsBrowserState(
+      AcronymsPageState(
         status: Status.loading,
         results: state.results,
         searchResults: state.searchResults,
@@ -54,25 +54,10 @@ class AcronymsBrowserCubit extends Cubit<AcronymsBrowserState> {
           acronymMeaning.contains(input.toLowerCase());
     }).toList();
 
-    emit(AcronymsBrowserState(
+    emit(AcronymsPageState(
       results: state.results,
       searchResults: searchResults,
       status: Status.success,
     ));
   }
 }
-
-
-
-
-    //  final searchResults = state.results.where(
-    //                     (acronym) {
-    //                       final acronymText = acronym.acronym.toLowerCase();
-    //                       final acronymMeaning = acronym.meaning.toLowerCase();
-    //                       final input = value.toLowerCase();
-
-    //                       return acronymText.contains(input) ||
-    //                           acronymMeaning.contains(input);
-    //                     },
-    //                   ).toList();
-    //                   setState(() => acronyms = searchResults);

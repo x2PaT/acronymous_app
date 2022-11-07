@@ -1,17 +1,15 @@
+import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/data/remote_data/fetch_api_data.dart';
+import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
-import 'package:acronymous_app/repository/acronyms_repository.dart';
-import 'package:acronymous_app/repository/alphabet_repository.dart';
-import 'package:acronymous_app/repository/database_repository.dart';
-import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
+import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
-import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
-import 'package:acronymous_app/services/database_helper.dart';
+import 'package:acronymous_app/screens/boarding_page/boarding_page.dart';
+import 'package:acronymous_app/screens/quiz_board_page/quiz_board_page.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -30,70 +28,76 @@ class HomePage extends StatelessWidget {
       ),
       appBar: AppBar(
         title: const Text('Welcome to my app'),
+        actions: [
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (_) => const BoardingPage(),
+          //       ));
+          //     },
+          //     icon: const Icon(Icons.info_outline)),
+        ],
       ),
-      body: BlocProvider(
-        create: (context) => HomePageCubit(
-          acronymsRepository: AcronymsRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-          alphabetRepository: AlphabetRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-          databaseRepository: DatabaseRepository(
-            databaseHelper: DatabaseHelper(),
-            fetchApiData: FetchApiData(),
-          ),
-        )..start(),
-        child: BlocListener<HomePageCubit, HomePageState>(
-          listener: (context, state) {
-            if (!state.internetConnectionStatus &&
-                (state.randomAcronymsList.isEmpty || state.alphabet.isEmpty)) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: SizedBox(
-                    height: 40,
-                    child: Text(
-                      'Check your internet connection!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.red, fontSize: 22),
+      body: BlocProvider<HomePageCubit>(
+        create: (context) => getIt<HomePageCubit>()..start(),
+        child: BlocBuilder<HomePageCubit, HomePageState>(
+          builder: (context, state) {
+            switch (state.status) {
+              case Status.initial:
+                return const Center(
+                  child: Text('Initial State'),
+                );
+              case Status.loading:
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              case Status.error:
+
+              case Status.success:
+                return SingleChildScrollView(
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    margin: const EdgeInsets.all(8),
+                    child: Column(
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (_) => const QuizBoardPage()));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(22),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Colors.black54,
+                                    blurRadius: 10,
+                                  ),
+                                ],
+                              ),
+                              height: 70,
+                              width: MediaQuery.of(context).size.width * 0.75,
+                              child: Center(
+                                child: Text(
+                                  'Start Quizing',
+                                  style: TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppColors.mainAppColor),
+                                ),
+                              ),
+                            )),
+                        const SizedBox(height: 25),
+                        alphabetContainer(context, state),
+                        const SizedBox(height: 15),
+                        acronymsContainer(context, state),
+                      ],
                     ),
                   ),
-                ),
-              );
+                );
             }
           },
-          child: BlocBuilder<HomePageCubit, HomePageState>(
-            builder: (context, state) {
-              switch (state.status) {
-                case Status.initial:
-                  return const Center(
-                    child: Text('Initial State'),
-                  );
-                case Status.loading:
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                case Status.error:
-
-                case Status.success:
-                  return SingleChildScrollView(
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      margin: const EdgeInsets.all(8),
-                      child: Column(
-                        children: [
-                          quizContainer(context, state),
-                          const SizedBox(height: 15),
-                          alphabetContainer(context, state),
-                          const SizedBox(height: 15),
-                          acronymsContainer(context, state),
-                        ],
-                      ),
-                    ),
-                  );
-              }
-            },
-          ),
         ),
       ),
     );
@@ -105,21 +109,38 @@ class HomePage extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            TextButton(
-              onPressed: () {
+            InkWell(
+              onTap: () {
                 Navigator.of(context).push(
                     MaterialPageRoute(builder: (_) => const AlphabetPage()));
               },
-              child: const Text(
-                'Alphabet',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                height: 45,
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: Center(
+                  child: Text(
+                    'Alphabet',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.mainAppColor),
+                  ),
                 ),
               ),
             ),
           ],
         ),
+        const SizedBox(height: 10),
         SizedBox(
           height: 75,
           child: ListView.builder(
@@ -162,24 +183,42 @@ Column acronymsContainer(BuildContext context, HomePageState state) {
     children: [
       Stack(
         children: [
-          SizedBox(
+          Container(
+            padding: const EdgeInsets.all(15),
             width: MediaQuery.of(context).size.width,
-            child: TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AcronymsPage()));
+            child: InkWell(
+              onTap: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (_) => AcronymsPage()));
               },
-              child: const Text(
-                'Acronyms List',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black54,
+                      blurRadius: 10,
+                    ),
+                  ],
+                ),
+                height: 45,
+                width: MediaQuery.of(context).size.width * 0.75,
+                child: Center(
+                  child: Text(
+                    'Acronyms',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.mainAppColor),
+                  ),
                 ),
               ),
             ),
           ),
           Positioned(
-            right: 0,
+            top: 15,
+            right: 15,
             child: IconButton(
               onPressed: () {
                 BlocProvider.of<HomePageCubit>(context)
@@ -219,7 +258,7 @@ Widget acronymsList(BuildContext context, HomePageState state) {
     case Status.error:
       return Center(
         child: Text(
-          state.errorMessage ?? 'Unkown error',
+          state.errorMessage ?? 'AcronymsList Unkown error',
           textAlign: TextAlign.center,
           style: TextStyle(
             color: Theme.of(context).errorColor,
@@ -227,88 +266,6 @@ Widget acronymsList(BuildContext context, HomePageState state) {
         ),
       );
   }
-}
-
-Container quizContainer(BuildContext context, HomePageState state) {
-  return Container(
-    padding: const EdgeInsets.all(12),
-    decoration: const BoxDecoration(
-      color: Colors.black12,
-      borderRadius: BorderRadius.all(
-        Radius.circular(16),
-      ),
-    ),
-    child: Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              'Acronymous Quiz',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            IconButton(
-                onPressed: () {
-                  BlocProvider.of<HomePageCubit>(context).quizLenghtSubt();
-                },
-                icon: const Icon(Icons.remove)),
-            Container(
-              width: 40,
-              alignment: Alignment.center,
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(5),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(4),
-                ),
-              ),
-              child: Text(
-                state.quizLenghtValue.toString(),
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            IconButton(
-                onPressed: () {
-                  BlocProvider.of<HomePageCubit>(context).quizLenghtIncr();
-                },
-                icon: const Icon(Icons.add)),
-            const SizedBox(width: 15),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AcronymsQuizPage(
-                      quizLenght: state.quizLenghtValue,
-                    ),
-                  ),
-                );
-              },
-              child: Container(
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                ),
-                child: const Text(
-                  'Start Quiz',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
 }
 
 acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
@@ -351,7 +308,10 @@ acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
               onPressed: () {
                 ttsService.speakTTS(acronymModel.acronymLetters);
               },
-              icon: const Icon(Icons.play_circle),
+              icon: const Icon(
+                Icons.play_circle_outline,
+                size: 32,
+              ),
             ),
           ],
         ),

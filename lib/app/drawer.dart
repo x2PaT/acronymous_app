@@ -1,13 +1,19 @@
+import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/screens/about_page/about_page.dart';
-import 'package:acronymous_app/screens/acronyms_browser/acronyms_browser.dart';
+import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
+import 'package:acronymous_app/screens/names_page/names_page.dart';
+import 'package:acronymous_app/screens/quiz_board_page/quiz_board_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerElements {
   static const home = 0;
   static const alphabet = 1;
   static const acronyms = 2;
+  static const names = 3;
+  static const quizBoard = 4;
+  static const about = 5;
 }
 
 class DrawerMaster extends StatelessWidget {
@@ -30,9 +36,10 @@ class DrawerMaster extends StatelessWidget {
           children: [
             Stack(
               children: [
-                const Positioned(
+                Positioned(
                   child: Image(
-                    image: AssetImage('assets/logo.png'),
+                    image: const AssetImage('assets/logo-a.png'),
+                    color: AppColors.mainAppColor,
                   ),
                 ),
                 Positioned(
@@ -45,58 +52,86 @@ class DrawerMaster extends StatelessWidget {
                 ),
               ],
             ),
-            const Text('Acronymous App'),
+            Image(
+              image: const AssetImage('assets/acronymous-name.png'),
+              color: AppColors.mainAppColor,
+            ),
             const Divider(
               thickness: 2,
             ),
-            ListTile(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const HomePage(),
-              )),
-              title: Text(
-                'HOME',
-                style: TextStyle(
-                  fontWeight: selectedElement == DrawerElements.home
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-              ),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'HOME',
+              drawerElementId: DrawerElements.home,
+              pageWidget: const HomePage(),
             ),
-            ListTile(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const AlphabetPage(),
-              )),
-              title: Text(
-                'ALPHABET',
-                style: TextStyle(
-                  fontWeight: selectedElement == DrawerElements.alphabet
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-              ),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'QUIZ',
+              drawerElementId: DrawerElements.quizBoard,
+              pageWidget: const QuizBoardPage(),
             ),
-            ListTile(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const AcronymsPage(),
-              )),
-              title: Text(
-                'ACRONYMS',
-                style: TextStyle(
-                  fontWeight: selectedElement == DrawerElements.acronyms
-                      ? FontWeight.bold
-                      : FontWeight.normal,
-                ),
-              ),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'ALPHABET',
+              drawerElementId: DrawerElements.alphabet,
+              pageWidget: const AlphabetPage(),
             ),
-            ListTile(
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (_) => const AboutPage(),
-              )),
-              title: const Text('About'),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'ACRONYMS',
+              drawerElementId: DrawerElements.acronyms,
+              pageWidget: AcronymsPage(),
+            ),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'NAMES',
+              drawerElementId: DrawerElements.names,
+              pageWidget: NamesPage(),
+            ),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'About',
+              drawerElementId: DrawerElements.about,
+              pageWidget: const AboutPage(),
             ),
           ],
         ),
       )),
+    );
+  }
+}
+
+class DrawerListTileItem extends StatelessWidget {
+  const DrawerListTileItem({
+    Key? key,
+    required this.selectedElement,
+    required this.title,
+    required this.drawerElementId,
+    required this.pageWidget,
+  }) : super(key: key);
+
+  final int selectedElement;
+  final String title;
+  final int drawerElementId;
+  final Widget pageWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      onTap: () {
+        Navigator.of(context).pop();
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => pageWidget,
+        ));
+      },
+      title: Text(
+        title,
+        style: selectedElement == drawerElementId
+            ? TextStyle(
+                fontWeight: FontWeight.bold, color: AppColors.mainAppColor)
+            : const TextStyle(fontWeight: FontWeight.normal),
+      ),
     );
   }
 }

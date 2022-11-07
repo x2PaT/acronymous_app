@@ -1,10 +1,10 @@
+import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/drawer.dart';
+import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/models/letter_model.dart';
-import 'package:acronymous_app/repository/alphabet_repository.dart';
 import 'package:acronymous_app/screens/alphabet_page/cubit/alphabet_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
-import 'package:acronymous_app/services/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,12 +20,8 @@ class AlphabetPage extends StatelessWidget {
       drawer: const DrawerMaster(
         selectedElement: DrawerElements.alphabet,
       ),
-      body: BlocProvider(
-        create: (context) => AlphabetPageCubit(
-          alphabelRepository: AlphabetRepository(
-            databaseHelper: DatabaseHelper(),
-          ),
-        )..start(),
+      body: BlocProvider<AlphabetPageCubit>(
+        create: (context) => getIt<AlphabetPageCubit>()..start(),
         child: BlocBuilder<AlphabetPageCubit, AlphabetPageState>(
           builder: (context, state) {
             switch (state.status) {
@@ -40,7 +36,7 @@ class AlphabetPage extends StatelessWidget {
               case Status.error:
                 return Center(
                   child: Text(
-                    state.errorMessage ?? 'Unkown error',
+                    state.errorMessage ?? 'AlphabetPageCubit Unkown error',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Theme.of(context).errorColor,
@@ -96,9 +92,9 @@ class GridElement extends StatelessWidget {
         ));
       },
       child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.amber,
-          borderRadius: BorderRadius.all(
+        decoration: BoxDecoration(
+          color: AppColors.mainAppColor,
+          borderRadius: const BorderRadius.all(
             Radius.circular(12),
           ),
         ),

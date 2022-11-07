@@ -18,7 +18,7 @@ class TTSService {
   }
 
   Future<void> speakTTS(String text) async {
-    initSetting();
+    await initSetting();
     await flutterTts.speak(text);
   }
 

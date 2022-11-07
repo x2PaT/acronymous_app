@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'letter_model.g.dart';
+
+@JsonSerializable()
 class LetterModel {
   LetterModel({
     required this.id,
@@ -12,21 +17,8 @@ class LetterModel {
   final String pronunciation;
   final String useFrequency;
 
-  LetterModel.fromJson(
-    Map<String, dynamic> json,
-  )   : id = json['id'],
-        letter = json['letter'],
-        name = json['name'],
-        pronunciation = json['pronunciation'],
-        useFrequency = json['useFrequency'];
+  factory LetterModel.fromJson(Map<String, dynamic> json) =>
+      _$LetterModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'letter': letter,
-      'name': name,
-      'pronunciation': pronunciation,
-      'useFrequency': useFrequency,
-    };
-  }
+  Map<String, dynamic> toJson() => _$LetterModelToJson(this);
 }
