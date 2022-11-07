@@ -1,7 +1,7 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
 import 'package:acronymous_app/screens/loading_page/cubit/loading_page_cubit.dart';
-import 'package:acronymous_app/screens/boarding_page/boarding_page.dart';
+// import 'package:acronymous_app/screens/boarding_page/boarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

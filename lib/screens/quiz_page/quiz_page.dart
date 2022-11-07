@@ -51,12 +51,13 @@ class AcronymsQuizPage extends StatelessWidget {
               case Status.success:
                 return WillPopScope(
                   onWillPop: () async {
-                    if (state.answersCounter != state.quizLenght) {
+                    if (state.answersCounter == 0 ||
+                        state.answersCounter == state.quizLenght) {
+                      return true;
+                    } else {
                       final doPop = await showPopDialog(context);
 
                       return doPop ?? false;
-                    } else {
-                      return true;
                     }
                   },
                   child: Container(
