@@ -42,7 +42,9 @@ class LoadingPage extends StatelessWidget {
               ),
             );
           case Status.success:
-            return state.isFirstRun ? const BoardingPage() : const HomePage();
+            return
+                // state.isFirstRun ? const BoardingPage() :
+                const HomePage();
           case Status.error:
             return Scaffold(
               body: Center(

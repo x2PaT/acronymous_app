@@ -116,7 +116,10 @@ class NameCustomRow extends StatelessWidget {
               onPressed: () {
                 ttsService.speakTTS(nameModel.nameLetters);
               },
-              icon: const Icon(Icons.play_circle),
+              icon: const Icon(
+                Icons.play_circle_outline,
+                size: 32,
+              ),
             ),
           ],
         ),

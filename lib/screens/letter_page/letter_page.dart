@@ -23,7 +23,8 @@ class LetterPage extends StatelessWidget {
         title: const Text('Letter page'),
       ),
       body: BlocProvider<LetterPageCubit>(
-        create: (context) => getIt<LetterPageCubit>()..start(letterID: letterID),
+        create: (context) =>
+            getIt<LetterPageCubit>()..start(letterID: letterID),
         child: BlocBuilder<LetterPageCubit, LetterPageState>(
           builder: (context, state) {
             switch (state.status) {
@@ -52,40 +53,74 @@ class LetterPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Column(
-                            children: [
-                              SizedBox(
-                                width: 60,
-                                child: Center(
-                                  child: Text(
-                                    letterModel.letter,
-                                    style: const TextStyle(fontSize: 32),
-                                  ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(22),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Colors.black54,
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        margin: const EdgeInsets.all(10).copyWith(bottom: 25),
+                        width: MediaQuery.of(context).size.width * 0.90,
+                        height: 70,
+                        child: Row(
+                          children: [
+                            SizedBox(
+                              width: 60,
+                              child: Center(
+                                child: Text(
+                                  letterModel.letter,
+                                  style: const TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(letterModel.pronunciation),
-                              Text(letterModel.name),
-                              Text(letterModel.useFrequency),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Text('PLAY'),
-                              IconButton(
-                                onPressed: () {
-                                  ttsService.speakTTS(letterModel.letter);
-                                },
-                                icon: const Icon(Icons.play_circle),
+                            ),
+                            SizedBox(width: 20),
+                            SizedBox(
+                              width: 100,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  const Text(
+                                    'Pronunciation',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Text(letterModel.pronunciation),
+                                      Text(letterModel.name),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            const Spacer(),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    ttsService.speakTTS(letterModel.letter);
+                                  },
+                                  icon: const Icon(
+                                    Icons.play_circle_outline,
+                                    size: 35,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 20),
+                          ],
+                        ),
                       ),
                       Expanded(
                         child: ListView.builder(
@@ -146,7 +181,10 @@ class AcronymCustomRow extends StatelessWidget {
                 onPressed: () {
                   ttsService.speakTTS(acronymModel.acronymLetters);
                 },
-                icon: const Icon(Icons.play_circle),
+                icon: const Icon(
+                  Icons.play_circle_outline,
+                  size: 32,
+                ),
               ),
             ],
           ),

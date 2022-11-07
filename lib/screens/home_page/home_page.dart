@@ -29,13 +29,13 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Welcome to my app'),
         actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => const BoardingPage(),
-                ));
-              },
-              icon: const Icon(Icons.info_outline)),
+          // IconButton(
+          //     onPressed: () {
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (_) => const BoardingPage(),
+          //       ));
+          //     },
+          //     icon: const Icon(Icons.info_outline)),
         ],
       ),
       body: BlocProvider<HomePageCubit>(
@@ -308,7 +308,10 @@ acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
               onPressed: () {
                 ttsService.speakTTS(acronymModel.acronymLetters);
               },
-              icon: const Icon(Icons.play_circle),
+              icon: const Icon(
+                Icons.play_circle_outline,
+                size: 32,
+              ),
             ),
           ],
         ),
