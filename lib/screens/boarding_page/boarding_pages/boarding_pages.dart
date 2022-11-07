@@ -1,5 +1,9 @@
+import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
+import 'package:acronymous_app/services/flutter_tts.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:acronymous_app/models/acronym_model.dart';
 
 class BoardPageWelcome extends StatelessWidget {
   const BoardPageWelcome({
@@ -34,9 +38,13 @@ class BoardPageWelcome extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 15),
+          const Text('add picture of alphabet'),
+          const Placeholder(
+            fallbackHeight: 200,
+          ),
+          SizedBox(height: 30),
           const Text(
-            'Acronymous will help you to learn spelling of english alphabet by solving Quiz where you can hear well know words.',
+            'Acronymous will help you to learn spelling of english alphabet.',
             textAlign: TextAlign.center,
             style: TextStyle(fontSize: 22),
           ),
@@ -74,13 +82,80 @@ class BoardPageTTS extends StatelessWidget {
           ]),
       child: Column(
         children: [
-          const Text('Boarding Page'),
+          const Text(
+            'Playing words!',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 20),
+          const Text(
+            'In app you can play many well know words that will help you to get familiar with english alphabet.',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 22),
+          ),
+          SizedBox(height: 20),
+          const Text(
+            'Check it now!',
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          acronymCustomRow(context,
+              AcronymModel(id: 1, acronym: 'HBO', meaning: 'Home Box Office')),
+          acronymCustomRow(context,
+              AcronymModel(id: 1, acronym: 'BP', meaning: 'British Petrolium')),
           const Spacer(),
           NextButton(index: index, pageController: pageController),
         ],
       ),
     );
   }
+}
+
+acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
+  return Card(
+    elevation: 5,
+    child: Container(
+      margin: const EdgeInsets.all(8),
+      height: 55,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.only(left: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    acronymModel.acronym,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  AutoSizeText(
+                    acronymModel.meaning,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          IconButton(
+            onPressed: () {
+              ttsService.speakTTS(acronymModel.acronymLetters);
+            },
+            icon: const Icon(
+              Icons.play_circle_outline,
+              size: 32,
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 class BoardPageQuiz extends StatelessWidget {

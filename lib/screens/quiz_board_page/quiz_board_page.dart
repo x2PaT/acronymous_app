@@ -34,7 +34,6 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
               children: [
                 Column(
                   children: [
-                    const Text('Select Type of quiz'),
                     RadioListTile<String>(
                       title: const Text('Acronyms'),
                       value: QuizTypesEnum.acronyms.name,

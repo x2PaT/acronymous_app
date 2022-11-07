@@ -2,7 +2,7 @@ import 'package:acronymous_app/app/injection_container.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/cubit/ancronym_webview_page_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class AncronymWebviewPage extends StatelessWidget {
   const AncronymWebviewPage({Key? key, required this.acronym})
@@ -21,10 +21,9 @@ class AncronymWebviewPage extends StatelessWidget {
         child: BlocBuilder<AncronymWebviewPageCubit, AncronymWebviewPageState>(
           builder: (context, state) {
             if (state.internetStatus) {
-              return WebviewScaffold(
-                url: "https://wikipedia.com/wiki/$acronym",
-                withZoom: true,
-                withLocalStorage: true,
+              return WebView(
+                initialUrl: "https://wikipedia.com/wiki/$acronym",
+                javascriptMode: JavascriptMode.unrestricted,
               );
             } else {
               return Center(

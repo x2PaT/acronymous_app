@@ -136,7 +136,10 @@ class AcronymCustomRow extends StatelessWidget {
                 onPressed: () {
                   ttsService.speakTTS(acronymModel.acronymLetters);
                 },
-                icon: const Icon(Icons.play_circle),
+                icon: const Icon(
+                  Icons.play_circle_outline,
+                  size: 32,
+                ),
               ),
             ],
           ),

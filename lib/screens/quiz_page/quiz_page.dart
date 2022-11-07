@@ -124,7 +124,10 @@ class AcronymsQuizPage extends StatelessWidget {
                                   'PLAY',
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(Icons.play_circle_outline),
+                                Icon(
+                                  Icons.play_circle_outline,
+                                  size: 32,
+                                ),
                               ],
                             ),
                           ),
