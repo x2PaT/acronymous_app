@@ -52,7 +52,7 @@ class NamesPage extends StatelessWidget {
                         controller: nameController,
                         decoration: InputDecoration(
                           prefixIcon: const Icon(Icons.search),
-                          hintText: 'Acronym or meaning',
+                          hintText: 'Name',
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(15),
                           ),

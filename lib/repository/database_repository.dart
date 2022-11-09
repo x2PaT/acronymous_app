@@ -32,6 +32,36 @@ class DatabaseRepository {
     }
   }
 
+  Future<void> createTableIfNotExist() async {
+    final currentTables = await databaseHelper.gettablesList();
+    final currentTablesList = currentTables.map((e) => e['name']).toList();
+
+    const tablesList = DatabaseHelper.tablesList;
+    const tablesNamesList = DatabaseHelper.tablesNamesList;
+
+    for (int i = 0; i < tablesNamesList.length; i++) {
+      var table = tablesNamesList[i];
+      currentTablesList.contains(table)
+          ? null
+          : databaseHelper.createTable(tablesList[i]);
+    }
+  }
+
+  Future<void> createUserWordsTableIfNotExist() async {
+    final tablesList = await databaseHelper.gettablesList();
+    var tableExist = false;
+
+    for (var table in tablesList) {
+      if (table['name'] == DatabaseHelper.userWordsTableName) {
+        tableExist = true;
+        break;
+      }
+      tableExist
+          ? null
+          : await databaseHelper.createTable(DatabaseHelper.userWordsTable);
+    }
+  }
+
   Future<void> writeDataToDatabase() async {
     await writeApiDataToDatabase(
       binName: acronymsBinName,

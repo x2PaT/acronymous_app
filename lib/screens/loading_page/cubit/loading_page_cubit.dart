@@ -18,6 +18,8 @@ class LoadingPageCubit extends Cubit<LoadingPageState> {
   Future<void> start() async {
     emit(state.copyWith(status: Status.loading));
 
+    await databaseRepository.createTableIfNotExist();
+
     try {
       final result = await InternetAddress.lookup('google.com');
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
