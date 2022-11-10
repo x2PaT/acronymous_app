@@ -54,11 +54,23 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
                         });
                       },
                     ),
+                    RadioListTile<String>(
+                      title: const Text('Random Letters'),
+                      value: QuizTypesEnum.randomLetters.name,
+                      groupValue: _quizTypesEnum,
+                      onChanged: (value) {
+                        setState(() {
+                          setState(() {
+                            _quizTypesEnum = value;
+                          });
+                        });
+                      },
+                    ),
                     Stack(
                       children: [
                         Positioned(
                           top: 10,
-                          left: 150,
+                          left: 130,
                           child: RotationTransition(
                             turns: const AlwaysStoppedAnimation(12 / 360),
                             child: Text('In progress',
@@ -68,8 +80,8 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
                           ),
                         ),
                         RadioListTile<String>(
-                          title: const Text('Random Letters'),
-                          value: QuizTypesEnum.random.name,
+                          title: const Text('New Games'),
+                          value: QuizTypesEnum.newGames.name,
                           groupValue: _quizTypesEnum,
                           onChanged: (value) {
                             setState(() {

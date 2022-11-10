@@ -11,12 +11,28 @@ class DatabaseHelper {
   static const alphabetTableName = 'alphabet';
   static const metadataTableName = 'metadata';
   static const namesTableName = 'names';
+  static const userWordsTableName = 'userword';
 
   static const primaryKeyType = 'INTEGER PRIMARY KEY';
+  static const primaryKeyTypeAutoInc = 'INTEGER PRIMARY KEY AUTOINCREMENT';
   static const intType = 'INTEGER';
   static const stringType = 'TEXT';
   static const boolType = 'BOOLEAN NOT NULL';
 
+  static const tablesNamesList = [
+    acronymsTableName,
+    alphabetTableName,
+    metadataTableName,
+    namesTableName,
+    userWordsTableName,
+  ];
+  static const tablesList = [
+    acronymsTable,
+    alphabetTable,
+    metadataTable,
+    namesTable,
+    userWordsTable,
+  ];
   static const acronymsTable =
       ('''CREATE TABLE if not exists $acronymsTableName 
       (id $primaryKeyType, 
@@ -44,6 +60,11 @@ CREATE TABLE if not exists $namesTableName
       (id $primaryKeyType, 
       name $stringType)''');
 
+  static const userWordsTable = ('''
+CREATE TABLE if not exists $userWordsTableName 
+      (id $primaryKeyType, 
+      word $stringType)''');
+
   static Future<Database> _initDatabase() async {
     Directory docDirectory = await getApplicationDocumentsDirectory();
     String path = join(docDirectory.path, databaseName);
@@ -55,10 +76,15 @@ CREATE TABLE if not exists $namesTableName
   }
 
   static Future _onCreate(Database db, int version) async {
-    await db.execute(acronymsTable);
-    await db.execute(alphabetTable);
-    await db.execute(metadataTable);
-    await db.execute(namesTable);
+    for (var table in tablesList) {
+      await db.execute(table);
+    }
+  }
+
+  Future<List> gettablesList() async {
+    Database db = await DatabaseHelper._initDatabase();
+    return db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name");
   }
 
   Future<void> createTable(String table) async {
@@ -100,6 +126,7 @@ CREATE TABLE if not exists $namesTableName
     Database db = await DatabaseHelper._initDatabase();
     return db.query(tableName, where: 'name = ?', whereArgs: [metadataName]);
   }
+
   Future<List<Map<String, dynamic>>> getOneRecordByID(
       String tableName, int id) async {
     Database db = await DatabaseHelper._initDatabase();

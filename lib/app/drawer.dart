@@ -5,6 +5,7 @@ import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
 import 'package:acronymous_app/screens/names_page/names_page.dart';
 import 'package:acronymous_app/screens/quiz_board_page/quiz_board_page.dart';
+import 'package:acronymous_app/screens/sandbox_page/sandbox_page.dart';
 import 'package:flutter/material.dart';
 
 class DrawerElements {
@@ -14,6 +15,7 @@ class DrawerElements {
   static const names = 3;
   static const quizBoard = 4;
   static const about = 5;
+  static const sandBox = 6;
 }
 
 class DrawerMaster extends StatelessWidget {
@@ -88,6 +90,12 @@ class DrawerMaster extends StatelessWidget {
               title: 'NAMES',
               drawerElementId: DrawerElements.names,
               pageWidget: NamesPage(),
+            ),
+            DrawerListTileItem(
+              selectedElement: selectedElement,
+              title: 'SANDBOX',
+              drawerElementId: DrawerElements.sandBox,
+              pageWidget:  SandBoxPage(),
             ),
             DrawerListTileItem(
               selectedElement: selectedElement,
