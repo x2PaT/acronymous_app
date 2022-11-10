@@ -26,13 +26,9 @@ void configureDependencies() {
   getIt.registerFactory(() => AcronymsPageCubit(acronymsRepository: getIt()));
   getIt.registerFactory(() => AlphabetPageCubit(alphabelRepository: getIt()));
   getIt.registerFactory(() => LoadingPageCubit(databaseRepository: getIt()));
+  getIt.registerFactory(() => QuizPageCubit(questionsRepository: getIt()));
   getIt.registerFactory(() => NamesPageCubit(namesRepository: getIt()));
   getIt.registerFactory(() => AncronymWebviewPageCubit());
-  getIt.registerFactory(() => QuizPageCubit(
-        namesRepository: getIt(),
-        acronymsRepository: getIt(),
-        questionsRepository: getIt(),
-      ));
   getIt.registerFactory(() => LetterPageCubit(
         acronymsRepository: getIt(),
         alphabetRepository: getIt(),
@@ -43,11 +39,15 @@ void configureDependencies() {
       ));
 
 //repository
-  getIt.registerFactory(() => (QuestionsRepository()));
   getIt.registerFactory(() => (SandboxRepository(databaseHelper: getIt())));
   getIt.registerFactory(() => (AcronymsRepository(databaseHelper: getIt())));
   getIt.registerFactory(() => (NamesRepository(databaseHelper: getIt())));
   getIt.registerFactory(() => (AlphabetRepository(databaseHelper: getIt())));
+  getIt.registerFactory(() => (QuestionsRepository(
+        acronymsRepository: getIt(),
+        namesRepository: getIt(),
+        alphabetRepository: getIt(),
+      )));
   getIt.registerFactory(() => (DatabaseRepository(
         databaseHelper: getIt(),
         fetchApiData: getIt(),

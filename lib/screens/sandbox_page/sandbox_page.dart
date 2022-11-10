@@ -84,8 +84,8 @@ class SandBoxPage extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      SizedBox(height: 15),
-                      Container(
+                      const SizedBox(height: 15),
+                      SizedBox(
                         height: 45,
                         width: MediaQuery.of(context).size.width * 0.75,
                         child: Center(
@@ -100,69 +100,67 @@ class SandBoxPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Container(
-                    child: Expanded(
-                      child: state.results.isEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Center(
-                                  child: Text(
-                                    'It is empty here, \ntry some words',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                  Expanded(
+                    child: state.results.isEmpty
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Center(
+                                child: Text(
+                                  'It is empty here, \ntry some words',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ],
-                            )
-                          : ListView.builder(
-                              itemCount: state.results.length,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  margin: const EdgeInsets.all(5),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          state.results[index].word,
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            itemCount: state.results.length,
+                            itemBuilder: (context, index) {
+                              return Card(
+                                margin: const EdgeInsets.all(5),
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        state.results[index].word,
+                                      ),
+                                      const Spacer(),
+                                      IconButton(
+                                        onPressed: () {
+                                          if (state.wordsMode) {
+                                            ttsService
+                                                .speakTTS(wordController.text);
+                                          } else {
+                                            ttsService.speakTTS(state
+                                                .results[index].word
+                                                .split('')
+                                                .join(', '));
+                                          }
+                                        },
+                                        icon: const Icon(
+                                          Icons.play_circle_outline,
+                                          size: 32,
                                         ),
-                                        const Spacer(),
-                                        IconButton(
+                                      ),
+                                      IconButton(
                                           onPressed: () {
-                                            if (state.wordsMode) {
-                                              ttsService.speakTTS(
-                                                  wordController.text);
-                                            } else {
-                                              ttsService.speakTTS(state
-                                                  .results[index].word
-                                                  .split('')
-                                                  .join(', '));
-                                            }
+                                            BlocProvider.of<SandboxPageCubit>(
+                                                    context)
+                                                .deleteWord(
+                                                    state.results[index].id);
                                           },
-                                          icon: const Icon(
-                                            Icons.play_circle_outline,
-                                            size: 32,
-                                          ),
-                                        ),
-                                        IconButton(
-                                            onPressed: () {
-                                              BlocProvider.of<SandboxPageCubit>(
-                                                      context)
-                                                  .deleteWord(
-                                                      state.results[index].id);
-                                            },
-                                            icon: const Icon(
-                                                Icons.delete_forever))
-                                      ],
-                                    ),
+                                          icon:
+                                              const Icon(Icons.delete_forever))
+                                    ],
                                   ),
-                                );
-                              },
-                            ),
-                    ),
+                                ),
+                              );
+                            },
+                          ),
                   ),
                 ],
               ),

@@ -60,121 +60,128 @@ class AcronymsQuizPage extends StatelessWidget {
                       return doPop ?? false;
                     }
                   },
-                  child: Container(
-                    margin: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.all(8),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    'Question ${state.currentQuestion + 1}/${state.quizLenght}',
-                                    style: const TextStyle(fontSize: 25),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  for (var answer in state.answers) ...[
-                                    answerSelector(answer)
+                  child: SingleChildScrollView(
+                    child: Container(
+                      margin: const EdgeInsets.all(24),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.all(8),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      'Question ${state.currentQuestion + 1}/${state.quizLenght}',
+                                      style: const TextStyle(fontSize: 25),
+                                    ),
                                   ],
-                                  for (var i = 0;
-                                      i <
-                                          (state.quizLenght -
-                                              state.answers.length);
-                                      i++) ...[
-                                    const Icon(
-                                      Icons.check_box,
-                                      color: Colors.grey,
-                                    )
-                                  ]
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Divider(
-                          endIndent: 15,
-                          thickness: 2,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          height: 45,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                primary: state.isAnswerSelected
-                                    ? Colors.grey.shade500
-                                    : Colors.orangeAccent),
-                            onPressed: () {
-                              ttsService.speakTTS(state
-                                  .questions[state.currentQuestion]
-                                  .questionLetters);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: const [
-                                Text(
-                                  'PLAY',
-                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                Icon(
-                                  Icons.play_circle_outline,
-                                  size: 32,
+                                const SizedBox(height: 10),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    for (var answer in state.answers) ...[
+                                      answerIconConstructor(answer)
+                                    ],
+                                    for (var i = 0;
+                                        i <
+                                            (state.quizLenght -
+                                                state.answers.length);
+                                        i++) ...[
+                                      const Icon(
+                                        Icons.check_box,
+                                        color: Colors.grey,
+                                      )
+                                    ]
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 25),
-                        Column(
-                          children:
-                              state.questions[state.currentQuestion].answersList
-                                  .map((answer) => AnswerButton(
-                                        answer: answer,
-                                        state: state,
-                                      ))
-                                  .toList(),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
+                          const Divider(
+                            endIndent: 15,
+                            thickness: 2,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            height: 45,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  shape: const StadiumBorder(),
+                                  primary: state.isAnswerSelected
+                                      ? Colors.grey.shade500
+                                      : Colors.orangeAccent),
                               onPressed: () {
-                                if (!state.isAnswerSelected) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text(
-                                        'Select answer!',
-                                        textAlign: TextAlign.center,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                BlocProvider.of<QuizPageCubit>(context)
-                                    .checkAnswer(
-                                  selectedAnswer: state.selectedAnswer,
-                                );
-                                if (state.answersCounter == state.quizLenght) {
-                                  showResultsDialog(context, state);
-                                }
-                                BlocProvider.of<QuizPageCubit>(context)
-                                    .isLastQuestionChecker();
+                                ttsService.speakTTS(state
+                                    .questions[state.currentQuestion]
+                                    .questionLetters);
                               },
-                              child: Text(
-                                state.isLastQuestion ? 'Show Results' : 'Next',
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: const [
+                                  Text(
+                                    'PLAY',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  Icon(
+                                    Icons.play_circle_outline,
+                                    size: 32,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                          const SizedBox(height: 25),
+                          Column(
+                            children: state
+                                .questions[state.currentQuestion].answersList
+                                .map((answer) => AnswerButton(
+                                      answer: answer,
+                                      state: state,
+                                    ))
+                                .toList(),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (!state.isAnswerSelected) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                          'Select answer!',
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  BlocProvider.of<QuizPageCubit>(context)
+                                      .checkAnswer(
+                                    selectedAnswer: state.selectedAnswer,
+                                  );
+                                  if (state.answersCounter ==
+                                      state.quizLenght) {
+                                    showResultsDialog(context, state);
+                                  }
+                                  BlocProvider.of<QuizPageCubit>(context)
+                                      .isLastQuestionChecker();
+                                },
+                                child: Text(
+                                  state.isLastQuestion
+                                      ? 'Show Results'
+                                      : 'Next',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 );
@@ -185,7 +192,7 @@ class AcronymsQuizPage extends StatelessWidget {
     );
   }
 
-  Icon answerSelector(bool answer) {
+  Icon answerIconConstructor(bool answer) {
     if (answer) {
       return const Icon(Icons.check_box, color: Colors.green);
     } else {

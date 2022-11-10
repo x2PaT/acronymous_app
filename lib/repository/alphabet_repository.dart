@@ -16,6 +16,19 @@ class AlphabetRepository {
     return json.map((item) => LetterModel.fromJson(item)).toList();
   }
 
+  Future<List<String>> getAlphabetLettersList() async {
+    final json = await databaseHelper.getTable(
+      DatabaseHelper.alphabetTableName,
+    );
+
+    return json
+        .map(
+          (item) => LetterModel.fromJson(item),
+        )
+        .map((e) => e.letter)
+        .toList();
+  }
+
   Future<LetterModel> getLetterModelWithID({required int letterID}) async {
     final result = await databaseHelper.getOneRecordByID(
       DatabaseHelper.alphabetTableName,
