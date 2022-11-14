@@ -1,5 +1,5 @@
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/app/injection_container.dart';
+import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/letter_page/cubit/letter_page_cubit.dart';

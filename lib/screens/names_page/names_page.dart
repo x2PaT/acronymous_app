@@ -1,6 +1,6 @@
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/app/injection_container.dart';
+import 'package:acronymous_app/app/widgets/drawer.dart';
+import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/models/name_model.dart';
 import 'package:acronymous_app/screens/names_page/cubit/names_page_cubit.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';

@@ -18,26 +18,17 @@ class LoadingPageCubit extends Cubit<LoadingPageState> {
   Future<void> start() async {
     emit(state.copyWith(status: Status.loading));
 
-    await databaseRepository.createTableIfNotExist();
+    bool internetConnection = await checkInternetConnection();
 
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        state.internetConnection = true;
-      }
-    } catch (e) {
-      state.internetConnection = false;
-    }
-
-    state.isFirstRun = await databaseRepository.isTableEmpty(
+    bool isFirstRun = await databaseRepository.isTableEmpty(
       DatabaseHelper.metadataTableName,
     );
 
-    print('isFirstRun ${state.isFirstRun}');
-    print('internetConnection ${state.internetConnection}');
+    print('isFirstRun $isFirstRun');
+    print('internetConnection $internetConnection');
 
-    if (state.isFirstRun) {
-      if (state.internetConnection) {
+    if (isFirstRun) {
+      if (internetConnection) {
         print('Writing data to database');
         await databaseRepository.writeDataToDatabase();
 
@@ -45,19 +36,17 @@ class LoadingPageCubit extends Cubit<LoadingPageState> {
           doneLoading: true,
           status: Status.success,
         ));
-      }
-      if (!state.internetConnection) {
+      } else {
         print('Please connect to internet');
 
+        await Future.delayed(const Duration(seconds: 2));
         emit(state.copyWith(
           doneLoading: false,
           status: Status.error,
         ));
       }
-    }
-
-    if (!state.isFirstRun) {
-      if (state.internetConnection) {
+    } else {
+      if (internetConnection) {
         print('Checking integrity with database');
 
         await databaseRepository.checkDatabaseIntegrity();
@@ -65,8 +54,7 @@ class LoadingPageCubit extends Cubit<LoadingPageState> {
           doneLoading: true,
           status: Status.success,
         ));
-      }
-      if (!state.internetConnection) {
+      } else {
         print('Connect to internet to get latest data');
         await Future.delayed(const Duration(seconds: 2));
 
@@ -76,5 +64,17 @@ class LoadingPageCubit extends Cubit<LoadingPageState> {
         ));
       }
     }
+  }
+
+  Future<bool> checkInternetConnection() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
+    return false;
   }
 }

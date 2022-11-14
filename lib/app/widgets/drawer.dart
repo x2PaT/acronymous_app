@@ -39,9 +39,12 @@ class DrawerMaster extends StatelessWidget {
             Stack(
               children: [
                 Positioned(
-                  child: Image(
-                    image: const AssetImage('assets/logo-a.png'),
-                    color: AppColors.mainAppColor,
+                  child: Container(
+                    margin: const EdgeInsets.all(50).copyWith(bottom: 0),
+                    child: Image(
+                      image: const AssetImage('assets/logo-a.png'),
+                      color: AppColors.mainAppColor,
+                    ),
                   ),
                 ),
                 Positioned(
@@ -95,7 +98,7 @@ class DrawerMaster extends StatelessWidget {
               selectedElement: selectedElement,
               title: 'SANDBOX',
               drawerElementId: DrawerElements.sandBox,
-              pageWidget:  SandBoxPage(),
+              pageWidget: SandBoxPage(),
             ),
             DrawerListTileItem(
               selectedElement: selectedElement,
