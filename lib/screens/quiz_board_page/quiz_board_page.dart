@@ -1,6 +1,6 @@
 import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/app/drawer.dart';
+import 'package:acronymous_app/app/widgets/drawer.dart';
 import 'package:acronymous_app/screens/quiz_board_page/cubit/quiz_board_page_cubit.dart';
 import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:flutter/material.dart';

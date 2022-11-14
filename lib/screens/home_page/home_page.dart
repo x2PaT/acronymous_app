@@ -1,7 +1,7 @@
 import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/app/injection_container.dart';
+import 'package:acronymous_app/app/widgets/drawer.dart';
+import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
@@ -68,7 +68,7 @@ class HomePage extends StatelessWidget {
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(22),
+                                borderRadius: BorderRadius.circular(12),
                                 boxShadow: const [
                                   BoxShadow(
                                     color: Colors.black54,
@@ -117,7 +117,7 @@ class HomePage extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: const [
                     BoxShadow(
                       color: Colors.black54,
@@ -194,7 +194,7 @@ Column acronymsContainer(BuildContext context, HomePageState state) {
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(22),
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: const [
                     BoxShadow(
                       color: Colors.black54,

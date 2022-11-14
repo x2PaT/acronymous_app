@@ -1,6 +1,6 @@
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/app/drawer.dart';
-import 'package:acronymous_app/app/injection_container.dart';
+import 'package:acronymous_app/app/widgets/drawer.dart';
+import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/models/acronym_model.dart';
 import 'package:acronymous_app/screens/acronyms_page/cubit/acronyms_page_cubit.dart';
 import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';

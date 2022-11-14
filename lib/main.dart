@@ -1,5 +1,5 @@
 import 'package:acronymous_app/app/core/colors.dart';
-import 'package:acronymous_app/app/injection_container.dart';
+import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/screens/loading_page/cubit/loading_page_cubit.dart';
 import 'package:acronymous_app/screens/loading_page/loading_page.dart';
 import 'package:flutter/material.dart';

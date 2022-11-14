@@ -47,37 +47,14 @@ class DatabaseRepository {
     }
   }
 
-  Future<void> createUserWordsTableIfNotExist() async {
-    final tablesList = await databaseHelper.gettablesList();
-    var tableExist = false;
-
-    for (var table in tablesList) {
-      if (table['name'] == DatabaseHelper.userWordsTableName) {
-        tableExist = true;
-        break;
-      }
-      tableExist
-          ? null
-          : await databaseHelper.createTable(DatabaseHelper.userWordsTable);
-    }
-  }
-
   Future<void> writeDataToDatabase() async {
-    await writeApiDataToDatabase(
-      binName: acronymsBinName,
-      binID: acronymsBinID,
-    );
-    await writeApiDataToDatabase(
-      binName: alphabetBinName,
-      binID: alphabetBinID,
-    );
-    await writeApiDataToDatabase(
-      binName: metadataBinName,
-      binID: metadataBinID,
-    );
-    await writeApiDataToDatabase(
-      binName: namesBinName,
-      binID: namesBinID,
+    await Future.wait(
+      [
+        writeApiDataToDatabase(binName: acronymsBinName, binID: acronymsBinID),
+        writeApiDataToDatabase(binName: alphabetBinName, binID: alphabetBinID),
+        writeApiDataToDatabase(binName: metadataBinName, binID: metadataBinID),
+        writeApiDataToDatabase(binName: namesBinName, binID: namesBinID),
+      ],
     );
   }
 
@@ -112,30 +89,6 @@ class DatabaseRepository {
 
         for (var item in jsonData) {
           await databaseHelper.createRecord(tableName, item);
-        }
-      }
-    }
-  }
-
-  // checkIftableExistInDB  -- not tested yet ;)
-  Future<void> checkIftableExistInDB(
-    List<dynamic> metadataApi,
-    List<Map<String, dynamic>> metadataDatabase,
-    List<dynamic> tableBinsNames,
-  ) async {
-    final List tableBinsNames = metadataDatabase.map((e) => e['name']).toList();
-
-    if (metadataApi.length != metadataDatabase.length) {
-      for (int i = 0; i < metadataApi.length; i++) {
-        if (tableBinsNames.contains(metadataApi[i]['name'])) {
-        } else {
-          print(databaseHelper.formatMetadata(metadataApi[i]));
-
-          await databaseHelper.createRecord(
-            DatabaseHelper.metadataTableName,
-            databaseHelper.formatMetadata(metadataApi[i]),
-          );
-          await databaseHelper.createTable(metadataApi[i]['sqlquery']);
         }
       }
     }
