@@ -33,37 +33,42 @@ class QuizPageCubit extends Cubit<QuizPageState> {
     }
   }
 
-  void selectAnswer(AnswerModel answer) {
+  void selectOption(QuizOptionModel option) {
     emit(state.copyWith(
-      isAnswerSelected: true,
-      selectedAnswer: answer,
+      isOptionSelected: true,
+      selectedOption: option,
     ));
   }
 
-  void checkAnswer({required AnswerModel? selectedAnswer}) {
-    List<bool> newAnswers = List.from(state.answers);
-    if (state.isAnswerSelected && state.answersCounter < state.quizLenght) {
-      state.answersCounter = state.answersCounter + 1;
+  void checkAnswer({required QuizOptionModel selectedOption}) {
+    List<QuizAnswerModel> newAnswers = List.from(state.answers);
+
+    final quizAnswerModel = QuizAnswerModel(
+      state.questions[state.currentQuestion].questionText,
+      selectedOption,
+    );
+
+    newAnswers.add(quizAnswerModel);
+
+    if (state.isOptionSelected && state.answeredQuestions < state.quizLenght) {
+      state.answeredQuestions = state.answeredQuestions + 1;
 
       if (!state.isLastQuestion) {
         state.currentQuestion = state.currentQuestion + 1;
       }
-      if (selectedAnswer!.isCorrect) {
-        state.score = state.score + 1;
 
-        newAnswers.add(true);
-      } else {
-        newAnswers.add(false);
+      if (selectedOption.isCorrect) {
+        state.score = state.score + 1;
       }
     }
 
     emit(state.copyWith(
-      isAnswerSelected: false,
-      selectedAnswer: null,
+      answers: newAnswers,
+      isOptionSelected: false,
+      selectedOption: null,
       score: state.score,
       currentQuestion: state.currentQuestion,
-      answersCounter: state.answersCounter,
-      answers: newAnswers,
+      answeredQuestions: state.answeredQuestions,
     ));
   }
 

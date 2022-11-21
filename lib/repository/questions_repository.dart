@@ -17,35 +17,36 @@ class QuestionsRepository {
   final NamesRepository namesRepository;
   final AlphabetRepository alphabetRepository;
 
-  Future<List<QuestionModel>> getQuizQuestions(
+  Future<List<QuizQuestionModel>> getQuizQuestions(
     int quizLenght,
     String quizType,
   ) async {
     switch (quizType) {
       case 'acronyms':
-        List<QuestionModel> questionList = [];
+        List<QuizQuestionModel> questionList = [];
         final elementsList = await acronymsRepository.getAcronymsModels();
 
         for (var i = 0; i < quizLenght; i++) {
           List<AcronymModel> subModelsList = List.from(elementsList);
 
-          List<AnswerModel> answersList = [];
+          List<QuizOptionModel> optionsList = [];
 
           int qIndex = getRandomIndex(elementsList.length);
 
-          answersList.add(AnswerModel(elementsList[qIndex].meaning, true));
+          optionsList.add(QuizOptionModel(elementsList[qIndex].meaning, true));
           subModelsList.removeAt(qIndex);
 
           for (var i = 0; i < 3; i++) {
             int aIndex = getRandomIndex(subModelsList.length);
-            answersList.add(AnswerModel(subModelsList[aIndex].meaning, false));
+            optionsList
+                .add(QuizOptionModel(subModelsList[aIndex].meaning, false));
             subModelsList.removeAt(aIndex);
           }
 
-          answersList.shuffle();
+          optionsList.shuffle();
 
-          questionList
-              .add(QuestionModel(elementsList[qIndex].acronym, answersList));
+          questionList.add(
+              QuizQuestionModel(elementsList[qIndex].acronym, optionsList));
 
           elementsList.removeAt(qIndex);
         }
@@ -54,29 +55,29 @@ class QuestionsRepository {
         return questionList;
 
       case 'names':
-        List<QuestionModel> questionList = [];
+        List<QuizQuestionModel> questionList = [];
         final elementsList = await namesRepository.getNamesModels();
 
         for (var i = 0; i < quizLenght; i++) {
           List<NameModel> subModelsList = List.from(elementsList);
 
-          List<AnswerModel> answersList = [];
+          List<QuizOptionModel> optionsList = [];
 
           int qIndex = getRandomIndex(elementsList.length);
 
-          answersList.add(AnswerModel(elementsList[qIndex].name, true));
+          optionsList.add(QuizOptionModel(elementsList[qIndex].name, true));
           subModelsList.removeAt(qIndex);
 
           for (var i = 0; i < 3; i++) {
             int aIndex = getRandomIndex(subModelsList.length);
-            answersList.add(AnswerModel(subModelsList[aIndex].name, false));
+            optionsList.add(QuizOptionModel(subModelsList[aIndex].name, false));
             subModelsList.removeAt(aIndex);
           }
 
-          answersList.shuffle();
+          optionsList.shuffle();
 
           questionList
-              .add(QuestionModel(elementsList[qIndex].name, answersList));
+              .add(QuizQuestionModel(elementsList[qIndex].name, optionsList));
 
           elementsList.removeAt(qIndex);
         }
@@ -86,9 +87,9 @@ class QuestionsRepository {
 
       case 'randomLetters':
         const int questionLenght = 6;
-        const int answersAmount = 4;
+        const int optionsAmount = 4;
         bool modeEightLetters = false;
-        List<QuestionModel> questionList = [];
+        List<QuizQuestionModel> questionList = [];
 
         final lettersListAll =
             await alphabetRepository.getAlphabetLettersList();
@@ -105,27 +106,27 @@ class QuestionsRepository {
             : lettersList = List.from(lettersListAll);
 
         for (var i = 0; i < quizLenght; i++) {
-          List<AnswerModel> answersList = [];
+          List<QuizOptionModel> optionsList = [];
 
           // build quiestion string
           String question = '';
           for (var i = 0; i < questionLenght; i++) {
             question += lettersList[getRandomIndex(lettersList.length)];
           }
-          answersList.add(AnswerModel(question, true));
+          optionsList.add(QuizOptionModel(question, true));
 
-          //build answers list
-          for (var i = 0; i < answersAmount - 1; i++) {
-            //build answer
-            String answer = '';
+          //build option list
+          for (var i = 0; i < optionsAmount - 1; i++) {
+            //build option
+            String option = '';
             for (var j = 0; j < questionLenght; j++) {
-              answer += lettersList[getRandomIndex(lettersList.length)];
+              option += lettersList[getRandomIndex(lettersList.length)];
             }
-            answersList.add(AnswerModel(answer, false));
+            optionsList.add(QuizOptionModel(option, false));
           }
-          answersList.shuffle();
+          optionsList.shuffle();
 
-          questionList.add(QuestionModel(question, answersList));
+          questionList.add(QuizQuestionModel(question, optionsList));
         }
 
         questionList.shuffle();

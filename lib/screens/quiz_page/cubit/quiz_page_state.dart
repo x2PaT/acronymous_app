@@ -6,41 +6,41 @@ class QuizPageState {
     this.answers = const [],
     this.quizLenght = 8,
     //
-    this.selectedAnswer,
+    this.selectedOption,
     this.currentQuestion = 0,
     this.score = 0,
     this.isLastQuestion = false,
-    this.isAnswerSelected = false,
-    this.answersCounter = 0,
+    this.isOptionSelected = false,
+    this.answeredQuestions = 0,
     //
     this.status = Status.initial,
     this.errorMessage,
   });
 
-  final List<QuestionModel> questions;
-  final List<bool> answers;
+  final List<QuizQuestionModel> questions;
+  final List<QuizAnswerModel> answers;
   final int quizLenght;
 
-  AnswerModel? selectedAnswer;
+  QuizOptionModel? selectedOption;
   int currentQuestion;
   int score;
   bool isLastQuestion;
-  bool isAnswerSelected;
-  int answersCounter;
+  bool isOptionSelected;
+  int answeredQuestions;
 
   final Status status;
   final String? errorMessage;
 
   QuizPageState copyWith({
-    List<QuestionModel>? questions,
-    List<bool>? answers,
+    List<QuizQuestionModel>? questions,
+    List<QuizAnswerModel>? answers,
     int? quizLenght,
-    AnswerModel? selectedAnswer,
+    QuizOptionModel? selectedOption,
     int? currentQuestion,
     int? score,
     bool? isLastQuestion,
-    bool? isAnswerSelected,
-    int? answersCounter,
+    bool? isOptionSelected,
+    int? answeredQuestions,
     Status? status,
     String? errorMessage,
   }) {
@@ -48,12 +48,12 @@ class QuizPageState {
       questions: questions ?? this.questions,
       answers: answers ?? this.answers,
       quizLenght: quizLenght ?? this.quizLenght,
-      selectedAnswer: selectedAnswer ?? this.selectedAnswer,
+      selectedOption: selectedOption ?? this.selectedOption,
       currentQuestion: currentQuestion ?? this.currentQuestion,
       score: score ?? this.score,
       isLastQuestion: isLastQuestion ?? this.isLastQuestion,
-      isAnswerSelected: isAnswerSelected ?? this.isAnswerSelected,
-      answersCounter: answersCounter ?? this.answersCounter,
+      isOptionSelected: isOptionSelected ?? this.isOptionSelected,
+      answeredQuestions: answeredQuestions ?? this.answeredQuestions,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
     );

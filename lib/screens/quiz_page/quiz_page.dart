@@ -51,8 +51,8 @@ class AcronymsQuizPage extends StatelessWidget {
               case Status.success:
                 return WillPopScope(
                   onWillPop: () async {
-                    if (state.answersCounter == 0 ||
-                        state.answersCounter == state.quizLenght) {
+                    if (state.answeredQuestions == 0 ||
+                        state.answeredQuestions == state.quizLenght) {
                       return true;
                     } else {
                       final doPop = await showPopDialog(context);
@@ -83,7 +83,8 @@ class AcronymsQuizPage extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     for (var answer in state.answers) ...[
-                                      answerIconConstructor(answer)
+                                      answerIconConstructor(
+                                          answer.selectedOption.isCorrect)
                                     ],
                                     for (var i = 0;
                                         i <
@@ -111,7 +112,7 @@ class AcronymsQuizPage extends StatelessWidget {
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                   shape: const StadiumBorder(),
-                                  primary: state.isAnswerSelected
+                                  primary: state.isOptionSelected
                                       ? Colors.grey.shade500
                                       : Colors.orangeAccent),
                               onPressed: () {
@@ -139,9 +140,9 @@ class AcronymsQuizPage extends StatelessWidget {
                           const SizedBox(height: 25),
                           Column(
                             children: state
-                                .questions[state.currentQuestion].answersList
-                                .map((answer) => AnswerButton(
-                                      answer: answer,
+                                .questions[state.currentQuestion].optionsList
+                                .map((option) => OptionButton(
+                                      option: option,
                                       state: state,
                                     ))
                                 .toList(),
@@ -151,7 +152,7 @@ class AcronymsQuizPage extends StatelessWidget {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  if (!state.isAnswerSelected) {
+                                  if (!state.isOptionSelected) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text(
@@ -160,17 +161,18 @@ class AcronymsQuizPage extends StatelessWidget {
                                         ),
                                       ),
                                     );
+                                  } else {
+                                    BlocProvider.of<QuizPageCubit>(context)
+                                        .checkAnswer(
+                                      selectedOption: state.selectedOption!,
+                                    );
+                                    if (state.answeredQuestions ==
+                                        state.quizLenght) {
+                                      showResultsDialog(context, state);
+                                    }
+                                    BlocProvider.of<QuizPageCubit>(context)
+                                        .isLastQuestionChecker();
                                   }
-                                  BlocProvider.of<QuizPageCubit>(context)
-                                      .checkAnswer(
-                                    selectedAnswer: state.selectedAnswer,
-                                  );
-                                  if (state.answersCounter ==
-                                      state.quizLenght) {
-                                    showResultsDialog(context, state);
-                                  }
-                                  BlocProvider.of<QuizPageCubit>(context)
-                                      .isLastQuestionChecker();
                                 },
                                 child: Text(
                                   state.isLastQuestion
@@ -272,15 +274,15 @@ class AcronymsQuizPage extends StatelessWidget {
   }
 }
 
-class AnswerButton extends StatelessWidget {
-  const AnswerButton({Key? key, required this.answer, required this.state})
+class OptionButton extends StatelessWidget {
+  const OptionButton({Key? key, required this.option, required this.state})
       : super(key: key);
   final QuizPageState state;
-  final AnswerModel answer;
+  final QuizOptionModel option;
 
   @override
   Widget build(BuildContext context) {
-    bool isSelected = answer == state.selectedAnswer;
+    bool isSelected = option == state.selectedOption;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -289,16 +291,16 @@ class AnswerButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           primary: isSelected
               ? Colors.orangeAccent
-              : state.isAnswerSelected
+              : state.isOptionSelected
                   ? Colors.grey.shade200
                   : Colors.white,
           onPrimary: isSelected ? Colors.white : Colors.black,
           shape: const StadiumBorder(),
         ),
         onPressed: () {
-          BlocProvider.of<QuizPageCubit>(context).selectAnswer(answer);
+          BlocProvider.of<QuizPageCubit>(context).selectOption(option);
         },
-        child: Text(answer.answerText),
+        child: Text(option.optionText),
       ),
     );
   }

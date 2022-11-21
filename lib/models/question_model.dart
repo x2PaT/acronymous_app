@@ -1,8 +1,8 @@
-class QuestionModel {
-  QuestionModel(this.questionText, this.answersList);
+class QuizQuestionModel {
+  QuizQuestionModel(this.questionText, this.optionsList);
 
   final String questionText;
-  final List<AnswerModel> answersList;
+  final List<QuizOptionModel> optionsList;
 
   String get questionLetters {
     // ABC >>> A, B, C
@@ -10,9 +10,16 @@ class QuestionModel {
   }
 }
 
-class AnswerModel {
-  AnswerModel(this.answerText, this.isCorrect);
+class QuizOptionModel {
+  QuizOptionModel(this.optionText, this.isCorrect);
 
-  final String answerText;
+  final String optionText;
   final bool isCorrect;
+}
+
+class QuizAnswerModel {
+  QuizAnswerModel(this.questionText, this.selectedOption);
+
+  final String questionText;
+  final QuizOptionModel selectedOption;
 }
