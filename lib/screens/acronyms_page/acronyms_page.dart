@@ -66,15 +66,32 @@ class AcronymsPage extends StatelessWidget {
                         },
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: state.searchResults.length,
-                          itemBuilder: (context, index) {
-                            AcronymModel acronymModel =
-                                state.searchResults[index];
-                            return AcronymCustomRow(
-                                context: context, acronymModel: acronymModel);
-                          },
-                        ),
+                        child: state.searchResults.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: state.searchResults.length,
+                                itemBuilder: (context, index) {
+                                  AcronymModel acronymModel =
+                                      state.searchResults[index];
+                                  return AcronymCustomRow(
+                                      context: context,
+                                      acronymModel: acronymModel);
+                                },
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Center(
+                                    child: Text(
+                                      'It is empty here, \ntry something else',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ],
                   ),

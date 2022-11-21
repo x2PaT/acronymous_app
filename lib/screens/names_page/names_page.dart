@@ -63,14 +63,31 @@ class NamesPage extends StatelessWidget {
                         },
                       ),
                       Expanded(
-                        child: ListView.builder(
-                          itemCount: state.searchResults.length,
-                          itemBuilder: (context, index) {
-                            NameModel nameModel = state.searchResults[index];
-                            return NameCustomRow(
-                                context: context, nameModel: nameModel);
-                          },
-                        ),
+                        child: state.searchResults.isNotEmpty
+                            ? ListView.builder(
+                                itemCount: state.searchResults.length,
+                                itemBuilder: (context, index) {
+                                  NameModel nameModel =
+                                      state.searchResults[index];
+                                  return NameCustomRow(
+                                      context: context, nameModel: nameModel);
+                                },
+                              )
+                            : Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Center(
+                                    child: Text(
+                                      'It is empty here, \ntry something else',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                       ),
                     ],
                   ),
