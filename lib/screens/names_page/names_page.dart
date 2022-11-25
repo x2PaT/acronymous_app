@@ -15,7 +15,7 @@ class NamesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Acronyms Page'),
+        title: const Text('Names Page'),
       ),
       drawer: const DrawerMaster(
         selectedElement: DrawerElements.names,
