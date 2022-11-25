@@ -10,6 +10,7 @@ import 'package:acronymous_app/screens/alphabet_page/cubit/alphabet_page_cubit.d
 import 'package:acronymous_app/screens/ancronym_webview_page/cubit/ancronym_webview_page_cubit.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/cubit/letter_page_cubit.dart';
+import 'package:acronymous_app/screens/listen_game_page/cubit/listen_game_cubit.dart';
 import 'package:acronymous_app/screens/loading_page/cubit/loading_page_cubit.dart';
 import 'package:acronymous_app/screens/names_page/cubit/names_page_cubit.dart';
 import 'package:acronymous_app/screens/quiz_page/cubit/quiz_page_cubit.dart';
@@ -22,7 +23,7 @@ final getIt = GetIt.instance;
 //bloc
 void configureDependencies() {
   getIt.registerFactory(() => SandboxPageCubit(sandboxRepository: getIt()));
-
+  getIt.registerFactory(() => ListenGamePageCubit(acronymsRepository: getIt()));
   getIt.registerFactory(() => AcronymsPageCubit(acronymsRepository: getIt()));
   getIt.registerFactory(() => AlphabetPageCubit(alphabelRepository: getIt()));
   getIt.registerFactory(() => LoadingPageCubit(databaseRepository: getIt()));

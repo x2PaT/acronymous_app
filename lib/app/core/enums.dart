@@ -1,3 +1,3 @@
 enum Status { initial, loading, success, error }
 
-enum QuizTypesEnum { acronyms, names, randomLetters, newGames }
+enum GamesTypesEnum { acronyms, names, randomLetters, listen, newGames }

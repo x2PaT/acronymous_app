@@ -1,67 +1,79 @@
 import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/widgets/drawer.dart';
-import 'package:acronymous_app/screens/quiz_board_page/cubit/quiz_board_page_cubit.dart';
+import 'package:acronymous_app/screens/games_page/cubit/games_page_cubit.dart';
+import 'package:acronymous_app/screens/listen_game_page/listen_game_page.dart';
 import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-// ignore: must_be_immutable
-class QuizBoardPage extends StatefulWidget {
-  const QuizBoardPage({super.key});
+class GamesPage extends StatefulWidget {
+  const GamesPage({super.key});
 
   @override
-  State<QuizBoardPage> createState() => _QuizBoardPageState();
+  State<GamesPage> createState() => _GamesPageState();
 }
 
-class _QuizBoardPageState extends State<QuizBoardPage> {
-  String? _quizTypesEnum;
+class _GamesPageState extends State<GamesPage> {
+  String? _gameTypesEnum;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Select quiz'),
+        title: const Text('Select game'),
       ),
       drawer: const DrawerMaster(
-        selectedElement: DrawerElements.quizBoard,
+        selectedElement: DrawerElements.games,
       ),
       body: BlocProvider(
-        create: (context) => QuizBoardPageCubit()..start(),
-        child: BlocBuilder<QuizBoardPageCubit, QuizBoardPageState>(
+        create: (context) => GamesPageCubit()..start(),
+        child: BlocBuilder<GamesPageCubit, GamesPageState>(
           builder: (context, state) {
             return Column(
               children: [
                 Column(
                   children: [
                     RadioListTile<String>(
-                      title: const Text('Acronyms'),
-                      value: QuizTypesEnum.acronyms.name,
-                      groupValue: _quizTypesEnum,
+                      title: const Text('Acronyms Quiz'),
+                      value: GamesTypesEnum.acronyms.name,
+                      groupValue: _gameTypesEnum,
                       onChanged: (value) {
                         setState(() {
-                          _quizTypesEnum = value;
+                          _gameTypesEnum = value;
                         });
                       },
                     ),
                     RadioListTile<String>(
-                      title: const Text('Names'),
-                      value: QuizTypesEnum.names.name,
-                      groupValue: _quizTypesEnum,
+                      title: const Text('Names Quiz'),
+                      value: GamesTypesEnum.names.name,
+                      groupValue: _gameTypesEnum,
                       onChanged: (value) {
                         setState(() {
-                          _quizTypesEnum = value;
+                          _gameTypesEnum = value;
                         });
                       },
                     ),
                     RadioListTile<String>(
-                      title: const Text('Random Letters'),
-                      value: QuizTypesEnum.randomLetters.name,
-                      groupValue: _quizTypesEnum,
+                      title: const Text('Random Letters Quiz'),
+                      value: GamesTypesEnum.randomLetters.name,
+                      groupValue: _gameTypesEnum,
                       onChanged: (value) {
                         setState(() {
                           setState(() {
-                            _quizTypesEnum = value;
+                            _gameTypesEnum = value;
+                          });
+                        });
+                      },
+                    ),
+                    RadioListTile<String>(
+                      title: const Text('Listen & Write Game'),
+                      value: GamesTypesEnum.listen.name,
+                      groupValue: _gameTypesEnum,
+                      onChanged: (value) {
+                        setState(() {
+                          setState(() {
+                            _gameTypesEnum = value;
                           });
                         });
                       },
@@ -81,8 +93,8 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
                         ),
                         RadioListTile<String>(
                           title: const Text('New Games'),
-                          value: QuizTypesEnum.newGames.name,
-                          groupValue: _quizTypesEnum,
+                          value: GamesTypesEnum.newGames.name,
+                          groupValue: _gameTypesEnum,
                           onChanged: (value) {
                             setState(() {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -102,7 +114,7 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
                   children: [
                     IconButton(
                         onPressed: () {
-                          BlocProvider.of<QuizBoardPageCubit>(context)
+                          BlocProvider.of<GamesPageCubit>(context)
                               .quizLenghtSubt();
                         },
                         icon: const Icon(Icons.remove)),
@@ -124,7 +136,7 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
                     ),
                     IconButton(
                         onPressed: () {
-                          BlocProvider.of<QuizBoardPageCubit>(context)
+                          BlocProvider.of<GamesPageCubit>(context)
                               .quizLenghtIncr();
                         },
                         icon: const Icon(Icons.add)),
@@ -134,18 +146,25 @@ class _QuizBoardPageState extends State<QuizBoardPage> {
                 const SizedBox(height: 15),
                 InkWell(
                     onTap: () {
-                      if (_quizTypesEnum != null) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => AcronymsQuizPage(
-                              quizLenght: state.quizLenghtValue,
-                              quizType: _quizTypesEnum.toString(),
+                      if (_gameTypesEnum != null) {
+                        if (_gameTypesEnum == GamesTypesEnum.listen.name) {
+                          Navigator.of(context).pushNamed(
+                            '/listenGame',
+                            arguments: state.quizLenghtValue,
+                          );
+                        } else {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => QuizPage(
+                                quizLenght: state.quizLenghtValue,
+                                quizType: _gameTypesEnum.toString(),
+                              ),
                             ),
-                          ),
-                        );
+                          );
+                        }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Choose quiz type')));
+                            const SnackBar(content: Text('Choose game type')));
                       }
                     },
                     child: Container(
@@ -189,7 +208,7 @@ class QuizContainer extends StatelessWidget {
       required this.quizType});
 
   final BuildContext context;
-  final QuizBoardPageState state;
+  final GamesPageState state;
   final String title;
   final String quizType;
 
@@ -221,8 +240,7 @@ class QuizContainer extends StatelessWidget {
             children: [
               IconButton(
                   onPressed: () {
-                    BlocProvider.of<QuizBoardPageCubit>(context)
-                        .quizLenghtSubt();
+                    BlocProvider.of<GamesPageCubit>(context).quizLenghtSubt();
                   },
                   icon: const Icon(Icons.remove)),
               Container(
@@ -243,8 +261,7 @@ class QuizContainer extends StatelessWidget {
               ),
               IconButton(
                   onPressed: () {
-                    BlocProvider.of<QuizBoardPageCubit>(context)
-                        .quizLenghtIncr();
+                    BlocProvider.of<GamesPageCubit>(context).quizLenghtIncr();
                   },
                   icon: const Icon(Icons.add)),
               const SizedBox(width: 15),
@@ -252,7 +269,7 @@ class QuizContainer extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => AcronymsQuizPage(
+                      builder: (context) => QuizPage(
                         quizLenght: state.quizLenghtValue,
                         quizType: quizType,
                       ),

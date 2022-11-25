@@ -2,9 +2,9 @@ import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/screens/about_page/about_page.dart';
 import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
 import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
+import 'package:acronymous_app/screens/games_page/games_page.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
 import 'package:acronymous_app/screens/names_page/names_page.dart';
-import 'package:acronymous_app/screens/quiz_board_page/quiz_board_page.dart';
 import 'package:acronymous_app/screens/sandbox_page/sandbox_page.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +13,7 @@ class DrawerElements {
   static const alphabet = 1;
   static const acronyms = 2;
   static const names = 3;
-  static const quizBoard = 4;
+  static const games = 4;
   static const about = 5;
   static const sandBox = 6;
 }
@@ -72,9 +72,9 @@ class DrawerMaster extends StatelessWidget {
             ),
             DrawerListTileItem(
               selectedElement: selectedElement,
-              title: 'QUIZ',
-              drawerElementId: DrawerElements.quizBoard,
-              pageWidget: const QuizBoardPage(),
+              title: 'GAMES',
+              drawerElementId: DrawerElements.games,
+              pageWidget: const GamesPage(),
             ),
             DrawerListTileItem(
               selectedElement: selectedElement,

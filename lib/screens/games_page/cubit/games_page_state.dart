@@ -1,7 +1,7 @@
-part of 'quiz_board_page_cubit.dart';
+part of 'games_page_cubit.dart';
 
-class QuizBoardPageState {
-  QuizBoardPageState({
+class GamesPageState {
+  GamesPageState({
     this.quizLenghtValue = 0,
     this.status = Status.initial,
     this.errorMessage,

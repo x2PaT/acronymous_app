@@ -19,6 +19,11 @@ class AcronymModel {
     return acronym.split('').join(', ');
   }
 
+  List<String> get acronymLettersList {
+    // ABC >>> A, B, C
+    return acronym.split('');
+  }
+
   factory AcronymModel.fromJson(Map<String, dynamic> json) =>
       _$AcronymModelFromJson(json);
 

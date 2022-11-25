@@ -1,10 +1,10 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'quiz_board_page_state.dart';
+part 'games_page_state.dart';
 
-class QuizBoardPageCubit extends Cubit<QuizBoardPageState> {
-  QuizBoardPageCubit() : super(QuizBoardPageState());
+class GamesPageCubit extends Cubit<GamesPageState> {
+  GamesPageCubit() : super(GamesPageState());
 
   final startQuizLenght = 8;
 
@@ -12,11 +12,11 @@ class QuizBoardPageCubit extends Cubit<QuizBoardPageState> {
   final maxQuizLen = 12;
 
   void start() {
-    emit(QuizBoardPageState(
+    emit(GamesPageState(
       status: Status.loading,
     ));
 
-    emit(QuizBoardPageState(
+    emit(GamesPageState(
       quizLenghtValue: startQuizLenght,
       status: Status.success,
     ));
@@ -28,7 +28,7 @@ class QuizBoardPageCubit extends Cubit<QuizBoardPageState> {
     } else {
       final int newValue = state.quizLenghtValue - 1;
 
-      emit(QuizBoardPageState(
+      emit(GamesPageState(
         quizLenghtValue: newValue,
         status: Status.success,
       ));
@@ -41,7 +41,7 @@ class QuizBoardPageCubit extends Cubit<QuizBoardPageState> {
     } else {
       final int newValue = state.quizLenghtValue + 1;
 
-      emit(QuizBoardPageState(
+      emit(GamesPageState(
         quizLenghtValue: newValue,
         status: Status.success,
       ));

@@ -23,3 +23,11 @@ class QuizAnswerModel {
   final String questionText;
   final QuizOptionModel selectedOption;
 }
+
+class GameAnswerModel {
+  GameAnswerModel(this.questionText, this.selectedText, this.isCorrect);
+
+  final String questionText;
+  final String selectedText;
+  final bool isCorrect;
+}
