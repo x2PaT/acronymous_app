@@ -1,6 +1,7 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/models/question_model.dart';
 import 'package:acronymous_app/repository/questions_repository.dart';
+import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'quiz_page_state.dart';
@@ -13,13 +14,16 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   final QuestionsRepository questionsRepository;
 
   Future<void> createQuiz(int quizLenght, String quizType) async {
-    emit(QuizPageState());
+    emit(QuizPageState(status: Status.loading));
 
     try {
       final result = await questionsRepository.getQuizQuestions(
         quizLenght,
         quizType,
       );
+
+      speakText(result[0].questionLetters);
+
       emit(state.copyWith(
         quizLenght: quizLenght,
         questions: result,
@@ -43,14 +47,7 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   void checkAnswer({required QuizOptionModel selectedOption}) {
     List<QuizAnswerModel> newAnswers = List.from(state.answers);
 
-    final quizAnswerModel = QuizAnswerModel(
-      state.questions[state.currentQuestion].questionText,
-      selectedOption,
-    );
-
-    newAnswers.add(quizAnswerModel);
-
-    if (state.isOptionSelected && state.answeredQuestions < state.quizLenght) {
+    if (state.answeredQuestions < state.quizLenght) {
       state.answeredQuestions = state.answeredQuestions + 1;
 
       if (!state.isLastQuestion) {
@@ -60,6 +57,14 @@ class QuizPageCubit extends Cubit<QuizPageState> {
       if (selectedOption.isCorrect) {
         state.score = state.score + 1;
       }
+
+      newAnswers.add(QuizAnswerModel(
+        state.questions[state.currentQuestion].questionText,
+        selectedOption,
+      ));
+    }
+    if (!state.isLastQuestion) {
+      speakText(state.questions[state.currentQuestion].questionLetters);
     }
 
     emit(state.copyWith(
@@ -79,5 +84,9 @@ class QuizPageCubit extends Cubit<QuizPageState> {
     emit(state.copyWith(
       isLastQuestion: state.isLastQuestion,
     ));
+  }
+
+  void speakText(text) {
+    ttsService.speakTTS(text);
   }
 }

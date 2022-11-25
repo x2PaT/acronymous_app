@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/models/question_model.dart';
@@ -7,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @override
-class AcronymsQuizPage extends StatelessWidget {
-  const AcronymsQuizPage({
+class QuizPage extends StatelessWidget {
+  const QuizPage({
     Key? key,
     required this.quizLenght,
     required this.quizType,
@@ -231,7 +233,8 @@ class AcronymsQuizPage extends StatelessWidget {
     );
   }
 
-  Future<void> showResultsDialog(BuildContext context, QuizPageState state) {
+  Future<void> showResultsDialog(
+      BuildContext context, QuizPageState state) async {
     final mark = state.score / state.quizLenght;
     return showDialog(
       context: context,

@@ -5,6 +5,7 @@ import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/models/letter_model.dart';
 import 'package:acronymous_app/screens/alphabet_page/cubit/alphabet_page_cubit.dart';
 import 'package:acronymous_app/screens/letter_page/letter_page.dart';
+import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +17,26 @@ class AlphabetPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Alphabet page'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                ..hideCurrentSnackBar()
+                ..showSnackBar(
+                  const SnackBar(
+                    content: Positioned(
+                      bottom: 20,
+                      child: Text(
+                        'Long press on letter to play sound',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                );
+            },
+            icon: const Icon(Icons.info),
+          ),
+        ],
       ),
       drawer: const DrawerMaster(
         selectedElement: DrawerElements.alphabet,
@@ -83,14 +104,7 @@ class GridElement extends StatelessWidget {
   final LetterModel letterModel;
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => LetterPage(
-            letterID: letterModel.id,
-          ),
-        ));
-      },
+    return Center(
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.mainAppColor,
@@ -98,12 +112,27 @@ class GridElement extends StatelessWidget {
             Radius.circular(12),
           ),
         ),
-        child: Center(
-          child: Text(
-            letterModel.letter,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onLongPress: () {
+              ttsService.speakTTS(letterModel.letter);
+            },
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => LetterPage(
+                  letterID: letterModel.id,
+                ),
+              ));
+            },
+            child: Center(
+              child: Text(
+                letterModel.letter,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
           ),
         ),
