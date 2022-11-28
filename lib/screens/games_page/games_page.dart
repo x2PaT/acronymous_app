@@ -2,8 +2,6 @@ import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/widgets/drawer.dart';
 import 'package:acronymous_app/screens/games_page/cubit/games_page_cubit.dart';
-import 'package:acronymous_app/screens/listen_game_page/listen_game_page.dart';
-import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -153,14 +151,10 @@ class _GamesPageState extends State<GamesPage> {
                             arguments: state.quizLenghtValue,
                           );
                         } else {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => QuizPage(
-                                quizLenght: state.quizLenghtValue,
-                                quizType: _gameTypesEnum.toString(),
-                              ),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed('/quiz', arguments: [
+                            state.quizLenghtValue,
+                            _gameTypesEnum.toString(),
+                          ]);
                         }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -182,7 +176,7 @@ class _GamesPageState extends State<GamesPage> {
                       width: MediaQuery.of(context).size.width * 0.75,
                       child: Center(
                         child: Text(
-                          'Start Quiz',
+                          'Start Game',
                           style: TextStyle(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
@@ -194,105 +188,6 @@ class _GamesPageState extends State<GamesPage> {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-class QuizContainer extends StatelessWidget {
-  const QuizContainer(
-      {super.key,
-      required this.context,
-      required this.state,
-      required this.title,
-      required this.quizType});
-
-  final BuildContext context;
-  final GamesPageState state;
-  final String title;
-  final String quizType;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: const BoxDecoration(
-        color: Colors.black12,
-        borderRadius: BorderRadius.all(
-          Radius.circular(16),
-        ),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                title,
-                style:
-                    const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                  onPressed: () {
-                    BlocProvider.of<GamesPageCubit>(context).quizLenghtSubt();
-                  },
-                  icon: const Icon(Icons.remove)),
-              Container(
-                width: 40,
-                alignment: Alignment.center,
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                padding: const EdgeInsets.all(5),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(4),
-                  ),
-                ),
-                child: Text(
-                  state.quizLenghtValue.toString(),
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
-              IconButton(
-                  onPressed: () {
-                    BlocProvider.of<GamesPageCubit>(context).quizLenghtIncr();
-                  },
-                  icon: const Icon(Icons.add)),
-              const SizedBox(width: 15),
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => QuizPage(
-                        quizLenght: state.quizLenghtValue,
-                        quizType: quizType,
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(5),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(4),
-                    ),
-                  ),
-                  child: const Text(
-                    'Start Quiz',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
     );
   }

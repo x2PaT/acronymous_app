@@ -213,9 +213,9 @@ class QuizPage extends StatelessWidget {
         actions: [
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop(false);
-              BlocProvider.of<QuizPageCubit>(contextPass)
-                  .createQuiz(quizLenght, quizType);
+
+              Navigator.of(context).pushReplacementNamed('/quiz',
+                  arguments: [quizLenght, quizType]);
             },
             child: const Text("START AGAIN"),
           ),
@@ -263,11 +263,9 @@ class QuizPage extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              BlocProvider.of<QuizPageCubit>(context).createQuiz(
-                quizLenght,
-                quizType,
-              );
               Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/quiz',
+                  arguments: [quizLenght, quizType]);
             },
             child: const Text('Play again!'),
           )

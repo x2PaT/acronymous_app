@@ -3,6 +3,7 @@ import 'package:acronymous_app/screens/games_page/games_page.dart';
 import 'package:acronymous_app/screens/home_page/home_page.dart';
 import 'package:acronymous_app/screens/listen_game_page/listen_game_page.dart';
 import 'package:acronymous_app/screens/loading_page/loading_page.dart';
+import 'package:acronymous_app/screens/quiz_page/quiz_page.dart';
 import 'package:flutter/material.dart';
 
 class RouteGeneretor {
@@ -21,7 +22,16 @@ class RouteGeneretor {
               builder: (_) => ListenGame(quizLenght: args));
         }
         return _errorRoute();
+      case '/quiz':
+        if (args is List) {
+          final int quizLenght = args[0];
+          final String quizType = args[1];
 
+          return MaterialPageRoute(
+              builder: (_) =>
+                  QuizPage(quizLenght: quizLenght, quizType: quizType));
+        }
+        return _errorRoute();
       default:
         return _errorRoute();
     }

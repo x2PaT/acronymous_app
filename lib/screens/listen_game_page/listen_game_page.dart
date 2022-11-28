@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print, deprecated_member_use
-
 import 'dart:async';
 
 import 'package:acronymous_app/app/core/enums.dart';
@@ -34,7 +32,7 @@ class _ListenGameState extends State<ListenGame> {
 
   @override
   void dispose() {
-    // errorController!.close();
+    errorController!.close();
 
     super.dispose();
   }
@@ -82,142 +80,190 @@ class _ListenGameState extends State<ListenGame> {
                 ),
               );
             case Status.success:
-              print(state.questions[state.currentQuestion].acronymLetters);
-              return Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      Text(
-                        'Question ${state.currentQuestion + 1}/${state.quizLenght}',
-                        style: const TextStyle(fontSize: 25),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      for (var answer in state.answers) ...[
-                        answerIconConstructor(answer.isCorrect)
-                      ],
-                      for (var i = 0;
-                          i < (state.quizLenght - state.answers.length);
-                          i++) ...[
-                        const Icon(
-                          Icons.check_box,
-                          color: Colors.grey,
-                        )
-                      ],
-                    ],
-                  ),
-                  const Divider(
-                    indent: 15,
-                    endIndent: 15,
-                    thickness: 2,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: 45,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          shape: const StadiumBorder(),
-                          primary: Colors.orangeAccent),
-                      onPressed: () {
-                        BlocProvider.of<ListenGamePageCubit>(context).speakText(
-                            state.questions[state.currentQuestion]
-                                .acronymLetters);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: const [
-                          Text(
-                            'PLAY',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          Icon(
-                            Icons.play_circle_outline,
-                            size: 32,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 25.0),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: PinCodeTextField(
-                      appContext: context,
-                      autoFocus: true,
-                      controller: textEditingController,
-                      cursorColor: Colors.black,
-                      length: state.listenTaskLenght,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      errorAnimationController: errorController,
-                      pastedTextStyle: TextStyle(
-                        color: Colors.green.shade600,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      animationType: AnimationType.fade,
-                      boxShadows: const [
-                        BoxShadow(
-                          offset: Offset(0, 3),
-                          color: Colors.black12,
-                          blurRadius: 10,
-                        )
-                      ],
-                      onChanged: (value) {},
-                      pinTheme: PinTheme(
-                        fieldOuterPadding: const EdgeInsets.all(3),
-                        shape: PinCodeFieldShape.box,
-                        borderRadius: BorderRadius.circular(5),
-                        fieldHeight: 50,
-                        fieldWidth: 35,
-                        activeFillColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          final String answerLetters =
-                              textEditingController.text.toUpperCase();
-                          final String questionLetters =
-                              state.questions[state.currentQuestion].acronym;
+              return WillPopScope(
+                onWillPop: () async {
+                  if (state.answeredQuestions == 0 ||
+                      state.answeredQuestions == state.quizLenght) {
+                    return true;
+                  } else {
+                    final doPop = await showPopDialog(context);
 
-                          if (state.answeredQuestions == state.quizLenght) {
-                            showResultsDialog(context, state);
-                          } else if (answerLetters.length ==
-                              questionLetters.length) {
-                            //check answer
-                            BlocProvider.of<ListenGamePageCubit>(context)
-                                .checkAnswer(answerLetters);
-
-                            textEditingController.clear();
-
-                            if (state.answeredQuestions == state.quizLenght) {
-                              showResultsDialog(context, state);
-                            }
-                            BlocProvider.of<ListenGamePageCubit>(context)
-                                .isLastQuestionChecker();
-                          } else {
-                            snackBarWidget('Select answer!');
-                            errorController!.add(ErrorAnimationType.shake);
-                          }
-                        },
-                        child: Text(
-                          state.isLastQuestion ? 'Show Results' : 'Next',
+                    return doPop ?? false;
+                  }
+                },
+                child: SingleChildScrollView(
+                  child: Container(
+                    margin: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Question ${state.currentQuestion + 1}/${state.quizLenght}',
+                              style: const TextStyle(fontSize: 25),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (var answer in state.answers) ...[
+                              answerIconConstructor(answer.isCorrect)
+                            ],
+                            for (var i = 0;
+                                i < (state.quizLenght - state.answers.length);
+                                i++) ...[
+                              const Icon(
+                                Icons.check_box,
+                                color: Colors.grey,
+                              )
+                            ],
+                          ],
+                        ),
+                        const Divider(
+                          indent: 15,
+                          endIndent: 15,
+                          thickness: 2,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: 45,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                primary: Colors.orangeAccent),
+                            onPressed: () {
+                              BlocProvider.of<ListenGamePageCubit>(context)
+                                  .speakText(state
+                                      .questions[state.currentQuestion]
+                                      .acronymLetters);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: const [
+                                Text(
+                                  'PLAY',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Icon(
+                                  Icons.play_circle_outline,
+                                  size: 32,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 25.0),
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: PinCodeTextField(
+                            appContext: context,
+                            autoFocus: true,
+                            controller: textEditingController,
+                            cursorColor: Colors.black,
+                            length: state.listenTaskLenght,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            errorAnimationController: errorController,
+                            pastedTextStyle: TextStyle(
+                              color: Colors.green.shade600,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            animationType: AnimationType.fade,
+                            boxShadows: const [
+                              BoxShadow(
+                                offset: Offset(0, 3),
+                                color: Colors.black12,
+                                blurRadius: 10,
+                              )
+                            ],
+                            onChanged: (value) {},
+                            pinTheme: PinTheme(
+                              fieldOuterPadding: const EdgeInsets.all(3),
+                              shape: PinCodeFieldShape.box,
+                              borderRadius: BorderRadius.circular(5),
+                              fieldHeight: 50,
+                              fieldWidth: 35,
+                              activeFillColor: Colors.white,
+                            ),
+                          ),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                final String answerLetters =
+                                    textEditingController.text.toUpperCase();
+                                final String questionLetters = state
+                                    .questions[state.currentQuestion].acronym;
+
+                                if (state.answeredQuestions ==
+                                    state.quizLenght) {
+                                  showResultsDialog(context, state);
+                                } else if (answerLetters.length ==
+                                    questionLetters.length) {
+                                  //check answer
+                                  BlocProvider.of<ListenGamePageCubit>(context)
+                                      .checkAnswer(answerLetters);
+
+                                  textEditingController.clear();
+
+                                  if (state.answeredQuestions ==
+                                      state.quizLenght) {
+                                    showResultsDialog(context, state);
+                                  }
+                                  BlocProvider.of<ListenGamePageCubit>(context)
+                                      .isLastQuestionChecker();
+                                } else {
+                                  snackBarWidget('Select answer!');
+                                  errorController!
+                                      .add(ErrorAnimationType.shake);
+                                }
+                              },
+                              child: Text(
+                                state.isLastQuestion ? 'Show Results' : 'Next',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ],
+                ),
               );
           }
         }),
+      ),
+    );
+  }
+
+  Future<bool?> showPopDialog(BuildContext contextPass) async {
+    return showDialog<bool>(
+      context: contextPass,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure?'),
+        content: const Text('You will lost quiz progress.'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/listenGame',
+                  arguments: widget.quizLenght);
+            },
+            child: const Text("START AGAIN"),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("NO"),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text("YES"),
+          ),
+        ],
       ),
     );
   }
@@ -252,8 +298,8 @@ class _ListenGameState extends State<ListenGame> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/listenGame', ModalRoute.withName('/'),
+              Navigator.of(context).pop();
+              Navigator.of(context).pushReplacementNamed('/listenGame',
                   arguments: widget.quizLenght);
             },
             child: const Text('Play again!'),

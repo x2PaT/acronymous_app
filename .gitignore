@@ -47,15 +47,5 @@ app.*.map.json
 /android/app/release
 lib/main_test.dart
 lib/data/jsons/
-macos/Flutter/GeneratedPluginRegistrant.swift
-windows/flutter/generated_plugin_registrant.cc
-windows/flutter/generated_plugins.cmake
-linux/flutter/generated_plugin_registrant.cc
-linux/flutter/generated_plugin_registrant.h
-linux/flutter/generated_plugins.cmake
-macos/Flutter/GeneratedPluginRegistrant.swift
-windows/flutter/generated_plugin_registrant.cc
-windows/flutter/generated_plugin_registrant.h
-windows/flutter/generated_plugins.cmake
-lib/screens/home_page/home_page_old.dart
 lib/services/app_preferences.dart
+macos/Flutter/GeneratedPluginRegistrant.swift
