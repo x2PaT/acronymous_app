@@ -1,4 +1,5 @@
 import 'package:acronymous_app/app/core/colors.dart';
+import 'package:acronymous_app/app/utils.dart';
 import 'package:acronymous_app/app/widgets/drawer.dart';
 import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/screens/sandbox_page/cubit/sandbox_page_cubit.dart';
@@ -59,10 +60,7 @@ class SandBoxPage extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           if (wordController.text.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text('Text field cannot be empty!')));
+                            showSnackBar(context, 'Text field cannot be empty');
                           } else {
                             BlocProvider.of<SandboxPageCubit>(context)
                                 .addWord(wordController.text);

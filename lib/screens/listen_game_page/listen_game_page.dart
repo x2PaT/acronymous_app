@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/injectable.dart';
+import 'package:acronymous_app/app/utils.dart';
 import 'package:acronymous_app/screens/listen_game_page/cubit/listen_game_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,19 +36,6 @@ class _ListenGameState extends State<ListenGame> {
     errorController!.close();
 
     super.dispose();
-  }
-
-  // snackBar Widget
-  snackBarWidget(String? message) {
-    return ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          message!,
-          textAlign: TextAlign.center,
-        ),
-        duration: const Duration(seconds: 2),
-      ),
-    );
   }
 
   @override
@@ -134,7 +122,7 @@ class _ListenGameState extends State<ListenGame> {
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 shape: const StadiumBorder(),
-                                primary: Colors.orangeAccent),
+                                backgroundColor: Colors.orangeAccent),
                             onPressed: () {
                               BlocProvider.of<ListenGamePageCubit>(context)
                                   .speakText(state
@@ -218,7 +206,7 @@ class _ListenGameState extends State<ListenGame> {
                                   BlocProvider.of<ListenGamePageCubit>(context)
                                       .isLastQuestionChecker();
                                 } else {
-                                  snackBarWidget('Select answer!');
+                                  showSnackBar(context, 'Select answer!');
                                   errorController!
                                       .add(ErrorAnimationType.shake);
                                 }

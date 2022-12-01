@@ -2,6 +2,7 @@
 
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/injectable.dart';
+import 'package:acronymous_app/app/utils.dart';
 import 'package:acronymous_app/models/question_model.dart';
 import 'package:acronymous_app/screens/quiz_page/cubit/quiz_page_cubit.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
@@ -155,14 +156,7 @@ class QuizPage extends StatelessWidget {
                               ElevatedButton(
                                 onPressed: () {
                                   if (!state.isOptionSelected) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                        content: Text(
-                                          'Select answer!',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ),
-                                    );
+                                    showSnackBar(context, 'Select answer');
                                   } else {
                                     BlocProvider.of<QuizPageCubit>(context)
                                         .checkAnswer(
@@ -213,7 +207,6 @@ class QuizPage extends StatelessWidget {
         actions: [
           ElevatedButton(
             onPressed: () {
-
               Navigator.of(context).pushReplacementNamed('/quiz',
                   arguments: [quizLenght, quizType]);
             },

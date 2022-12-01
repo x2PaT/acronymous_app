@@ -1,5 +1,6 @@
 import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
+import 'package:acronymous_app/app/utils.dart';
 import 'package:acronymous_app/app/widgets/drawer.dart';
 import 'package:acronymous_app/screens/games_page/cubit/games_page_cubit.dart';
 import 'package:flutter/material.dart';
@@ -95,10 +96,8 @@ class _GamesPageState extends State<GamesPage> {
                           groupValue: _gameTypesEnum,
                           onChanged: (value) {
                             setState(() {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text('In development, stay tuned')));
+                              showSnackBar(
+                                  context, 'In development, stay tuned');
                             });
                           },
                         ),
@@ -157,8 +156,7 @@ class _GamesPageState extends State<GamesPage> {
                           ]);
                         }
                       } else {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Choose game type')));
+                        showSnackBar(context, 'Choose game type');
                       }
                     },
                     child: Container(
