@@ -8,6 +8,11 @@ void launchMail() async {
   await launchUrl(mailtoUri);
 }
 
+void launchHttps(String url) async {
+  final Uri urlUri = Uri(scheme: 'https', path: url);
+  await launchUrl(urlUri);
+}
+
 showSnackBar(context, String message) {
   return ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()

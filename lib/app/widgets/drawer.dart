@@ -31,27 +31,10 @@ class DrawerMaster extends StatelessWidget {
       child: Drawer(
           child: Column(
         children: [
-          Stack(
-            children: [
-              Container(
-                margin: const EdgeInsets.all(65).copyWith(bottom: 0),
-                child: Image(
-                  image: const AssetImage('assets/logo-a.png'),
-                  color: AppColors.mainAppColor,
-                ),
-              ),
-              Positioned(
-                right: 10,
-                top: 45,
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: const Icon(Icons.close),
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25),
+          Container(
+            color: Colors.white,
+            padding:
+                const EdgeInsets.only(left: 25, right: 25, bottom: 10, top: 50),
             child: Image(
               image: const AssetImage('assets/acronymous-name.png'),
               color: AppColors.mainAppColor,
@@ -230,22 +213,5 @@ class DrawerListTileItem extends StatelessWidget {
         ),
       ),
     );
-    // ListTile(
-    //   minLeadingWidth: 15,
-    //   leading: const Icon(Icons.abc),
-    //   title: Text(
-    //     title,
-    //     style: selectedElement == drawerElementId
-    //         ? TextStyle(
-    //             fontWeight: FontWeight.bold, color: AppColors.mainAppColor)
-    //         : const TextStyle(fontWeight: FontWeight.normal),
-    //   ),
-    //   onTap: () {
-    //     Navigator.of(context).pop();
-    //     Navigator.of(context).push(MaterialPageRoute(
-    //       builder: (_) => pageWidget,
-    //     ));
-    //   },
-    // );
   }
 }

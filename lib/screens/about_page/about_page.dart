@@ -101,6 +101,22 @@ class AboutPage extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 25),
+              const Text(
+                'Accreditation',
+                style: TextStyle(fontSize: 20),
+              ),
+              const SizedBox(height: 10),
+              InkWell(
+                onTap: () => launchHttps('flaticon.com/authors/freepik'),
+                child: const Text(
+                  'Icons created by Freepik - Flaticon',
+                  style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
             ],
           ),
         ),
