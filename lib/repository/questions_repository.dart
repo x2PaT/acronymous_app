@@ -1,7 +1,8 @@
 import 'dart:math';
 import 'package:acronymous_app/models/acronym_model.dart';
+import 'package:acronymous_app/models/game_question_model.dart';
 import 'package:acronymous_app/models/name_model.dart';
-import 'package:acronymous_app/models/question_model.dart';
+import 'package:acronymous_app/models/quiz_question_model.dart';
 import 'package:acronymous_app/repository/acronyms_repository.dart';
 import 'package:acronymous_app/repository/alphabet_repository.dart';
 import 'package:acronymous_app/repository/names_repository.dart';
@@ -147,6 +148,28 @@ class QuestionsRepository {
       optionsList.shuffle();
 
       questionList.add(QuizQuestionModel(question, optionsList));
+    }
+
+    questionList.shuffle();
+
+    return questionList;
+  }
+
+  Future<List<GameQuestionModel>> createRandomLettersGameQuestions(
+    int quizLenght,
+    int wordLenght,
+  ) async {
+    List<GameQuestionModel> questionList = [];
+
+    final lettersList = await alphabetRepository.getAlphabetLettersList();
+
+    for (var i = 0; i < quizLenght; i++) {
+      String question = '';
+      for (var i = 0; i < wordLenght; i++) {
+        question += lettersList[getRandomIndex(lettersList.length)];
+      }
+
+      questionList.add(GameQuestionModel(question));
     }
 
     questionList.shuffle();

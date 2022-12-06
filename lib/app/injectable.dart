@@ -23,7 +23,8 @@ final getIt = GetIt.instance;
 //bloc
 void configureDependencies() {
   getIt.registerFactory(() => SandboxPageCubit(sandboxRepository: getIt()));
-  getIt.registerFactory(() => ListenGamePageCubit(acronymsRepository: getIt()));
+  getIt
+      .registerFactory(() => ListenGamePageCubit(questionsRepository: getIt()));
   getIt.registerFactory(() => AcronymsPageCubit(acronymsRepository: getIt()));
   getIt.registerFactory(() => AlphabetPageCubit(alphabelRepository: getIt()));
   getIt.registerFactory(() => LoadingPageCubit(databaseRepository: getIt()));

@@ -11,10 +11,12 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 class ListenGame extends StatefulWidget {
   const ListenGame({
     Key? key,
-    required this.quizLenght,
+    required this.gameLenght,
+    required this.wordLenght,
   }) : super(key: key);
 
-  final int quizLenght;
+  final int gameLenght;
+  final int wordLenght;
 
   @override
   State<ListenGame> createState() => _ListenGameState();
@@ -45,8 +47,8 @@ class _ListenGameState extends State<ListenGame> {
         title: const Text('Listen and Write Game'),
       ),
       body: BlocProvider(
-        create: (context) =>
-            getIt<ListenGamePageCubit>()..createGame(widget.quizLenght),
+        create: (context) => getIt<ListenGamePageCubit>()
+          ..createGame(widget.gameLenght, widget.wordLenght),
         child: BlocBuilder<ListenGamePageCubit, ListenGamePageState>(
             builder: (context, state) {
           switch (state.status) {
@@ -127,7 +129,7 @@ class _ListenGameState extends State<ListenGame> {
                               BlocProvider.of<ListenGamePageCubit>(context)
                                   .speakText(state
                                       .questions[state.currentQuestion]
-                                      .acronymLetters);
+                                      .questionLetters);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -148,6 +150,7 @@ class _ListenGameState extends State<ListenGame> {
                         Container(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: PinCodeTextField(
+                            autoDismissKeyboard: false,
                             appContext: context,
                             autoFocus: true,
                             controller: textEditingController,
@@ -186,7 +189,8 @@ class _ListenGameState extends State<ListenGame> {
                                 final String answerLetters =
                                     textEditingController.text.toUpperCase();
                                 final String questionLetters = state
-                                    .questions[state.currentQuestion].acronym;
+                                    .questions[state.currentQuestion]
+                                    .questionText;
 
                                 if (state.answeredQuestions ==
                                     state.quizLenght) {
@@ -238,7 +242,7 @@ class _ListenGameState extends State<ListenGame> {
           ElevatedButton(
             onPressed: () {
               Navigator.of(context).pushReplacementNamed('/listenGame',
-                  arguments: widget.quizLenght);
+                  arguments: widget.gameLenght);
             },
             child: const Text("START AGAIN"),
           ),
@@ -288,7 +292,7 @@ class _ListenGameState extends State<ListenGame> {
             onPressed: () {
               Navigator.of(context).pop();
               Navigator.of(context).pushReplacementNamed('/listenGame',
-                  arguments: widget.quizLenght);
+                  arguments: widget.wordLenght);
             },
             child: const Text('Play again!'),
           )

@@ -3,7 +3,7 @@
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/app/utils.dart';
-import 'package:acronymous_app/models/question_model.dart';
+import 'package:acronymous_app/models/quiz_question_model.dart';
 import 'package:acronymous_app/screens/quiz_page/cubit/quiz_page_cubit.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter/material.dart';

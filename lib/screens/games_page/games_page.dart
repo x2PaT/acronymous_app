@@ -147,7 +147,7 @@ class _GamesPageState extends State<GamesPage> {
                         if (_gameTypesEnum == GamesTypesEnum.listen.name) {
                           Navigator.of(context).pushNamed(
                             '/listenGame',
-                            arguments: state.quizLenghtValue,
+                            arguments: 4,
                           );
                         } else {
                           Navigator.of(context).pushNamed('/quiz', arguments: [

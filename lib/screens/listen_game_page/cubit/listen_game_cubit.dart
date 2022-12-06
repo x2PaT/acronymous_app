@@ -1,7 +1,6 @@
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/models/acronym_model.dart';
-import 'package:acronymous_app/models/question_model.dart';
-import 'package:acronymous_app/repository/acronyms_repository.dart';
+import 'package:acronymous_app/models/game_question_model.dart';
+import 'package:acronymous_app/repository/questions_repository.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,34 +9,23 @@ part 'listen_game_state.dart';
 
 class ListenGamePageCubit extends Cubit<ListenGamePageState> {
   ListenGamePageCubit({
-    required this.acronymsRepository,
+    required this.questionsRepository,
   }) : super(ListenGamePageState());
 
-  final AcronymsRepository acronymsRepository;
+  final QuestionsRepository questionsRepository;
 
-  Future<void> createGame(int quizLenght) async {
+  Future<void> createGame(int gameLenght, int wordLenght) async {
     emit(ListenGamePageState(status: Status.loading));
-
     try {
-      final List<AcronymModel> results =
-          await acronymsRepository.getRandomAcronyms(quizLenght);
+      final List<GameQuestionModel> results = await questionsRepository
+          .createRandomLettersGameQuestions(gameLenght, wordLenght);
 
-      // there is an error in PinCodePackage
-      int maxAcronymLenght = 0;
-      for (var element in results) {
-        if (maxAcronymLenght < element.acronymLettersList.length) {
-          maxAcronymLenght = element.acronymLettersList.length;
-        }
-      }
-
-      final int listenTaskLenght = maxAcronymLenght;
-
-      speakText(results[0].acronymLetters);
+      speakText(results[0].questionLetters);
 
       emit(state.copyWith(
-        quizLenght: quizLenght,
+        quizLenght: gameLenght,
         questions: results,
-        listenTaskLenght: listenTaskLenght,
+        listenTaskLenght: wordLenght,
         status: Status.success,
       ));
     } catch (error) {
@@ -50,10 +38,8 @@ class ListenGamePageCubit extends Cubit<ListenGamePageState> {
 
   void checkAnswer(String answer) {
     final String currentQuestion =
-        state.questions[state.currentQuestion].acronym.toUpperCase();
+        state.questions[state.currentQuestion].questionText.toUpperCase();
     List<GameAnswerModel> newAnswers = List.from(state.answers);
-
-    bool isCorrect = false;
 
     debugPrint('answeredQuestions ${state.answeredQuestions}');
     debugPrint('quizLenght ${state.quizLenght}');
@@ -67,16 +53,13 @@ class ListenGamePageCubit extends Cubit<ListenGamePageState> {
 
       if (currentQuestion == answer) {
         state.score = state.score + 1;
-        isCorrect = true;
       }
 
-      final quizAnswerModel =
-          GameAnswerModel(currentQuestion, answer, isCorrect);
-
+      final quizAnswerModel = GameAnswerModel(currentQuestion, answer);
       newAnswers.add(quizAnswerModel);
     }
     if (!state.isLastQuestion) {
-      speakText(state.questions[state.currentQuestion].acronymLetters);
+      speakText(state.questions[state.currentQuestion].questionLetters);
     }
 
     emit(state.copyWith(

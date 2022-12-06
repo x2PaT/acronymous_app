@@ -1,5 +1,5 @@
 import 'package:acronymous_app/app/core/enums.dart';
-import 'package:acronymous_app/models/question_model.dart';
+import 'package:acronymous_app/models/quiz_question_model.dart';
 import 'package:acronymous_app/repository/questions_repository.dart';
 import 'package:acronymous_app/services/flutter_tts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

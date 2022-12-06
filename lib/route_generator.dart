@@ -17,7 +17,7 @@ class RouteGeneretor {
       case '/loading':
         return MaterialPageRoute(builder: (_) => const LoadingPage());
       case '/':
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) => HomePage());
       case '/games':
         return MaterialPageRoute(builder: (_) => const GamesPage());
       case '/alphabet':
@@ -34,35 +34,40 @@ class RouteGeneretor {
       case '/listenGame':
         if (args is int) {
           return MaterialPageRoute(
-              builder: (_) => ListenGame(quizLenght: args));
+              builder: (_) => ListenGame(
+                    gameLenght: 8,
+                    wordLenght: args,
+                  ));
         }
-        return _errorRoute();
+        return _errorRoute('Wrong type');
 
       case '/quiz':
         if (args is List) {
-          final int quizLenght = args[0];
-          final String quizType = args[1];
-
           return MaterialPageRoute(
-              builder: (_) =>
-                  QuizPage(quizLenght: quizLenght, quizType: quizType));
+              builder: (_) => QuizPage(
+                    quizLenght: args[0],
+                    quizType: args[1],
+                  ));
         }
-        return _errorRoute();
+        return _errorRoute('Wrong type');
 
       default:
-        return _errorRoute();
+        return _errorRoute('Wrong route name');
     }
   }
 
-  static Route<dynamic> _errorRoute() {
+  static Route<dynamic> _errorRoute(String error) {
     return MaterialPageRoute(
       builder: (_) {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Route error'),
           ),
-          body: const Center(
-            child: Text('Error wirh routes'),
+          body: Center(
+            child: Text(
+              'Error wirh routes \n$error',
+              textAlign: TextAlign.center,
+            ),
           ),
         );
       },

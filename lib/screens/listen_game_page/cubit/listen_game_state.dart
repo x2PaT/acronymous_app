@@ -17,7 +17,7 @@ class ListenGamePageState {
       this.status = Status.initial,
       this.errorMessage});
 
-  final List<AcronymModel> questions;
+  final List<GameQuestionModel> questions;
   final List<GameAnswerModel> answers;
   final int quizLenght;
 
@@ -33,7 +33,7 @@ class ListenGamePageState {
   final String? errorMessage;
 
   ListenGamePageState copyWith({
-    List<AcronymModel>? questions,
+    List<GameQuestionModel>? questions,
     List<GameAnswerModel>? answers,
     int? quizLenght,
     int? listenTaskLenght,
