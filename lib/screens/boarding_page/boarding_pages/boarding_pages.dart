@@ -210,7 +210,7 @@ class NextButton extends StatelessWidget {
         onPressed: (index == 2
             ? () {
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => const HomePage(),
+                  builder: (_) =>  HomePage(),
                 ));
               }
             : () {

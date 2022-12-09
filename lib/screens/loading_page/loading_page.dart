@@ -45,7 +45,7 @@ class LoadingPage extends StatelessWidget {
                 ),
               );
             case Status.success:
-              return const HomePage();
+              return HomePage();
 
             // state.isFirstRun ? const BoardingPage() : const HomePage();
             case Status.error:

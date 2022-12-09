@@ -2,22 +2,28 @@ import 'package:acronymous_app/app/core/colors.dart';
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/widgets/drawer.dart';
 import 'package:acronymous_app/app/injectable.dart';
-import 'package:acronymous_app/models/acronym_model.dart';
-import 'package:acronymous_app/screens/acronyms_page/acronyms_page.dart';
-import 'package:acronymous_app/screens/alphabet_page/alphabet_page.dart';
-import 'package:acronymous_app/screens/ancronym_webview_page/ancronym_webview_page.dart';
 import 'package:acronymous_app/screens/home_page/cubit/home_page_cubit.dart';
-import 'package:acronymous_app/screens/letter_page/letter_page.dart';
+import 'package:acronymous_app/screens/home_page/widgets/home_page_button_widget.dart';
+import 'package:acronymous_app/screens/home_page/widgets/levels_widget.dart';
 // import 'package:acronymous_app/screens/boarding_page/boarding_page.dart';
-import 'package:acronymous_app/services/flutter_tts.dart';
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:expandable_page_view/expandable_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({
+class HomePage extends StatefulWidget {
+  HomePage({
     Key? key,
   }) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final PageController _pageController = PageController();
+
+  int currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +32,20 @@ class HomePage extends StatelessWidget {
         selectedElement: DrawerElements.home,
       ),
       appBar: AppBar(
-        title: const Text('Welcome to my app'),
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(
+          color: Colors.grey.shade700,
+        ),
+        centerTitle: true,
+        title: Text(
+          'Acronymous',
+          textAlign: TextAlign.center,
+          style: GoogleFonts.breeSerif(
+            letterSpacing: 1.5,
+            fontSize: 26,
+            color: AppColors.mainAppColor,
+          ),
+        ),
         // actions: [
         // IconButton(
         //     onPressed: () {
@@ -54,44 +73,93 @@ class HomePage extends StatelessWidget {
 
               case Status.success:
                 return SingleChildScrollView(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    margin: const EdgeInsets.all(8),
-                    child: Column(
-                      children: [
-                        InkWell(
-                            onTap: () {
-                              Navigator.of(context).pushNamed('/games');
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black54,
-                                    blurRadius: 10,
-                                  ),
-                                ],
+                  child: Column(
+                    children: [
+                      Container(
+                        height: 50,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            GestureDetector(
+                              child: Text(
+                                'Games',
+                                style: TextStyle(
+                                    fontWeight: currentIndex == 0
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
                               ),
-                              height: 70,
-                              width: MediaQuery.of(context).size.width * 0.75,
-                              child: Center(
-                                child: Text(
-                                  'Start Quizing',
-                                  style: TextStyle(
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.mainAppColor),
-                                ),
+                              onTap: () {
+                                _pageController.jumpToPage(0);
+                              },
+                            ),
+                            GestureDetector(
+                              child: Text(
+                                'Quizzes',
+                                style: TextStyle(
+                                    fontWeight: currentIndex == 1
+                                        ? FontWeight.bold
+                                        : FontWeight.normal),
                               ),
-                            )),
-                        const SizedBox(height: 25),
-                        alphabetContainer(context, state),
-                        const SizedBox(height: 15),
-                        acronymsContainer(context, state),
-                      ],
-                    ),
+                              onTap: () {
+                                _pageController.jumpToPage(1);
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        child: ExpandablePageView(
+                          controller: _pageController,
+                          onPageChanged: (value) {
+                            setState(() {
+                              currentIndex = _pageController.page!.round();
+                            });
+                          },
+                          children: [
+                            GamesContainerContent(
+                              controller: _pageController,
+                            ),
+                            QuizzesContainerContent(
+                              controller: _pageController,
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(12).copyWith(top: 0),
+                        child: Text(
+                          'Learn something new',
+                          style: GoogleFonts.breeSerif(fontSize: 24),
+                        ),
+                      ),
+                      const HomePageButtonWidget(
+                        title: 'Names',
+                        pageRoute: '/names',
+                        imageAsset: 'assets/icons/people.png',
+                      ),
+                      const HomePageButtonWidget(
+                        title: 'Alphabet',
+                        pageRoute: '/alphabet',
+                        imageAsset: 'assets/icons/abc.png',
+                      ),
+                      const HomePageButtonWidget(
+                        title: 'Acronyms',
+                        pageRoute: '/acronyms',
+                        imageAsset: 'assets/icons/choose.png',
+                      ),
+                      const HomePageButtonWidget(
+                        title: 'Sandbox',
+                        pageRoute: '/sandbox',
+                        imageAsset: 'assets/icons/sandbox.png',
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        child: Divider(
+                          thickness: 5,
+                          color: Color(0xFFBDBDBD),
+                        ),
+                      ),
+                    ],
                   ),
                 );
             }
@@ -100,220 +168,89 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
 
-  Column alphabetContainer(BuildContext context, HomePageState state) {
+class QuizzesContainerContent extends StatelessWidget {
+  const QuizzesContainerContent({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final PageController controller;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            InkWell(
-              onTap: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (_) => const AlphabetPage()));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black54,
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                height: 45,
-                width: MediaQuery.of(context).size.width * 0.75,
-                child: Center(
-                  child: Text(
-                    'Alphabet',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.mainAppColor),
-                  ),
-                ),
-              ),
-            ),
-          ],
+        LevelWidgetQuizzes(
+          pageRoute: '/quiz',
+          quizLenght: 8,
+          quizType: GamesTypesEnum.acronyms.name,
+          title: 'Acronyms',
+          iconAsset: 'assets/icons/1-easy.png',
+          color: (Colors.green.shade100),
         ),
-        const SizedBox(height: 10),
-        SizedBox(
-          height: 75,
-          child: ListView.builder(
-            shrinkWrap: true,
-            scrollDirection: Axis.horizontal,
-            itemCount: state.alphabet.length,
-            itemBuilder: (BuildContext context, int index) => SizedBox(
-              width: 100,
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          LetterPage(letterID: state.alphabet[index].id),
-                    ),
-                  );
-                },
-                child: Card(
-                  child: Center(
-                    child: Text(
-                      state.alphabet[index].letter,
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+        LevelWidgetQuizzes(
+          pageRoute: '/quiz',
+          quizLenght: 8,
+          quizType: GamesTypesEnum.names.name,
+          title: 'Names',
+          iconAsset: 'assets/icons/1-easy.png',
+          color: (Colors.green.shade100),
+        ),
+        LevelWidgetQuizzes(
+          pageRoute: '/quiz',
+          quizLenght: 8,
+          quizType: GamesTypesEnum.randomLetters.name,
+          title: 'Random Letters',
+          iconAsset: 'assets/icons/1-easy.png',
+          color: (Colors.green.shade100),
         ),
       ],
     );
   }
 }
 
-Column acronymsContainer(BuildContext context, HomePageState state) {
-  return Column(
-    children: [
-      Stack(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(15),
-            width: MediaQuery.of(context).size.width,
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (_) => AcronymsPage()));
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Colors.black54,
-                      blurRadius: 10,
-                    ),
-                  ],
-                ),
-                height: 45,
-                width: MediaQuery.of(context).size.width * 0.75,
-                child: Center(
-                  child: Text(
-                    'Acronyms',
-                    style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.mainAppColor),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: 15,
-            right: 15,
-            child: IconButton(
-              onPressed: () {
-                BlocProvider.of<HomePageCubit>(context)
-                    .refreshRandomAcronymsList();
-              },
-              icon: const Icon(Icons.refresh),
-            ),
-          ),
-        ],
-      ),
-      acronymsList(context, state),
-    ],
-  );
-}
+class GamesContainerContent extends StatelessWidget {
+  const GamesContainerContent({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
 
-Widget acronymsList(BuildContext context, HomePageState state) {
-  switch (state.statusAcronymsList) {
-    case Status.initial:
-      return const Center(
-        child: Text('Initial State'),
-      );
-    case Status.loading:
-      return const SizedBox(
-        height: 200,
-        child: Center(
-          child: CircularProgressIndicator(),
+  final PageController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        LevelWidgetGames(
+          pageRoute: '/listenGame',
+          wordLenght: 2,
+          title: 'Easy',
+          iconAsset: 'assets/icons/1-easy.png',
+          color: (Colors.green.shade100),
         ),
-      );
-    case Status.success:
-      return Column(
-        children: [
-          for (var acronym in state.randomAcronymsList) ...[
-            acronymCustomRow(context, acronym)
-          ],
-        ],
-      );
-    case Status.error:
-      return Center(
-        child: Text(
-          state.errorMessage ?? 'AcronymsList Unkown error',
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Theme.of(context).errorColor,
-          ),
+        LevelWidgetGames(
+          pageRoute: '/listenGame',
+          wordLenght: 4,
+          title: 'Medium',
+          iconAsset: 'assets/icons/2-medium.png',
+          color: (Colors.orange.shade100),
         ),
-      );
+        LevelWidgetGames(
+          pageRoute: '/listenGame',
+          wordLenght: 6,
+          title: 'Hard',
+          iconAsset: 'assets/icons/3-hard.png',
+          color: (Colors.red.shade100),
+        ),
+        LevelWidgetGames(
+          pageRoute: '/customGame',
+          title: 'Custom',
+          iconAsset: 'assets/icons/4-custom.png',
+          color: (Colors.purple.shade100),
+        ),
+      ],
+    );
   }
-}
-
-acronymCustomRow(BuildContext context, AcronymModel acronymModel) {
-  return InkWell(
-    onTap: () => Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => AncronymWebviewPage(
-          acronym: acronymModel.acronym,
-        ),
-      ),
-    ),
-    child: Card(
-      child: SizedBox(
-        height: 55,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              child: Container(
-                padding: const EdgeInsets.only(left: 12),
-                width: MediaQuery.of(context).size.width * 0.65,
-                child: Column(
-                  children: [
-                    Text(
-                      acronymModel.acronym,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    AutoSizeText(
-                      acronymModel.meaning,
-                      maxLines: 2,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            IconButton(
-              onPressed: () {
-                ttsService.speakTTS(acronymModel.acronymLetters);
-              },
-              icon: const Icon(
-                Icons.play_circle_outline,
-                size: 32,
-              ),
-            ),
-          ],
-        ),
-      ),
-    ),
-  );
 }
