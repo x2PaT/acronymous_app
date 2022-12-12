@@ -1,5 +1,7 @@
 // ignore_for_file: deprecated_member_use
 
+import 'dart:ui';
+
 import 'package:acronymous_app/app/core/enums.dart';
 import 'package:acronymous_app/app/injectable.dart';
 import 'package:acronymous_app/app/utils.dart';
@@ -354,7 +356,11 @@ class OptionButton extends StatelessWidget {
           onPressed: () {
             BlocProvider.of<QuizPageCubit>(context).selectOption(option);
           },
-          child: Text(option.optionText)),
+          child: state.ttsCompleted
+              ? Text(option.optionText)
+              : ImageFiltered(
+                  imageFilter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Text(option.optionText))),
     );
   }
 }

@@ -47,8 +47,6 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   }
 
   void checkAnswer({required QuizOptionModel selectedOption}) {
-    emit(state.copyWith(ttsCompleted: false));
-
     List<QuizAnswerModel> newAnswers = List.from(state.answers);
 
     if (state.answeredQuestions < state.quizLenght) {
@@ -77,6 +75,8 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   }
 
   void nextQuestion() {
+    emit(state.copyWith(ttsCompleted: false));
+
     if (state.answeredQuestions < state.quizLenght) {
       if (!state.isLastQuestion) {
         state.currentQuestion = state.currentQuestion + 1;
