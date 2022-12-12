@@ -47,26 +47,37 @@ class ListenGamePageCubit extends Cubit<ListenGamePageState> {
     if (state.answeredQuestions < state.quizLenght) {
       state.answeredQuestions = state.answeredQuestions + 1;
 
-      if (!state.isLastQuestion) {
-        state.currentQuestion = state.currentQuestion + 1;
-      }
-
       if (currentQuestion == answer) {
         state.score = state.score + 1;
       }
 
       final quizAnswerModel = GameAnswerModel(currentQuestion, answer);
       newAnswers.add(quizAnswerModel);
+
     }
-    if (!state.isLastQuestion) {
-      speakText(state.questions[state.currentQuestion].questionLetters);
-    }
+
+    isLastQuestionChecker();
 
     emit(state.copyWith(
       answers: newAnswers,
       score: state.score,
       currentQuestion: state.currentQuestion,
       answeredQuestions: state.answeredQuestions,
+    ));
+  }
+
+  void nextQuestion() {
+    if (state.answeredQuestions < state.quizLenght) {
+      if (!state.isLastQuestion) {
+        state.currentQuestion = state.currentQuestion + 1;
+      }
+    }
+
+    if (!state.isLastQuestion) {
+      speakText(state.questions[state.currentQuestion].questionLetters);
+    }
+    emit(state.copyWith(
+      currentQuestion: state.currentQuestion,
     ));
   }
 

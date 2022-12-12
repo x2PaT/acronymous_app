@@ -6,6 +6,7 @@ class QuizPageState {
     this.answers = const [],
     this.quizLenght = 8,
     //
+    this.ttsCompleted = false,
     this.selectedOption,
     this.currentQuestion = 0,
     this.score = 0,
@@ -21,6 +22,8 @@ class QuizPageState {
   final List<QuizAnswerModel> answers;
   final int quizLenght;
 
+  bool ttsCompleted;
+
   QuizOptionModel? selectedOption;
   int currentQuestion;
   int score;
@@ -35,6 +38,7 @@ class QuizPageState {
     List<QuizQuestionModel>? questions,
     List<QuizAnswerModel>? answers,
     int? quizLenght,
+    bool? ttsCompleted,
     QuizOptionModel? selectedOption,
     int? currentQuestion,
     int? score,
@@ -48,6 +52,7 @@ class QuizPageState {
       questions: questions ?? this.questions,
       answers: answers ?? this.answers,
       quizLenght: quizLenght ?? this.quizLenght,
+      ttsCompleted: ttsCompleted ?? this.ttsCompleted,
       selectedOption: selectedOption ?? this.selectedOption,
       currentQuestion: currentQuestion ?? this.currentQuestion,
       score: score ?? this.score,

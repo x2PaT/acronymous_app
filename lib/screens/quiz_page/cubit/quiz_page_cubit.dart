@@ -22,7 +22,9 @@ class QuizPageCubit extends Cubit<QuizPageState> {
         quizType,
       );
 
-      speakText(result[0].questionLetters);
+      ttsService.speakTTS(result[0].questionLetters).whenComplete(() {
+        emit(state.copyWith(ttsCompleted: true));
+      });
 
       emit(state.copyWith(
         quizLenght: quizLenght,
@@ -45,14 +47,12 @@ class QuizPageCubit extends Cubit<QuizPageState> {
   }
 
   void checkAnswer({required QuizOptionModel selectedOption}) {
+    emit(state.copyWith(ttsCompleted: false));
+
     List<QuizAnswerModel> newAnswers = List.from(state.answers);
 
     if (state.answeredQuestions < state.quizLenght) {
       state.answeredQuestions = state.answeredQuestions + 1;
-
-      if (!state.isLastQuestion) {
-        state.currentQuestion = state.currentQuestion + 1;
-      }
 
       if (selectedOption.isCorrect) {
         state.score = state.score + 1;
@@ -63,9 +63,8 @@ class QuizPageCubit extends Cubit<QuizPageState> {
         selectedOption,
       ));
     }
-    if (!state.isLastQuestion) {
-      speakText(state.questions[state.currentQuestion].questionLetters);
-    }
+
+    isLastQuestionChecker();
 
     emit(state.copyWith(
       answers: newAnswers,
@@ -74,6 +73,25 @@ class QuizPageCubit extends Cubit<QuizPageState> {
       score: state.score,
       currentQuestion: state.currentQuestion,
       answeredQuestions: state.answeredQuestions,
+    ));
+  }
+
+  void nextQuestion() {
+    if (state.answeredQuestions < state.quizLenght) {
+      if (!state.isLastQuestion) {
+        state.currentQuestion = state.currentQuestion + 1;
+      }
+    }
+    if (!state.isLastQuestion) {
+      ttsService
+          .speakTTS(state.questions[state.currentQuestion].questionLetters)
+          .whenComplete(() {
+        emit(state.copyWith(ttsCompleted: true));
+      });
+    }
+
+    emit(state.copyWith(
+      currentQuestion: state.currentQuestion,
     ));
   }
 

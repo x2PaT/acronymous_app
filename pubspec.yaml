@@ -49,6 +49,7 @@ dependencies:
   pin_code_fields: ^7.4.0
   url_launcher: ^6.1.7
   expandable_page_view: ^1.0.17
+  animated_text_kit: ^4.2.2
 
 dev_dependencies:
   flutter_test:

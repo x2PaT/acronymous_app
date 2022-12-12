@@ -63,123 +63,120 @@ class QuizPage extends StatelessWidget {
                       return doPop ?? false;
                     }
                   },
-                  child: SingleChildScrollView(
-                    child: Container(
-                      margin: const EdgeInsets.all(24),
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.all(8),
-                            child: Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      'Question ${state.currentQuestion + 1}/${state.quizLenght}',
-                                      style: const TextStyle(fontSize: 25),
-                                    ),
+                  child: Container(
+                    margin: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.all(8),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    'Question ${state.currentQuestion + 1}/${state.quizLenght}',
+                                    style: const TextStyle(fontSize: 25),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 10),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  for (var answer in state.answers) ...[
+                                    answerIconConstructor(
+                                        answer.selectedOption.isCorrect)
                                   ],
+                                  for (var i = 0;
+                                      i <
+                                          (state.quizLenght -
+                                              state.answers.length);
+                                      i++) ...[
+                                    const Icon(
+                                      Icons.check_box,
+                                      color: Colors.grey,
+                                    )
+                                  ]
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Divider(
+                          endIndent: 15,
+                          thickness: 2,
+                          color: Colors.grey,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.7,
+                          height: 45,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                primary: state.isOptionSelected
+                                    ? Colors.grey.shade500
+                                    : Colors.orangeAccent),
+                            onPressed: () {
+                              ttsService.speakTTS(state
+                                  .questions[state.currentQuestion]
+                                  .questionLetters);
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: const [
+                                Text(
+                                  'PLAY',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                const SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    for (var answer in state.answers) ...[
-                                      answerIconConstructor(
-                                          answer.selectedOption.isCorrect)
-                                    ],
-                                    for (var i = 0;
-                                        i <
-                                            (state.quizLenght -
-                                                state.answers.length);
-                                        i++) ...[
-                                      const Icon(
-                                        Icons.check_box,
-                                        color: Colors.grey,
-                                      )
-                                    ]
-                                  ],
+                                Icon(
+                                  Icons.play_circle_outline,
+                                  size: 32,
                                 ),
                               ],
                             ),
                           ),
-                          const Divider(
-                            endIndent: 15,
-                            thickness: 2,
-                            color: Colors.grey,
+                        ),
+                        const SizedBox(height: 25),
+                        Column(
+                          children:
+                              state.questions[state.currentQuestion].optionsList
+                                  .map((option) => OptionButton(
+                                        option: option,
+                                        state: state,
+                                      ))
+                                  .toList(),
+                        ),
+                        const Spacer(),
+                        ElevatedButton(
+                          onPressed: () {
+                            final String questionLetters = state
+                                .questions[state.currentQuestion].questionText;
+
+                            if (state.answeredQuestions == state.quizLenght) {
+                              showResultsDialog(context, state);
+                            } else if (state.isOptionSelected) {
+                              BlocProvider.of<QuizPageCubit>(context)
+                                  .checkAnswer(
+                                selectedOption: state.selectedOption!,
+                              );
+                              modalBottomSheetOnCheckAnswer(
+                                context,
+                                state.selectedOption!.isCorrect,
+                                questionLetters,
+                                state,
+                              );
+                            } else {
+                              showSnackBar(context, 'Select answer');
+                            }
+                          },
+                          child: Text(
+                            state.isLastQuestion
+                                ? 'Show Results'
+                                : 'Next Question',
                           ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.7,
-                            height: 45,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  shape: const StadiumBorder(),
-                                  primary: state.isOptionSelected
-                                      ? Colors.grey.shade500
-                                      : Colors.orangeAccent),
-                              onPressed: () {
-                                ttsService.speakTTS(state
-                                    .questions[state.currentQuestion]
-                                    .questionLetters);
-                              },
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: const [
-                                  Text(
-                                    'PLAY',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Icon(
-                                    Icons.play_circle_outline,
-                                    size: 32,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 25),
-                          Column(
-                            children: state
-                                .questions[state.currentQuestion].optionsList
-                                .map((option) => OptionButton(
-                                      option: option,
-                                      state: state,
-                                    ))
-                                .toList(),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  if (!state.isOptionSelected) {
-                                    showSnackBar(context, 'Select answer');
-                                  } else {
-                                    BlocProvider.of<QuizPageCubit>(context)
-                                        .checkAnswer(
-                                      selectedOption: state.selectedOption!,
-                                    );
-                                    if (state.answeredQuestions ==
-                                        state.quizLenght) {
-                                      showResultsDialog(context, state);
-                                    }
-                                    BlocProvider.of<QuizPageCubit>(context)
-                                        .isLastQuestionChecker();
-                                  }
-                                },
-                                child: Text(
-                                  state.isLastQuestion
-                                      ? 'Show Results'
-                                      : 'Next',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 );
@@ -187,6 +184,70 @@ class QuizPage extends StatelessWidget {
           },
         ),
       ),
+    );
+  }
+
+  void modalBottomSheetOnCheckAnswer(
+    BuildContext context,
+    isCorrect,
+    questionLetters,
+    QuizPageState state,
+  ) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      isDismissible: false,
+      enableDrag: false,
+      context: context,
+      builder: (_) {
+        return Wrap(
+          children: [
+            WillPopScope(
+              onWillPop: () async {
+                final doPop = await showPopDialog(context);
+
+                return doPop ?? false;
+              },
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Icon(isCorrect
+                            ? Icons.trending_up
+                            : Icons.trending_down),
+                        const SizedBox(width: 10),
+                        Text(
+                          isCorrect ? 'Correct answer' : 'Wrong answer',
+                          style: const TextStyle(
+                            fontSize: 22,
+                          ),
+                        ),
+                      ],
+                    ),
+                    isCorrect
+                        ? const SizedBox()
+                        : Column(
+                            children: [
+                              const Text('Correct answer is:'),
+                              Text(questionLetters),
+                            ],
+                          ),
+                    ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<QuizPageCubit>(context).nextQuestion();
+
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Next Question'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -210,16 +271,15 @@ class QuizPage extends StatelessWidget {
               Navigator.of(context).pushReplacementNamed('/quiz',
                   arguments: [quizLenght, quizType]);
             },
-            child: const Text("START AGAIN"),
+            child: const Text("Restart"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text("NO"),
+            child: const Text("No"),
           ),
-          const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: const Text("YES"),
+            child: const Text("Finish game"),
           ),
         ],
       ),
@@ -282,20 +342,19 @@ class OptionButton extends StatelessWidget {
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 50,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: isSelected
-              ? Colors.orangeAccent
-              : state.isOptionSelected
-                  ? Colors.grey.shade200
-                  : Colors.white,
-          onPrimary: isSelected ? Colors.white : Colors.black,
-          shape: const StadiumBorder(),
-        ),
-        onPressed: () {
-          BlocProvider.of<QuizPageCubit>(context).selectOption(option);
-        },
-        child: Text(option.optionText),
-      ),
+          style: ElevatedButton.styleFrom(
+            primary: isSelected
+                ? Colors.orangeAccent
+                : state.isOptionSelected
+                    ? Colors.grey.shade200
+                    : Colors.white,
+            onPrimary: isSelected ? Colors.white : Colors.black,
+            shape: const StadiumBorder(),
+          ),
+          onPressed: () {
+            BlocProvider.of<QuizPageCubit>(context).selectOption(option);
+          },
+          child: Text(option.optionText)),
     );
   }
 }
