@@ -17,7 +17,7 @@ class RouteGeneretor {
       case '/loading':
         return MaterialPageRoute(builder: (_) => const LoadingPage());
       case '/':
-        return MaterialPageRoute(builder: (_) => HomePage());
+        return MaterialPageRoute(builder: (_) => const HomePage());
       case '/games':
         return MaterialPageRoute(builder: (_) => const GamesPage());
       case '/alphabet':

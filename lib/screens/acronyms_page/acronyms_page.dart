@@ -61,6 +61,7 @@ class AcronymsPage extends StatelessWidget {
                           ),
                         ),
                         onChanged: (input) {
+                          context.read<AcronymsPageCubit>().state.errorMessage;
                           BlocProvider.of<AcronymsPageCubit>(context)
                               .filterAcronyms(input);
                         },

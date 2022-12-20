@@ -15,48 +15,50 @@ class HomePageButtonWidget extends StatelessWidget {
   final String imageAsset;
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        color: Colors.orange.shade50,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x2C181515),
-            blurRadius: 5,
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {
-            Navigator.of(context).pushNamed(pageRoute);
-          },
-          child: SizedBox(
-            height: 90,
-            width: MediaQuery.of(context).size.width,
-            child: Padding(
-              padding: const EdgeInsets.all(4.0),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image(
-                      height: 55,
-                      image: AssetImage(imageAsset),
-                    ),
-                    const SizedBox(width: 15),
-                    Flexible(
-                      child: AutoSizeText(
-                        title,
-                        maxLines: 1,
-                        style: GoogleFonts.breeSerif(
-                          fontSize: 24,
-                          color: Colors.grey.shade700,
+    return SliverToBoxAdapter(
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 5),
+        decoration: BoxDecoration(
+          color: Colors.orange.shade50,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x2C181515),
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              Navigator.of(context).pushNamed(pageRoute);
+            },
+            child: SizedBox(
+              height: 90,
+              width: MediaQuery.of(context).size.width,
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image(
+                        height: 55,
+                        image: AssetImage(imageAsset),
+                      ),
+                      const SizedBox(width: 15),
+                      Flexible(
+                        child: AutoSizeText(
+                          title,
+                          maxLines: 1,
+                          style: GoogleFonts.breeSerif(
+                            fontSize: 24,
+                            color: Colors.grey.shade700,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
